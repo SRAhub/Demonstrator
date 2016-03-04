@@ -1,0 +1,7 @@
+find_path(DEMONSTRATOR_INCLUDE_DIRS NAMES demonstrator)
+find_library(DEMONSTRATOR_LIBRARIES NAMES demonstrator)
+
+include(FindPackageHandleStandardArgs)
+find_package_handle_standard_args(demonstrator DEFAULT_MSG DEMONSTRATOR_LIBRARIES DEMONSTRATOR_INCLUDE_DIRS)
+
+mark_as_advanced(DEMONSTRATOR_LIBRARIES DEMONSTRATOR_INCLUDE_DIRS)

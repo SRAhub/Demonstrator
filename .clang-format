@@ -1,0 +1,15 @@
+---
+Language: Cpp
+BasedOnStyle: Google
+
+AlignAfterOpenBracket: false
+AlignTrailingComments: false
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+AlwaysBreakBeforeMultilineStrings: false
+BinPackParameters: false
+ColumnLimit: 0
+DerivePointerAlignment: false
+NamespaceIndentation: All
+SpacesBeforeTrailingComments: 1
+...
