@@ -8,6 +8,13 @@
 #include "demonstrator_bits/pin.hpp"
 
 namespace demo {
+  /**
+   * Part of `demo::LinearActuators`.
+   *
+   * This class issues commands to an array of [PRODUCT NAME HERE][1] linear actuators.
+   *
+   * [1]: http://INSERT-PRODUCT-PAGE-HERE
+   */
   class ServoControllers {
    public:
     std::size_t numberOfControllers_;
