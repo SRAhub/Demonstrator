@@ -2,6 +2,10 @@
 
 namespace demo {
   // Global variables, to be used in other files.
+
+  /**
+   * Enables debugging messages from library components. These are written to stdout (not configurable).
+   */
   extern bool isVerbose;
 }
 
