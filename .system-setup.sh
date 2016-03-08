@@ -1,17 +1,17 @@
 #!/bin/bash
 
 # Updates the system
-apt-get update -qq
-apt-get upgrade -qq
+apt-get update
+apt-get upgrade -y
 
 # Installs dependencies
 ## Installs Clang
-apt-get install -qq clang
+apt-get install -y clang
 update-alternatives --set cc /usr/bin/clang
 update-alternatives --set c++ /usr/bin/clang++
 
 ## Installs CMake
-apt-get install -qq cmake
+apt-get install -y cmake
 
 ## Installs WiringPi
 git clone --depth 1 --branch master git://git.drogon.net/wiringPi
@@ -21,7 +21,7 @@ cd ..
 rm -Rf wiringPi
 
 ## Installs Armadillo C++
-apt-get install -qq libblas-dev liblapack-dev libopenblas-dev
+apt-get install -y libblas-dev liblapack-dev libopenblas-dev
 wget --quiet -O armadillo.tar.gz http://downloads.sourceforge.net/project/arma/armadillo-6.500.5.tar.gz
 mkdir armadillo
 tar -xzf armadillo.tar.gz -C ./armadillo --strip-components=1
@@ -44,21 +44,21 @@ cd ..
 rm -Rf Mantella
 
 # Testing
-sudo apt-get install -qq catch
-sudo apt-get install -qq iwyu
-sudo apt-get install -qq lcov
+sudo apt-get install -y catch
+sudo apt-get install -y iwyu
+sudo apt-get install -y lcov
 ## Installs clang-format-3.6
-sudo apt-get install -qq clang-format-3.6
+sudo apt-get install -y clang-format-3.6
 sudo update-alternatives --install /usr/bin/clang-format clang-format /usr/bin/clang-format-3.6 100
 sudo update-alternatives --set clang-format /usr/bin/clang-format-3.6
 
 # Debugging
-sudo apt-get install -qq gdb
-sudo apt-get install -qq valgrind
+sudo apt-get install -y gdb
+sudo apt-get install -y valgrind
 
 # Useful development tools
-sudo apt-get install -qq htop
-sudo apt-get install -qq git
-sudo apt-get install -qq ccache
-sudo apt-get install -qq gdb
-sudo apt-get install -qq dos2unix
+sudo apt-get install -y htop
+sudo apt-get install -y git
+sudo apt-get install -y ccache
+sudo apt-get install -y gdb
+sudo apt-get install -y dos2unix
