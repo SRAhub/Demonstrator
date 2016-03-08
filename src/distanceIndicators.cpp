@@ -27,6 +27,7 @@ namespace demo {
     verify(distances.size() == numberOfIndicators_, "DistanceIndicators.setIndication: The number of distances must be equal to the number of indicators.");
     // TODO verify ordering between all distance vectors
 
+    // Calculate LED states. The lowest LED (red) is stored at index 0.
     std::vector<std::bitset<12>> states;
     for (std::size_t bar = 0; bar < distances.size(); ++bar) {
       if (distances.at(bar) <= warningDistances_.at(bar)) {
@@ -35,6 +36,11 @@ namespace demo {
         states.push_back(300 & (~0 >> static_cast<unsigned int>(std::floor((distances.at(bar) - minimalDistances_.at(bar)) / (warningDistances_.at(bar) - minimalDistances_.at(bar))))));
       }
     }
+
+    // Send the `state` patterns to the LED bars. Because all MY9221 are connected to the same clock pin, we need to set all data pins ahead one bit at a time, then clock once. The exact order is:
+    // *   1. Send 16 bit command word 0x310 on all pins. This selects 16 bit grayscale code at 1001 Hz.
+    // *   2. For every bit in `currentState`, send 16x high (or 16x low, depending on the current bit value) on the respective pin.
+    // *   3. Conclude with 4 high/low toggles on the data pins while keeping the clock at a constant level.
 
     unsigned int clock = 0;
 

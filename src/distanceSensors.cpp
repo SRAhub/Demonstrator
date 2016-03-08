@@ -35,6 +35,8 @@ namespace demo {
 
       // Step 2: Wait for echo signal. Abort after 250 milliseconds because TODO EXPLAIN THIS
       pins_.at(sensor).waitForSignalEdge(std::chrono::milliseconds(250));
+
+      // TODO: If we can set `maximalMeasureableDistance_`, we need to adjust the wait time to a dynamic value, too.
       auto echoDuration = std::chrono::duration_cast<std::chrono::microseconds>(pins_.at(sensor).waitForSignalEdge(std::chrono::milliseconds(2)));
 
       // Reset the pin to its initial state for the next measurement.

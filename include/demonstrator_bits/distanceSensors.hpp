@@ -11,7 +11,9 @@
 #include "demonstrator_bits/pin.hpp"
 
 /**
- * This class represents a HC-SR04[1]. However, a single raspberry pi pin is connected to both `trigger` and `echo` pins on the device:
+ * This class represents an array of HC-SR04[1]. On the demonstrator, this device is used to measure the distance between the demonstrator and other obstacles.
+ *
+ * Notice that a single raspberry pi pin is connected to both `trigger` and `echo` pins on the device:
  *
  *   [pi]--+-----------[trigger]
  *         |
@@ -54,8 +56,14 @@ namespace demo {
      */
     std::vector<Pin> pins_;
 
+    /**
+     * If the device measures a smaller distance than this value, this value is used instead.
+     */
     std::vector<double> minimalMeasureableDistance_;
 
+    /**
+     * If the device measures a greater distance than this value, this value is used instead.
+     */
     std::vector<double> maximalMeasureableDistance_;
 
     /**
