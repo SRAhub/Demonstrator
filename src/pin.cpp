@@ -1,12 +1,10 @@
 #include "demonstrator_bits/pin.hpp"
+#include "demonstrator_bits/config.hpp" // IWYU pragma: keep
 
 // C++ standard library
 #include <ratio>
 #include <string>
 #include <thread>
-
-// WiringPi
-#include <wiringPi.h>
 
 // Demonstrator
 #include "demonstrator_bits/assert.hpp"

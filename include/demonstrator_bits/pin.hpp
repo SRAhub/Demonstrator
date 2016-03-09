@@ -1,4 +1,5 @@
 #pragma once
+#include "demonstrator_bits/config.hpp" // IWYU pragma: keep
 
 // C++ standard library
 #include <chrono>
@@ -66,6 +67,9 @@ namespace demo {
      * If this object currently owns its pin, pass that ownership back to the gpio array.
      */
     virtual ~Pin();
+
+#if !defined(USE_WIRINGPI)
+
 
    protected:
     /**

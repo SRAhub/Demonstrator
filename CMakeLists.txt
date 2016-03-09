@@ -12,31 +12,38 @@ set(DEMONSTRATOR_VERSION "${DEMONSTRATOR_VERSION_MAJOR}.${DEMONSTRATOR_VERSION_M
 # Adds additional cmake modules
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
+if(APPLE)
+  # Use @rpath on Mac OS X.
+  set(CMAKE_MACOSX_RPATH ON)
+endif()
+
 # Development build options
 option(USE_CCACHE "Use ccache" OFF)
 option(BUILD_TESTS "Build tests" OFF)
 option(MEASURE_CODE_COVERAGE "Measure code coverage" OFF)
-option(USE_WIRINGPI_DUMMY "Use WiringPi dummy" OFF)
+option(USE_WIRINGPI "Use WiringPi" ON)
 
 mark_as_advanced(
   USE_CCACHE
   BUILD_TESTS
   MEASURE_CODE_COVERAGE
-  USE_WIRINGPI_DUMMY
+  USE_WIRINGPI
 )
 
-message(STATUS "") 
+message(STATUS "")
 message(STATUS "Building Demonstator (version: ${DEMONSTRATOR_VERSION}).")
 
 # ------------------------
 # CHECKING PREREQUIREMENTS
 # ------------------------
 
-message(STATUS "") 
+message(STATUS "")
 message(STATUS "Checking prerequirements.")
 
-find_package(WiringPi REQUIRED)
-include_directories(${WIRINGPI_INCLUDE_DIR})
+if(USE_WIRINGPI)
+  find_package(WiringPi REQUIRED)
+  include_directories(${WIRINGPI_INCLUDE_DIR})
+endif ()
 
 find_package(Armadillo 6.400.0 REQUIRED)
 include_directories(${ARMADILLO_INCLUDE_DIR})
@@ -48,7 +55,7 @@ include_directories(${MANTELLA_INCLUDE_DIR})
 # CONFIGURING COMPILER
 # --------------------
 
-message(STATUS "") 
+message(STATUS "")
 message(STATUS "Configuring compiler.")
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
@@ -83,7 +90,7 @@ endif()
 # SETTING COMPILER FLAGS
 # ----------------------
 
-message(STATUS "") 
+message(STATUS "")
 message(STATUS "Setting compiler flags.")
   if(NOT CMAKE_COMPILER_IS_MSCV)
     message(STATUS "- Enabling C++11 features.")
@@ -95,7 +102,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native")
 
 message(STATUS "- Using level 3 code optimisation.")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
-  
+
 if(NOT CMAKE_BUILD_TYPE)
   message(STATUS "- Setting build to 'Release'.")
   message(STATUS "  - Use 'cmake ... -DCMAKE_BUILD_TYPE=[Release|Debug]' to specify this.")
@@ -106,7 +113,7 @@ endif()
 # BUILDING LIBRARY
 # ----------------
 
-message(STATUS "") 
+message(STATUS "")
 message(STATUS "Configuring library build.")
 
 if(NOT CMAKE_LIBRARY_OUTPUT_DIRECTORY)
@@ -116,16 +123,16 @@ endif()
 if(NOT CMAKE_ARCHIVE_OUTPUT_DIRECTORY)
   set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 endif()
-   
+
 # Include Demonstrator
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/include)
 
-if(USE_WIRINGPI_DUMMY)
-  message(STATUS "- Replacing WiringPi instructions by dummy code (debugging setup).")
-  message(STATUS "  - Use 'cmake ... -DUSE_WIRINGPI_DUMMY=OFF' to use WiringPi (productive setup).")
-else()
+if(USE_WIRINGPI)
   message(STATUS "- Using WiringPi instructions (productive setup).")
   message(STATUS "  - Use 'cmake ... -DUSE_WIRINGPI_DUMMY=ON' to exclude WiringPi (debugging setup).")
+else()
+  message(STATUS "- Replacing WiringPi instructions by dummy code (debugging setup).")
+  message(STATUS "  - Use 'cmake ... -DUSE_WIRINGPI_DUMMY=OFF' to use WiringPi (productive setup).")
 endif()
 configure_file(${PROJECT_SOURCE_DIR}/include/demonstrator_bits/config.hpp.cmake ${PROJECT_SOURCE_DIR}/include/demonstrator_bits/config.hpp)
 
@@ -133,17 +140,17 @@ configure_file(${PROJECT_SOURCE_DIR}/include/demonstrator_bits/config.hpp.cmake 
 add_library(demonstrator SHARED
   # Configuration
   src/config.cpp
-  
+
   # Assertion
   src/assert.cpp
-  
+
   # GPIO
   src/gpio.cpp
   src/pin.cpp
   src/spi.cpp
   src/i2c.cpp
   src/uart.cpp
-  
+
   # Network
   src/network.cpp
 
@@ -165,7 +172,11 @@ add_library(demonstrator SHARED
 )
 
 # Linking against prerequirements
-target_link_libraries(demonstrator ${WIRINGPI_LIBRARIES})
+
+if(USE_WIRINGPI)
+  target_link_libraries(demonstrator ${WIRINGPI_LIBRARIES})
+endif ()
+
 target_link_libraries(demonstrator ${ARMADILLO_LIBRARIES})
 target_link_libraries(demonstrator ${MANTELLA_LIBRARIES})
 
@@ -175,14 +186,14 @@ target_link_libraries(demonstrator ${MANTELLA_LIBRARIES})
 # -------------------
 
 if(BUILD_TESTS)
-  message(STATUS "") 
+  message(STATUS "")
   message(STATUS "Configuring unit tests.")
   message(STATUS "- Use 'cmake ... -DBUILD_TESTS=OFF' to exclude this.")
-  
+
   message(STATUS "- OVERWRITE: Forcing replacement of WiringPi instructions by dummy code (debugging setup).")
-  set(USE_WIRINGPI_DUMMY ON)
+  set(USE_WIRINGPI OFF)
   configure_file(${PROJECT_SOURCE_DIR}/include/demonstrator_bits/config.hpp.cmake ${PROJECT_SOURCE_DIR}/include/demonstrator_bits/config.hpp)
-  
+
   message(STATUS "- OVERWRITE: Forcing debug build and deactivating code optimisation.")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0")
   set(CMAKE_BUILD_TYPE "Debug")
@@ -195,7 +206,7 @@ if(BUILD_TESTS)
     message(STATUS "- Excluding code coverage measurement.")
     message(STATUS "  - Use 'cmake ... -DMEASURE_CODE_COVERAGE=ON' to add this.")
   endif()
-  
+
   if(CMAKE_COMPILER_IS_CLANGXX OR CMAKE_COMPILER_IS_GNUCXX)
     message(STATUS "- Displaying compiler warnings.")
     if(CMAKE_COMPILER_IS_CLANGXX)
@@ -212,11 +223,11 @@ if(BUILD_TESTS)
     endif()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-padded")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter")
-    
+
     message(STATUS "- Handling warnings as errors.")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
   endif()
-    
+
   if(NOT CMAKE_RUNTIME_OUTPUT_DIRECTORY)
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
   endif()
@@ -224,35 +235,34 @@ if(BUILD_TESTS)
   # Check additional prerequirements
   find_package(Catch REQUIRED) # Catch (header only)
   include_directories(${CATCH_INCLUDE_DIRS}) # Catch
-  
+
   # Include catch extensions
   include_directories(${PROJECT_SOURCE_DIR}/test)
-  
+
   # Compile tests
   # All paths must start with "test/"
   add_executable(demonstratorTest
     test/main.cpp
-    
+
     # Catch extensions
     test/catchExtension.cpp
-    
+
     # Configurations
     test/testConfig.cpp
-    
+
     # Assertions
     test/testAssert.cpp
-  
+
     # GPIO
-    src/gpio.cpp
+    test/testGpio.cpp
   )
 
   # Link against prerequirements
   target_link_libraries(demonstratorTest demonstrator)
-  target_link_libraries(demonstrator ${WIRINGPI_LIBRARIES})
   target_link_libraries(demonstrator ${ARMADILLO_LIBRARIES})
   target_link_libraries(demonstrator ${MANTELLA_LIBRARIES})
 else()
-  message(STATUS "") 
+  message(STATUS "")
   message(STATUS "Skipping unit tests.")
   message(STATUS "- Use 'cmake ... -DBUILD_TESTS=ON' to add this.")
 endif()

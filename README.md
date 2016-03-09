@@ -9,8 +9,8 @@ dependencies:
 demonstrator:
 
 ```bash
-mkdir cpp/build
-cd cpp/build
+mkdir build
+cd build
 cmake ..
 make
 ```
