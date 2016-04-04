@@ -4,7 +4,7 @@
 #include <vector>
 
 // Demonstrator
-#include "demonstrator_bits/extensionSensors.hpp"
+#include "demonstrator_bits/sensors/extensionSensors.hpp"
 #include "demonstrator_bits/servoControllers.hpp"
 namespace demo {
   class Pin;
@@ -22,9 +22,11 @@ namespace demo {
   class LinearActuators {
    public:
     explicit LinearActuators(
-        std::vector<Pin> servoControllerDirectionPins,
-        const std::vector<unsigned int>& servoControllerChannels,
-        const std::vector<unsigned int>& extensionSensorChannels);
+        std::vector<Pin> directionPins,
+        I2c i2c,
+        const std::vector<unsigned int>& I2cChannels,
+        Spi spi,
+        const std::vector<unsigned int>& SpiChannels);
 
     /**
      * Let each actuator approach its new position. This method blocks until all actuators have reached their extension!
@@ -35,21 +37,29 @@ namespace demo {
         const std::vector<double>& extensions,
         const std::vector<double>& speeds);
 
-    void setMinimalExtensions(
+    void setMinimalExtension(
         const std::vector<double>& minimalExtensions);
     std::vector<double> getMinimalExtensions() const;
 
-    void setMaximalExtensions(
+    void setMaximalExtension(
         const std::vector<double>& maximalExtensions);
     std::vector<double> getMaximalExtensions() const;
 
-    void setMinimalSpeeds(
+    void setMinimalSpeed(
         const std::vector<double>& minimalSpeeds);
     std::vector<double> getMinimalSpeeds() const;
 
-    void setMaximalSpeeds(
+    void setMaximalSpeed(
         const std::vector<double>& maximalSpeeds);
     std::vector<double> getMaximalSpeeds() const;
+    
+    void setActuatorExtensionCorrections(
+        const std::vector<double>& actuatorExtensionCorrections);
+    void getActuatorExtensionCorrections() const;
+    
+    void setActuatorSpeedCorrections(
+        const std::vector<double>& actuatorSpeedCorrections);
+    void getActuatorSpeedCorrections() const;
 
    protected:
     const ServoControllers servoControllers_;
@@ -68,5 +78,8 @@ namespace demo {
      */
     std::vector<double> minimalSpeeds_;
     std::vector<double> maximalSpeeds_;
+    
+    std::vector<arma::Col<double>> actuatorExtensionCorrections_;
+    std::vector<arma::Col<double>> actuatorSpeedCorrections_;
   };
 }

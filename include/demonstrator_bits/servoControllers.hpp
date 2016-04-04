@@ -1,10 +1,10 @@
 #pragma once
 
 // C++ standard library
-#include <cstddef>
 #include <vector>
 
 // Demonstrator
+#include "demonstrator_bits/i2c.hpp"
 #include "demonstrator_bits/pin.hpp"
 
 namespace demo {
@@ -21,16 +21,18 @@ namespace demo {
 
     explicit ServoControllers(
         std::vector<Pin> directionPins,
+        I2c i2c,
         const std::vector<unsigned int>& channels);
 
     void run(
-        const std::vector<bool>& forwards,
-        const std::vector<double>& speeds);
+        const std::vector<double>& velocities);
 
     void stop();
 
    protected:
     std::vector<Pin> directionPins_;
+    
+    I2c i2c_;
     const std::vector<unsigned int> channels_;
   };
 }

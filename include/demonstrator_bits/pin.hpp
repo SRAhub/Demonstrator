@@ -5,16 +5,16 @@
 #include <chrono>
 
 /**
- * Instances of this class represent a single GPIO pin on the raspberry pi.
+ * Instances of this class represent a single GPIO pin on the Raspberry Pi.
  *
  * The concept of this class is to protect you against bugs that arise from accidental pin use in multiple modules of your software: The wiringPi library represents pins as simple integers, which makes it hard to track where a in a program a certain pin is used. If you read from or write to the same pin in different modules by mistake, it can't be detected by the compiler or at runtime.
  *
- * To solve this you can use this class: It represents each pin as an object that has to be obtained from `Gpio`, which will throw an exception if you try to allocate a pin twice. In return, the pins are not constructible or copyable. If a pin object is destroyed, it assigns itself back to the gpio array automatically and is available for allocation again.
+ * To solve this you can use this class: It represents each pin as an object that has to be obtained from `::demo::Gpio`, which will throw an exception if you try to allocate a pin twice. In return, the pins are not constructible or copyable. If a pin object is destroyed, it assigns itself back to the GPIO array automatically and is available for allocation again.
  */
 namespace demo {
   class Pin {
     /**
-     * This class may only be instantiated by Gpio, as its only purpose is to enforce single pin ownership.
+     * This class may only be instantiated by `::demo::Gpio`, as its only purpose is to enforce single pin ownership.
      */
     friend class Gpio;
 
@@ -23,8 +23,8 @@ namespace demo {
      * Encodes the digital signals you can put on a pin.
      */
     enum class Digital : unsigned int {
-      Low = 0, //LOW,
-      High = 1 //HIGH
+      Low = 0, // LOW,
+      High = 1 // HIGH
     };
 
     Pin& operator=(Pin&) = delete;
@@ -68,12 +68,9 @@ namespace demo {
      */
     virtual ~Pin();
 
-#if !defined(USE_WIRINGPI)
-
-
    protected:
     /**
-     * The constructor is private because only Gpio (which is a friend) may instantiate this class.
+     * The constructor is private, as only Gpio (which is a friend) may instantiate this class.
      */
     Pin(
         const unsigned int pinNumber);

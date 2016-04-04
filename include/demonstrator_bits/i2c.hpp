@@ -36,8 +36,7 @@ namespace demo {
     virtual ~I2c();
 
    protected:
-    I2c(
-        const int fileDescriptor);
+    I2c();
 
     /**
      * The file descriptor provided by the [wiringPi library](http://wiringpi.com/reference/i2c-library/).

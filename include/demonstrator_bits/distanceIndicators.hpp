@@ -46,17 +46,17 @@ namespace demo {
     void setIndication(
         const std::vector<double>& distances);
 
-    void setMinimalDistances(
-        const std::vector<double>& minimalDistances);
-    std::vector<double> getMinimalDistances() const;
+    void setMinimalDistance(
+        const double minimalDistance);
+    double getMinimalDistance() const;
 
-    void setWarningDistances(
-        const std::vector<double>& warningDistances);
-    std::vector<double> getWarningDistances() const;
+    void setWarningDistance(
+        const double warningDistance);
+    double getWarningDistance() const;
 
-    void setMaximalDistances(
-        const std::vector<double>& maximalDistances);
-    std::vector<double> getMaximalDistances() const;
+    void setMaximalDistance(
+        const double maximalDistance);
+    double getMaximalDistance() const;
 
    protected:
     /**
@@ -74,16 +74,16 @@ namespace demo {
     /**
      * For distances less than this value, the indicator will show the "closest distance" pattern.
      */
-    std::vector<double> minimalDistances_;
+    double minimalDistance_;
 
     /**
      * For distances greater than this value, the indicator will show one of the (red) warning patterns.
      */
-    std::vector<double> warningDistances_;
+    double warningDistance_;
 
     /**
      * For distances greater than this value, the indicator will show the "farthest distance" pattern.
      */
-    std::vector<double> maximalDistances_;
+    double maximalDistance_;
   };
 }

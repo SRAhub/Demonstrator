@@ -4,7 +4,6 @@
 #include <wiringPi.h>
 
 // Demonstrator
-#include "demonstrator_bits/assert.hpp"
 #include "demonstrator_bits/gpio.hpp"
 
 namespace demo {
@@ -30,7 +29,9 @@ namespace demo {
   void Spi::set(
       const Pin pin,
       const Spi::Digital value) {
-    verify(ownsSpi_, "The ownership of the SPI pins has been transferred");
+    if (ownsSpi_) {
+      throw std::runtime_error("SPI must be owned to be accessed.");
+    }
 
     ::pinMode(static_cast<int>(pin), OUTPUT);
     ::digitalWrite(static_cast<int>(pin), static_cast<int>(value));
@@ -38,7 +39,9 @@ namespace demo {
 
   Spi::Digital Spi::get(
       const Pin pin) {
-    verify(ownsSpi_, "The ownership of the SPI pins has been transferred");
+    if (ownsSpi_) {
+      throw std::runtime_error("SPI must be owned to be accessed.");
+    }
 
     ::pinMode(static_cast<int>(pin), INPUT);
     return (::digitalRead(static_cast<int>(pin)) == 0 ? Digital::Low : Digital::High);

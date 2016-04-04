@@ -1,8 +1,6 @@
 #!/bin/bash
 
-# Updates the system
 apt-get update
-apt-get upgrade -y
 
 # Installs dependencies
 ## Installs Clang
@@ -44,9 +42,7 @@ cd ..
 rm -Rf Mantella
 
 # Testing
-sudo apt-get install -y catch
 sudo apt-get install -y iwyu
-sudo apt-get install -y lcov
 ## Installs clang-format-3.6
 sudo apt-get install -y clang-format-3.6
 sudo update-alternatives --install /usr/bin/clang-format clang-format /usr/bin/clang-format-3.6 100
