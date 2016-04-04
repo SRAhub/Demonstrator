@@ -22,7 +22,7 @@
  * [1]: http://www.micropik.com/PDF/HCSR04.pdf
  */
 namespace demo {
-  class DistanceSensors : Sensors {
+  class DistanceSensors : public Sensors {
    public:
     DistanceSensors(
         std::vector<Pin> pins);

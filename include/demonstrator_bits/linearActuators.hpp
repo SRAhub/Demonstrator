@@ -24,9 +24,9 @@ namespace demo {
     explicit LinearActuators(
         std::vector<Pin> directionPins,
         I2c i2c,
-        const std::vector<unsigned int>& I2cChannels,
+        const std::vector<unsigned int>& i2cChannels,
         Spi spi,
-        const std::vector<unsigned int>& SpiChannels);
+        const std::vector<unsigned int>& spiChannels);
 
     /**
      * Let each actuator approach its new position. This method blocks until all actuators have reached their extension!

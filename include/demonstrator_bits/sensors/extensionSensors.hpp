@@ -16,7 +16,7 @@ namespace demo {
    *
    * [1]: http://INSERT-PRODUCT-PAGE-HERE
    */
-  class ExtensionSensors : Sensors {
+  class ExtensionSensors : public Sensors {
    public:
     explicit ExtensionSensors(
         Spi spi,

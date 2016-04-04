@@ -13,7 +13,7 @@ namespace demo {
    *
    * [1]: https://www.sparkfun.com/products/10736
    */
-  class AttitudeSensors : Sensors {
+  class AttitudeSensors : public Sensors {
    public:
     AttitudeSensors(
       Uart uart);
