@@ -1,57 +1,57 @@
 #include "demonstrator_bits/linearActuators.hpp"
 
 namespace demo {
-  void LinearActuators::setMinimalExtensions(
-      const std::vector<double>& minimalExtensions) {
-        
+  void LinearActuators::setMinimalExtension(
+      const double minimalExtension) {
+    minimalExtension_ = minimalExtension;
   }
   
-  std::vector<double> LinearActuators::getMinimalExtensions() const {
-    return minimalExtensions_;
+  double LinearActuators::getMinimalExtension() const {
+    return minimalExtension_;
   }
 
-  void LinearActuators::setMaximalExtensions(
-      const std::vector<double>& maximalExtensions) {
-    return 
+  void LinearActuators::setMaximalExtension(
+      const double maximalExtension) {
+    maximalExtension_ = maximalExtension;
   }
   
-  std::vector<double> LinearActuators::getMaximalExtensions() const {
-        
+  double LinearActuators::getMaximalExtension() const {
+    return maximalExtension_;
   }
 
-  void LinearActuators::setMinimalSpeeds(
-      const std::vector<double>& minimalSpeeds) {
-    return 
+  void LinearActuators::setMinimalSpeed(
+      const double minimalSpeed) {
+    minimalSpeed_ = minimalSpeed; 
   }
   
-  std::vector<double> LinearActuators::getMinimalSpeeds() const {
-        
+  double LinearActuators::getMinimalSpeed() const {
+    return minimalSpeed_;
   }
 
-  void LinearActuators::setMaximalSpeeds(
-      const std::vector<double>& maximalSpeeds) {
-    maximalSpeeds_ = maximalSpeeds;
+  void LinearActuators::setMaximalSpeed(
+      const double maximalSpeed) {
+    maximalSpeed_ = maximalSpeed;
   }
   
-  std::vector<double> LinearActuators::getMaximalSpeeds() const {
-    return maximalSpeeds_;
+  double LinearActuators::getMaximalSpeed() const {
+    return maximalSpeed_;
   }
     
   void LinearActuators::setExtensionCorrections(
-      const std::vector<double>& extensionCorrections) {
+      const std::vector<arma::Col<double>>& extensionCorrections) {
     extensionCorrections_ = extensionCorrections;
   }
   
-  void LinearActuators::getExtensionCorrections() const {
+  std::vector<arma::Col<double>> LinearActuators::getExtensionCorrections() const {
     return extensionCorrections_;
   }
   
   void LinearActuators::setSpeedCorrections(
-      const std::vector<double>& speedCorrections) {
-        
+      const std::vector<arma::Col<double>>& speedCorrections) {
+    speedCorrections_ = speedCorrections;
   }
       
-  void LinearActuators::getSpeedCorrections() const {
-    speedCorrections_ = speedCorrections;
+  std::vector<arma::Col<double>> LinearActuators::getSpeedCorrections() const {
+    return speedCorrections_;
   }
 }

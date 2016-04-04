@@ -38,28 +38,28 @@ namespace demo {
         const std::vector<double>& speeds);
 
     void setMinimalExtension(
-        const std::vector<double>& minimalExtensions);
-    std::vector<double> getMinimalExtensions() const;
+        const double minimalExtension);
+    double getMinimalExtension() const;
 
     void setMaximalExtension(
-        const std::vector<double>& maximalExtensions);
-    std::vector<double> getMaximalExtensions() const;
+        const double maximalExtension);
+    double getMaximalExtension() const;
 
     void setMinimalSpeed(
-        const std::vector<double>& minimalSpeeds);
-    std::vector<double> getMinimalSpeeds() const;
+        const double minimalSpeed);
+    double getMinimalSpeed() const;
 
     void setMaximalSpeed(
-        const std::vector<double>& maximalSpeeds);
-    std::vector<double> getMaximalSpeeds() const;
+        const double maximalSpeed);
+    double getMaximalSpeed() const;
     
-    void setActuatorExtensionCorrections(
-        const std::vector<double>& actuatorExtensionCorrections);
-    void getActuatorExtensionCorrections() const;
+    void setExtensionCorrections(
+        const std::vector<arma::Col<double>>& extensionCorrections);
+    std::vector<arma::Col<double>> getExtensionCorrections() const;
     
-    void setActuatorSpeedCorrections(
-        const std::vector<double>& actuatorSpeedCorrections);
-    void getActuatorSpeedCorrections() const;
+    void setSpeedCorrections(
+        const std::vector<arma::Col<double>>& speedCorrections);
+    std::vector<arma::Col<double>> getSpeedCorrections() const;
 
    protected:
     const ServoControllers servoControllers_;
@@ -70,16 +70,16 @@ namespace demo {
      *
      * Refers only to the movement margin, not the total length of the actuator.
      */
-    std::vector<double> minimalExtensions_;
-    std::vector<double> maximalExtensions_;
+    double minimalExtension_;
+    double maximalExtension_;
 
     /**
      * Minimal/maximal allowed extension speed of each actuator, in cm/second.
      */
-    std::vector<double> minimalSpeeds_;
-    std::vector<double> maximalSpeeds_;
+    double minimalSpeed_;
+    double maximalSpeed_;
     
-    std::vector<arma::Col<double>> actuatorExtensionCorrections_;
-    std::vector<arma::Col<double>> actuatorSpeedCorrections_;
+    std::vector<arma::Col<double>> extensionCorrections_;
+    std::vector<arma::Col<double>> speedCorrections_;
   };
 }
