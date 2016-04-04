@@ -7,6 +7,9 @@
 #include <string>
 #include <thread>
 
+// WiringPi
+#include <wiringPi.h>
+
 // Demonstrator
 #include "demonstrator_bits/gpio.hpp"
 

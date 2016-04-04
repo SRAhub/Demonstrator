@@ -30,9 +30,6 @@ include_directories(${WIRINGPI_INCLUDE_DIR})
 find_package(Armadillo 6.400.0 REQUIRED)
 include_directories(${ARMADILLO_INCLUDE_DIR})
 
-find_package(Mantella 0.20.0 REQUIRED)
-include_directories(${MANTELLA_INCLUDE_DIR})
-
 find_package(Demonstrator 0.20.0 REQUIRED)
 include_directories(${DEMONSTRATOR_INCLUDE_DIR})
 
@@ -105,7 +102,6 @@ add_executable(distanceSensors
 
 target_link_libraries(distanceSensors ${WIRINGPI_LIBRARIES})
 target_link_libraries(distanceSensors ${ARMADILLO_LIBRARIES})
-target_link_libraries(distanceSensors ${MANTELLA_LIBRARIES})
 target_link_libraries(distanceSensors ${DEMONSTRATOR_LIBRARIES})
 
 message(STATUS "")

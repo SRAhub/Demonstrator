@@ -40,9 +40,6 @@ include_directories(${WIRINGPI_INCLUDE_DIR})
 find_package(Armadillo 6.400.0 REQUIRED)
 include_directories(${ARMADILLO_INCLUDE_DIR})
 
-find_package(Mantella 0.12.0 REQUIRED)
-include_directories(${MANTELLA_INCLUDE_DIR})
-
 # --------------------
 # CONFIGURING COMPILER
 # --------------------
@@ -158,7 +155,6 @@ add_library(demonstrator SHARED
 
 target_link_libraries(demonstrator ${WIRINGPI_LIBRARIES})
 target_link_libraries(demonstrator ${ARMADILLO_LIBRARIES})
-target_link_libraries(demonstrator ${MANTELLA_LIBRARIES})
 
 # ---------------
 # INSTALL LIBRARY

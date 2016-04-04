@@ -1,35 +1,38 @@
 // Demonstrator
 #include <demonstrator>
 
-std::vector<demo::Pin> pins = {
-  demo::Gpio::allocatePin(1),
-  demo::Gpio::allocatePin(2),
-  demo::Gpio::allocatePin(3),
-  demo::Gpio::allocatePin(4),
-  demo::Gpio::allocatePin(5),
-  demo::Gpio::allocatePin(6)
-};
-
+bool parseError = false;
 void show_help();
-void run_default();
+void run_default(
+    std::vector<demo::Pin>& pins);
 void run_calibration();
-void parse_options();
+void parse_options(
+    const int argc,
+    const char* argv[]);
 
-int main (const int argc, char* argv[]) {
-  if (argc > 1 && argv[1][0] != "-") {
+int main (const int argc, const char* argv[]) {
+  std::vector<demo::Pin> pins;
+  pins.push_back(demo::Gpio::allocatePin(1));
+  pins.push_back(demo::Gpio::allocatePin(2));
+  pins.push_back(demo::Gpio::allocatePin(3));
+  pins.push_back(demo::Gpio::allocatePin(4));
+  pins.push_back(demo::Gpio::allocatePin(5));
+  pins.push_back(demo::Gpio::allocatePin(6));
+  
+  if (argc > 1 && argv[1][0] != '-') {
     if (std::string(argv[1]) == "calibrate") {
-      parse_options();
+      parse_options(argc, argv);
       run_calibration();
     } else {
+      ::parseError = true;
       show_help();
-      return 1;
     }    
   } else {
-    parse_options();
-    run_default();
+    parse_options(argc, argv);
+    run_default(pins);
   }
   
-  return 0;  
+  return parseError ? 1 : 0;  
 }
 
 void show_help() {
@@ -43,11 +46,12 @@ void show_help() {
   std::cout << "  Options:\n";
   std::cout << "         --verbose    Prints additional (debug) information\n";
   std::cout << "    -h | --help       Displays this help\n";
-  std::flush;
+  std::cout << std::flush;
 }
 
-void run_default() {
-  demo::DistanceSensors distanceSensors(pins);
+void run_default(
+    std::vector<demo::Pin>& pins) {
+  demo::DistanceSensors distanceSensors(std::move(pins));
   while(1) {
     const std::vector<double> distances = distanceSensors.measure();
     for (std::size_t n = 0; n < distances.size(); ++n) {
@@ -60,18 +64,19 @@ void run_calibration() {
   std::cout << "run_calibration()" << std::endl;
 }
 
-parse_options() {
-  for (int n = 1; n < argc; ++n) {
-    std::string option = argv[i];
+void parse_options(
+    const int argc,
+    const char* argv[]) {
+  for (std::size_t n = 1; n < argc; ++n) {
+    std::string option = argv[n];
     
     if ((option == "-h") || (option == "--help")) {
-      show_usage(argv[0]);
-      return 0;
+      show_help();
     } else if (option == "--verbose") {
       ::demo::isVerbose = true;
     } else {
+      ::parseError = true;
       show_help();
-      return 1;
     }
   }
 }
