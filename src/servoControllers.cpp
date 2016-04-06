@@ -33,7 +33,7 @@ namespace demo {
     i2c_.set(0b00000000, (oldmode & 0b01111111) | 0b00010000);
     i2c_.set(0b11111110, 5);
     i2c_.set(0b00000000, oldmode);
-    std::this_thread::sleep_for(std::chrono::microseconds(500));
+    std::this_thread::sleep_for(std::chrono::milliseconds(5));
     i2c_.set(0b00000000, oldmode | 0b10100001);
   }
 
@@ -57,7 +57,7 @@ namespace demo {
       i2c_.set(0b00000110 + 4 * channels_.at(n), 0);
       i2c_.set(0b00000111 + 4 * channels_.at(n), 0);
       i2c_.set(0b00001000 + 4 * channels_.at(n), static_cast<unsigned int>(4095.0 * speeds.at(n)) & 0b11111111);
-      i2c_.set(0b00001001 + 4 * channels_.at(n), (static_cast<unsigned int>(4095.0 * speeds.at(n)) >> 8) & 0b00001111);
+      i2c_.set(0b00001001 + 4 * channels_.at(n), static_cast<unsigned int>(4095.0 * speeds.at(n)) >> 8);
     }
   }
 
