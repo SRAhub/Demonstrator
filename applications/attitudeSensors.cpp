@@ -53,6 +53,8 @@ void run_default() {
   
   demo::Uart uart = demo::Gpio::allocateUart();
   demo::AttitudeSensors attitudeSensors(std::move(uart));
+  attitudeSensors.setMinimalMeasurableValue(0); 
+  attitudeSensors.setMaximalMeasurableValue(2 * arma::datum::pi);
   
   while(1) {
     const std::vector<double> attitude = attitudeSensors.measure();

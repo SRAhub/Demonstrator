@@ -119,6 +119,14 @@ target_link_libraries(attitudeSensors ${WIRINGPI_LIBRARIES})
 target_link_libraries(attitudeSensors ${ARMADILLO_LIBRARIES})
 target_link_libraries(attitudeSensors ${DEMONSTRATOR_LIBRARIES})
 
+add_executable(extensionSensors
+  extensionSensors.cpp
+)
+
+target_link_libraries(extensionSensors ${WIRINGPI_LIBRARIES})
+target_link_libraries(extensionSensors ${ARMADILLO_LIBRARIES})
+target_link_libraries(extensionSensors ${DEMONSTRATOR_LIBRARIES})
+
 message(STATUS "")
 message(STATUS "Noticable CMAKE variables:")
 message(STATUS "- CMAKE_PREFIX_PATH = ${CMAKE_PREFIX_PATH}.")

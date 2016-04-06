@@ -27,8 +27,8 @@ namespace demo {
     }
 
     // set up serial port settings
-    ::tcgetattr (fd_, &oldTio_);
-    std::memset (&newTio_, 0, sizeof newTio_);
+    ::tcgetattr(fd_, &oldTio_);
+    std::memset(&newTio_, 0, sizeof(newTio_));
 
     newTio_.c_cflag = CRTSCTS | CS8 | CLOCAL | CREAD;
     newTio_.c_iflag = IGNPAR | ICRNL;
@@ -61,8 +61,6 @@ namespace demo {
     ::tcsetattr (fd_, TCSANOW, &newTio_);
   }
 
-
-
   /**
    * @brief Close the serial port.
    */
@@ -73,8 +71,6 @@ namespace demo {
       ::close (fd_);
     }
   }
-
-
 
   /**
    * @brief   Returns the rotation of the sensor (roll/pitch/yaw).
