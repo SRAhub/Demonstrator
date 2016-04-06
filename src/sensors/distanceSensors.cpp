@@ -22,8 +22,8 @@ namespace demo {
     /*
      * 1. Send 10us pulse trigger.
      * 2. Wait for echo signal. Abort after 250 milliseconds because TODO EXPLAIN THIS
-     * 3. Reset the pin to its initial state for the next measurement.
-     * 4. Calculate the distance in meter using the equation in the data sheet: distance [cm] = us/58
+     * 3. Calculate the distance in meter using the equation in the data sheet: distance [cm] = us/58
+     * 4. Reset the pin to its initial state for the next measurement.
      */
     
     std::vector<double> distances;
