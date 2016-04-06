@@ -86,7 +86,7 @@ namespace demo {
     }
 
     // Hard deactivates verbosity, as the following commands may spam the console to much, especially if the time-out is reached.
-    bool isVerbose = ::demo::isVerbose;
+    bool wasVerbose = ::demo::isVerbose;
     ::demo::isVerbose = false;
     
     Digital currentSignal = get();
@@ -105,7 +105,7 @@ namespace demo {
     std::chrono::microseconds duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
     
     // Restore verbosity
-    ::demo::isVerbose = isVerbose;
+    ::demo::isVerbose = wasVerbose;
     if (::demo::isVerbose) {
       std::cout << "Took " << duration.count() << "us." << std::endl;
     }
