@@ -29,6 +29,7 @@ namespace demo {
       }
     }
     
+    i2c_.set(0x00, 0x00);
     unsigned int oldmode = i2c_.get(0x00);
     i2c_.set(0x00, (oldmode & 0x7F) | 0x10);
     i2c_.set(0xFE, 5);
