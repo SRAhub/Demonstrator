@@ -10,6 +10,8 @@ void parse_options(
     const char* argv[]);
 
 int main (const int argc, const char* argv[]) {
+  ::wiringPiSetupGpio();
+  
   if (argc > 1 && argv[1][0] != '-') {
     if (std::string(argv[1]) == "calibrate") {
       parse_options(argc, argv);
