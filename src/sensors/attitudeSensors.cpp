@@ -16,7 +16,9 @@ namespace demo {
   /**
    * @brief Open and set up the serial port the sensor is connected to.
    */
-  AttitudeSensors::AttitudeSensors (Uart uart) {
+  AttitudeSensors::AttitudeSensors (
+      Uart uart) 
+    : uart_(std::move(uart)) {
     // try to open /dev/ttyAMA0; this must be explicitly enabled! (search for "/dev/ttyAMA0 raspberry pi" on the web)
     fd_ = open ("/dev/ttyAMA0", O_RDWR | O_NOCTTY | O_NDELAY);
     if (fd_ < 0) {
