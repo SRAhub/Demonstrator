@@ -127,6 +127,14 @@ target_link_libraries(extensionSensors ${WIRINGPI_LIBRARIES})
 target_link_libraries(extensionSensors ${ARMADILLO_LIBRARIES})
 target_link_libraries(extensionSensors ${DEMONSTRATOR_LIBRARIES})
 
+add_executable(servoControllers
+  servoControllers.cpp
+)
+
+target_link_libraries(servoControllers ${WIRINGPI_LIBRARIES})
+target_link_libraries(servoControllers ${ARMADILLO_LIBRARIES})
+target_link_libraries(servoControllers ${DEMONSTRATOR_LIBRARIES})
+
 message(STATUS "")
 message(STATUS "Noticable CMAKE variables:")
 message(STATUS "- CMAKE_PREFIX_PATH = ${CMAKE_PREFIX_PATH}.")
