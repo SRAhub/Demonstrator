@@ -15,6 +15,7 @@ namespace demo {
         pins_(std::move(pins)) {
     for (std::size_t n = 0; n < numberOfSensors_; ++n) {
       pins_.at(n).set(Pin::Digital::Low);
+      std::this_thread::sleep_for(std::chrono::microseconds(2));
     }
   }
 
@@ -32,6 +33,7 @@ namespace demo {
       std::this_thread::sleep_for(std::chrono::microseconds(10));
       pins_.at(n).set(Pin::Digital::Low);
       
+      std::this_thread::sleep_for(std::chrono::microseconds(20));
       pins_.at(n).waitForSignalEdge(std::chrono::milliseconds(250));
 
       // TODO: If we can set `maximalMeasurableDistance_`, we need to adjust the wait time to a dynamic value, too.
