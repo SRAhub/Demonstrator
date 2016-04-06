@@ -85,6 +85,10 @@ namespace demo {
       throw std::runtime_error("The pin must be owned to be accessed.");
     }
 
+    // Hard deactivates verbosity, as the following commands may spam the console to much, especially if the time-out is reached.
+    bool isVerbose = ::demo::isVerbose;
+    ::demo::isVerbose = false;
+    
     Digital currentSignal = get();
 
     auto start = std::chrono::steady_clock::now();
@@ -100,6 +104,8 @@ namespace demo {
 
     std::chrono::microseconds duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
     
+    // Restore verbosity
+    ::demo::isVerbose = isVerbose;
     if (::demo::isVerbose) {
       std::cout << "Took " << duration.count() << "us." << std::endl;
     }
