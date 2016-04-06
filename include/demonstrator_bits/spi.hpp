@@ -20,10 +20,10 @@ namespace demo {
     };
 
     enum class Pin : unsigned int {
-      ChipSelect = 7,
-      Mosi = 8,
+      ChipSelect = 8,
       Miso = 9,
-      Clock = 10
+      Mosi = 10,
+      Clock = 11
     };
 
     Spi& operator=(Spi&) = delete;

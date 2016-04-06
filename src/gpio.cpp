@@ -38,15 +38,16 @@ namespace demo {
       std::cout << "Allocating SPI pins" << std::endl;
     }
     
-    if (ownedPins_.at(6) || ownedPins_.at(7) || ownedPins_.at(8) || ownedPins_.at(9)) {
+    if (ownedPins_.at(7) || ownedPins_.at(8) || ownedPins_.at(9) || ownedPins_.at(10) || ownedPins_.at(11)) {
       throw std::runtime_error("The SPI pins must not already be allocated");
     }
 
     // The pin number is reduced by 2 as the GPIO pins range from 2 to 27, but the array's indices range from 0 to 25.
-    ownedPins_.at(6) = true;
     ownedPins_.at(7) = true;
     ownedPins_.at(8) = true;
     ownedPins_.at(9) = true;
+    ownedPins_.at(10) = true;
+    ownedPins_.at(11) = true;
 
     return Spi();
   }
