@@ -68,7 +68,7 @@ void run(
     std::cin >> input;
     if (input == '+') {
       direction = true;
-    } else if (input == '+') {
+    } else if (input == '-') {
       direction = false;
     } else {
       throw std::domain_error("You must only use '+' or '-' to control the servo.");
