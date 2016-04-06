@@ -100,7 +100,7 @@ namespace demo {
       if (end - start >= timeout) {
         ::demo::isVerbose = wasVerbose;
         if (::demo::isVerbose) {
-          std::cout << "Took " << duration.count() << "us." << std::endl;
+          std::cout << "Timeout." << std::endl;
         }
         
         return timeout;
