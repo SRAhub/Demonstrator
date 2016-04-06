@@ -10,19 +10,20 @@ void run_default();
 void run_sensor();
 void parse_options(
     const int argc,
-    const char* argv[]);
+    const char* argv[],
+    const std::size_t n);
 
 int main (const int argc, const char* argv[]) {
   if (argc > 1 && argv[1][0] != '-') {
     if (std::string(argv[1]) == "sensor") {
-      parse_options(argc, argv);
+      parse_options(argc, argv, 2);
       run_sensor();
     } else {
       ::parseError = true;
       show_help();
     }    
   } else {
-    parse_options(argc, argv);
+    parse_options(argc, argv, 1);
     run_default();
   }
   
@@ -64,6 +65,7 @@ void run_default() {
     for (double distance = distanceIndicators.getMaximalDistance(); distance > distanceIndicators.getMinimalDistance(); distance -= 0.02) {
       std::cout << "Setting distance indication for " << distance << "m" << std::endl;
       distanceIndicators.setIndication(std::vector<double>(distanceIndicators.numberOfIndicators_, distance));
+      std::this_thread::sleep_for(std::chrono::seconds(1));
     }
   }
 }
@@ -96,13 +98,15 @@ void run_sensor() {
   
   while(1) {
     distanceIndicators.setIndication(distanceSensors.measure());
+    std::this_thread::sleep_for(std::chrono::seconds(1));
   }
 }
 
 void parse_options(
     const int argc,
-    const char* argv[]) {
-  for (std::size_t n = 1; n < argc; ++n) {
+    const char* argv[],
+    std::size_t n) {
+  for (; n < argc; ++n) {
     std::string option = argv[n];
     
     if ((option == "-h") || (option == "--help")) {
