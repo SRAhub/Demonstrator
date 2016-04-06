@@ -99,6 +99,8 @@ void run_sensor() {
   pins.push_back(demo::Gpio::allocatePin(25));
   pins.push_back(demo::Gpio::allocatePin(11));
   demo::DistanceSensors distanceSensors(std::move(pins));
+  distanceSensors.setMinimalMeasurableValue(0.03); 
+  distanceSensors.setMaximalMeasurableValue(0.35);
   
   while(1) {
     distanceIndicators.setIndication(distanceSensors.measure());

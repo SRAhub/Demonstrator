@@ -24,7 +24,7 @@
  *   .x........
  *   xx........
  *
- * The MY9221 API expects a 208 bit instruction on a single pin. The instruction format is described in the `update()` method docs. Calling that method sends such an instruction on every data pin.
+ * The MY9221 API expects a 208 bit instruction on a single pin. The instruction format is described in the `setIndication()` method docs. Calling that method sends such an instruction on every data pin.
  *
  * [1]: https://www.seeedstudio.com/wiki/images/9/98/MY9221_DS_1.0.pdf
  */

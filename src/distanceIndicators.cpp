@@ -34,14 +34,16 @@ namespace demo {
     } else if (warningDistance_ >= maximalDistance_) {
       throw std::logic_error("DistanceIndicators.setIndication: The maximal distance must be greater than the warning distance.");
     }
-
+    
     // Calculate LED states. The lowest LED (red) is stored at index 0.
     std::vector<std::bitset<12>> states;
     for (std::size_t n = 0; n < distances.size(); ++n) {
-      if (distances.at(n) <= warningDistance_) {
-        states.push_back(0xff & (~0 << static_cast<unsigned int>(std::floor((1.0 - (distances.at(n) - warningDistance_) / (maximalDistance_ - warningDistance_)) * 8.0))));
+      const double distance = std::max(std::min(distances.at(n), maximalDistance_), minimalDistance_);
+      
+      if (distance > warningDistance_) {
+        states.push_back(((distance - warningDistance_) / (maximalDistance_ - warningDistance_)) * 256.0 << 2);
       } else {
-        states.push_back(300 & (~0 >> static_cast<unsigned int>(std::floor((distances.at(n) - minimalDistance_) / (warningDistance_ - minimalDistance_)))));
+        states.push_back(2 + (distance <= minimalDistance_ ? 1 : 0));
       }
     }
 
