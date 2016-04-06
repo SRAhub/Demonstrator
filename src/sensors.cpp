@@ -7,6 +7,8 @@ namespace demo {
     if (numberOfSensors_ == 0) {
       throw std::domain_error("Sensors: The number of sensors must be greater than 0.");
     }
+    
+    setNumberOfSamplesPerMeasurment(1);
   }
 
   std::vector<double> Sensors::measure() {
