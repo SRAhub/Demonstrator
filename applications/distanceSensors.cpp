@@ -1,3 +1,6 @@
+// WiringPi
+#include <wiringPi.h>
+
 // Demonstrator
 #include <demonstrator>
 

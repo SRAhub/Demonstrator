@@ -95,7 +95,6 @@ endif()
 # BUILDING Applications
 # ---------------------
 
-# All paths must start with "src/"
 add_executable(distanceSensors
   distanceSensors.cpp
 )
@@ -103,6 +102,14 @@ add_executable(distanceSensors
 target_link_libraries(distanceSensors ${WIRINGPI_LIBRARIES})
 target_link_libraries(distanceSensors ${ARMADILLO_LIBRARIES})
 target_link_libraries(distanceSensors ${DEMONSTRATOR_LIBRARIES})
+
+add_executable(distanceIndicators
+  distanceIndicators.cpp
+)
+
+target_link_libraries(distanceIndicators ${WIRINGPI_LIBRARIES})
+target_link_libraries(distanceIndicators ${ARMADILLO_LIBRARIES})
+target_link_libraries(distanceIndicators ${DEMONSTRATOR_LIBRARIES})
 
 message(STATUS "")
 message(STATUS "Noticable CMAKE variables:")
