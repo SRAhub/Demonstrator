@@ -29,12 +29,12 @@ namespace demo {
       }
     }
     
-    unsigned int oldmode = i2c_.get(0b00000000);
-    i2c_.set(0b00000000, (oldmode & 0b01111111) | 0b00010000);
-    i2c_.set(0b11111110, 5);
-    i2c_.set(0b00000000, oldmode);
+    unsigned int oldmode = i2c_.get(0x00);
+    i2c_.set(0x00, (oldmode & 0x7F) | 0x10);
+    i2c_.set(0xFE, 5);
+    i2c_.set(0x00, oldmode);
     std::this_thread::sleep_for(std::chrono::milliseconds(5));
-    i2c_.set(0b00000000, oldmode | 0b10100001);
+    i2c_.set(0x00, oldmode | 0xa1);
   }
 
   void ServoControllers::run(
@@ -54,10 +54,10 @@ namespace demo {
     for (std::size_t n = 0; n < numberOfControllers_; ++n) {
       directionPins_.at(n).set(forwards.at(n) ? Pin::Digital::Low : Pin::Digital::High);
 
-      i2c_.set(0b00000110 + 4 * channels_.at(n), 0);
-      i2c_.set(0b00000111 + 4 * channels_.at(n), 0);
-      i2c_.set(0b00001000 + 4 * channels_.at(n), static_cast<unsigned int>(4095.0 * speeds.at(n)) & 0b11111111);
-      i2c_.set(0b00001001 + 4 * channels_.at(n), static_cast<unsigned int>(4095.0 * speeds.at(n)) >> 8);
+      i2c_.set(0x06 + 4 * channels_.at(n), 0);
+      i2c_.set(0x07 + 4 * channels_.at(n), 0);
+      i2c_.set(0x08 + 4 * channels_.at(n), static_cast<unsigned int>(4095.0 * speeds.at(n)) & 0xFF);
+      i2c_.set(0x09 + 4 * channels_.at(n), static_cast<unsigned int>(4095.0 * speeds.at(n)) >> 8);
     }
   }
 
