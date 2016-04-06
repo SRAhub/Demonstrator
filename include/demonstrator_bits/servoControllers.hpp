@@ -32,8 +32,6 @@ namespace demo {
         const std::vector<double>& speeds);
 
     void stop();
-
-    ~ServoControllers();
     
    protected:
     std::vector<Pin> directionPins_;

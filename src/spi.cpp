@@ -29,7 +29,7 @@ namespace demo {
   void Spi::set(
       const Pin pin,
       const Spi::Digital value) {
-    if (ownsSpi_) {
+    if (!ownsSpi_) {
       throw std::runtime_error("SPI must be owned to be accessed.");
     }
 
@@ -39,7 +39,7 @@ namespace demo {
 
   Spi::Digital Spi::get(
       const Pin pin) {
-    if (ownsSpi_) {
+    if (!ownsSpi_) {
       throw std::runtime_error("SPI must be owned to be accessed.");
     }
 

@@ -3,8 +3,7 @@
 
 bool parseError = false;
 void show_help();
-void run_default(
-    std::vector<demo::Pin>& pins);
+void run_default();
 void run_calibration();
 void parse_options(
     const int argc,
@@ -21,7 +20,7 @@ int main (const int argc, const char* argv[]) {
     }    
   } else {
     parse_options(argc, argv);
-    run_default(pins);
+    run_default();
   }
   
   return parseError ? 1 : 0;  

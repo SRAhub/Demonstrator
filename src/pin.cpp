@@ -43,7 +43,7 @@ namespace demo {
       std::cout << "Setting pin " << pinNumber_ << " to " << static_cast<unsigned int>(value) << std::endl;
     }
         
-    if (ownsPin_) {
+    if (!ownsPin_) {
       throw std::runtime_error("The pin must be owned to be accessed.");
     }
 
@@ -61,7 +61,7 @@ namespace demo {
       std::cout << "Reading pin " << pinNumber_ << ". ";
     }
     
-    if (ownsPin_) {
+    if (!ownsPin_) {
       throw std::runtime_error("The pin must be owned to be accessed.");
     }
 
@@ -81,7 +81,7 @@ namespace demo {
       std::cout << "Waiting for signal edge on pin " << pinNumber_ << ". ";
     }
     
-    if (ownsPin_) {
+    if (!ownsPin_) {
       throw std::runtime_error("The pin must be owned to be accessed.");
     }
 

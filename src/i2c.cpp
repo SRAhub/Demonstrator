@@ -36,7 +36,7 @@ namespace demo {
   void I2c::set(
       const unsigned int registerNumber,
       const unsigned int value) {
-    if (ownsI2c_) {
+    if (!ownsI2c_) {
       throw std::runtime_error("I2C must be owned to be accessed.");
     }
 
@@ -45,7 +45,7 @@ namespace demo {
 
   unsigned int I2c::get(
       const unsigned int registerNumber) {
-    if (ownsI2c_) {
+    if (!ownsI2c_) {
       throw std::runtime_error("I2C must be owned to be accessed.");
     }
 
