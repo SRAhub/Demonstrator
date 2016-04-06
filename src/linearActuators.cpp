@@ -14,6 +14,8 @@ namespace demo {
     }
   }
   
+  
+  
   void LinearActuators::setMinimalExtension(
       const double minimalExtension) {
     if (!std::isfinite(minimalExtension)) {

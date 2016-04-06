@@ -1,5 +1,8 @@
 #include "demonstrator_bits/spi.hpp"
 
+// C++ standard library
+#include <iostream>
+
 // WiringPi
 #include <wiringPi.h>
 
@@ -29,6 +32,10 @@ namespace demo {
   void Spi::set(
       const Pin pin,
       const Spi::Digital value) {
+    if (::demo::isVerbose) {
+      std::cout << "Setting pin " << static_cast<unsigned int>(pin) << " to " << static_cast<unsigned int>(value) << std::endl;
+    }
+    
     if (!ownsSpi_) {
       throw std::runtime_error("SPI must be owned to be accessed.");
     }
@@ -39,6 +46,10 @@ namespace demo {
 
   Spi::Digital Spi::get(
       const Pin pin) {
+    if (::demo::isVerbose) {
+      std::cout << "Reading pin " << static_cast<unsigned int>(pin) << ". ";
+    }
+    
     if (!ownsSpi_) {
       throw std::runtime_error("SPI must be owned to be accessed.");
     }
