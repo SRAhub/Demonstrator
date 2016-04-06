@@ -55,7 +55,13 @@ namespace demo {
     }
 
     ::pinMode(static_cast<int>(pin), INPUT);
-    return (::digitalRead(static_cast<int>(pin)) == 0 ? Digital::Low : Digital::High);
+    Digital output = (::digitalRead(static_cast<int>(pin)) == 0 ? Digital::Low : Digital::High);
+    
+    if (::demo::isVerbose) {
+      std::cout << "Received " << static_cast<unsigned int>(output) << "." << std::endl;
+    }
+    
+    return output;
   }
 
   Spi::~Spi() {
