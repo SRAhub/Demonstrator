@@ -9,7 +9,11 @@
 namespace demo {
   I2c::I2c()
       : fileDescriptor_(::wiringPiI2CSetup(0x40)),
-        ownsI2c_(true) {}
+        ownsI2c_(true) {
+    if (fileDescriptor_ < 0) {
+      throw std::runtime_error("I2c: Could not connect to the I2C device.");
+    }
+  }
 
   I2c::I2c(I2c&& other)
       : fileDescriptor_(other.fileDescriptor_),

@@ -12,12 +12,12 @@ void parse_options(
 
 int main (const int argc, const char* argv[]) {
   std::vector<demo::Pin> pins;
-  pins.push_back(demo::Gpio::allocatePin(1));
-  pins.push_back(demo::Gpio::allocatePin(2));
-  pins.push_back(demo::Gpio::allocatePin(3));
-  pins.push_back(demo::Gpio::allocatePin(4));
-  pins.push_back(demo::Gpio::allocatePin(5));
-  pins.push_back(demo::Gpio::allocatePin(6));
+  pins.push_back(demo::Gpio::allocatePin(17));
+  pins.push_back(demo::Gpio::allocatePin(27));
+  pins.push_back(demo::Gpio::allocatePin(22));
+  pins.push_back(demo::Gpio::allocatePin(10));
+  pins.push_back(demo::Gpio::allocatePin(25));
+  pins.push_back(demo::Gpio::allocatePin(11));
   
   if (argc > 1 && argv[1][0] != '-') {
     if (std::string(argv[1]) == "calibrate") {
@@ -61,7 +61,13 @@ void run_default(
 }
 
 void run_calibration() {
-  std::cout << "run_calibration()" << std::endl;
+  demo::DistanceSensors distanceSensors(std::move(pins));
+  while(1) {
+    const std::vector<double> distances = distanceSensors.measure();
+    for (std::size_t n = 0; n < distances.size(); ++n) {
+      std::cout << "Sensor " << n << ": " << distances.at(n) << std::endl;
+    }
+  }
 }
 
 void parse_options(

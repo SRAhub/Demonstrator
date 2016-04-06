@@ -52,14 +52,6 @@ namespace demo {
     void setMaximalSpeed(
         const double maximalSpeed);
     double getMaximalSpeed() const;
-    
-    void setExtensionCorrections(
-        const std::vector<arma::Col<double>>& extensionCorrections);
-    std::vector<arma::Col<double>> getExtensionCorrections() const;
-    
-    void setSpeedCorrections(
-        const std::vector<arma::Col<double>>& speedCorrections);
-    std::vector<arma::Col<double>> getSpeedCorrections() const;
 
    protected:
     const ServoControllers servoControllers_;
@@ -78,8 +70,5 @@ namespace demo {
      */
     double minimalSpeed_;
     double maximalSpeed_;
-    
-    std::vector<arma::Col<double>> extensionCorrections_;
-    std::vector<arma::Col<double>> speedCorrections_;
   };
 }

@@ -65,40 +65,4 @@ namespace demo {
   double LinearActuators::getMaximalSpeed() const {
     return maximalSpeed_;
   }
-    
-  void LinearActuators::setExtensionCorrections(
-      const std::vector<arma::Col<double>>& extensionCorrections) {
-    if (extensionCorrections.size() != servoControllers_.numberOfControllers_) {
-      throw std::domain_error("LinearActuators.setExtensionCorrections: The number of extension corrections must be equal to the number of controllers.");
-    }
-    for (const auto& extensionCorrection : extensionCorrections) {
-      if (!extensionCorrection.is_finite()) {
-        throw std::domain_error("LinearActuators.setExtensionCorrections: All extension corrections must be finite.");
-      }
-    }
-    
-    extensionCorrections_ = extensionCorrections;
-  }
-  
-  std::vector<arma::Col<double>> LinearActuators::getExtensionCorrections() const {
-    return extensionCorrections_;
-  }
-  
-  void LinearActuators::setSpeedCorrections(
-      const std::vector<arma::Col<double>>& speedCorrections) {
-    if (speedCorrections.size() != servoControllers_.numberOfControllers_) {
-      throw std::domain_error("LinearActuators.setSpeedCorrections: The number of speed corrections must be equal to the number of controllers.");
-    }
-    for (const auto& speedCorrection : speedCorrections) {
-      if (!speedCorrection.is_finite()) {
-        throw std::domain_error("LinearActuators.setSpeedCorrections: All speed corrections must be finite.");
-      }
-    }
-    
-    speedCorrections_ = speedCorrections;
-  }
-      
-  std::vector<arma::Col<double>> LinearActuators::getSpeedCorrections() const {
-    return speedCorrections_;
-  }
 }

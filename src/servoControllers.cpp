@@ -28,38 +28,40 @@ namespace demo {
         throw std::domain_error("ServoControllers: All channels must be within [0, 7].");
       }
     }
+    
+    unsigned int oldmode = i2c_.get(0b00000000);
+    i2c_.set(0b00000000, (oldmode & 0b01111111) | 0b00010000);
+    i2c_.set(0b11111110, 5);
+    i2c_.set(0b00000000, oldmode);
+    std::this_thread::sleep_for(std::chrono::microseconds(500));
+    i2c_.set(0b00000000, oldmode | 0b10100001);
   }
 
-  // TODO: Minimum speed is 0.2 or better 0.25! Map 0~1 to 0.25~1
   void ServoControllers::run(
-      const std::vector<double>& velocities) {
-    if (velocities.size() != numberOfControllers_) {
-      std::invalid_argument("ServoControllers: The number of velocities must be equal to the number of controllers.");
+        const std::vector<bool>& forwards,
+        const std::vector<double>& speeds) {
+    if (forwards.size() != numberOfControllers_) {
+      std::invalid_argument("ServoControllers: The number of directions must be equal to the number of controllers.");
+    } else if (speeds.size() != numberOfControllers_) {
+      std::invalid_argument("ServoControllers: The number of speeds must be equal to the number of controllers.");
     }
     for (std::size_t n = 0; n < numberOfControllers_; ++n) {
-      if(velocities.at(n) < -1.0 || velocities.at(n) > 1.0) {
-        throw std::domain_error("ServoControllers.run: All velocities must be within [-1, 1].");
+      if(speeds.at(n) < 0.0 || speeds.at(n) > 1.0) {
+        throw std::domain_error("ServoControllers.run: All speeds must be within [0, 1].");
       }
     }
-    
-    unsigned int oldmode = i2c_.get(0x00);
-    i2c_.set(0x00, (oldmode & 0x7F) | 0x10);
-    i2c_.set(0xFE, 5);
-    i2c_.set(0x00, oldmode);
-    std::this_thread::sleep_for(std::chrono::milliseconds(5));
-    i2c_.set(0x00, oldmode | 0xa1); // This sets the MODE1 register to turn on auto increment.
 
     for (std::size_t n = 0; n < numberOfControllers_; ++n) {
-      directionPins_.at(n).set(velocities.at(n) > 0.0 ? Pin::Digital::Low : Pin::Digital::High);
+      directionPins_.at(n).set(forwards.at(n) ? Pin::Digital::Low : Pin::Digital::High);
 
-      i2c_.set(0x06 + 4 * channels_.at(n), 0);
-      i2c_.set(0x07 + 4 * channels_.at(n), 0);
-      i2c_.set(0x08 + 4 * channels_.at(n), static_cast<unsigned int>(4095.0 * velocities.at(n)) & 0xFF);
-      i2c_.set(0x09 + 4 * channels_.at(n), static_cast<unsigned int>(4095.0 * velocities.at(n)) >> 8);
+      i2c_.set(0b00000110 + 4 * channels_.at(n), 0);
+      i2c_.set(0b00000111 + 4 * channels_.at(n), 0);
+      i2c_.set(0b00001000 + 4 * channels_.at(n), static_cast<unsigned int>(4095.0 * speeds.at(n)) & 0b11111111);
+      i2c_.set(0b00001001 + 4 * channels_.at(n), (static_cast<unsigned int>(4095.0 * speeds.at(n)) >> 8) & 0b00001111);
     }
   }
 
   void ServoControllers::stop() {
-    run({});
+    run(std::vector<bool>(numberOfControllers_, true), std::vector<double>(numberOfControllers_, 0.0));
   }
 }

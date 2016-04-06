@@ -3,6 +3,9 @@
 // C++ standard library
 #include <vector>
 
+// Armadillo
+#include <armadillo>
+
 // Demonstrator
 #include "demonstrator_bits/i2c.hpp"
 #include "demonstrator_bits/pin.hpp"
@@ -25,10 +28,13 @@ namespace demo {
         const std::vector<unsigned int>& channels);
 
     void run(
-        const std::vector<double>& velocities);
+        const std::vector<bool>& forwards,
+        const std::vector<double>& speeds);
 
     void stop();
 
+    ~ServoControllers();
+    
    protected:
     std::vector<Pin> directionPins_;
     
