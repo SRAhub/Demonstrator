@@ -13,7 +13,9 @@ namespace demo {
       const std::vector<unsigned int>& channels)
       : Sensors(channels.size()),
         spi_(std::move(spi)),
-        channels_(channels) {}
+        channels_(channels) {
+
+  }
 
   std::vector<double> ExtensionSensors::measureImplementation() {
     std::vector<double> extensions;
@@ -49,7 +51,7 @@ namespace demo {
 
       adcout >>= 1;
 
-      extensions.push_back(adcout / 1023);
+      extensions.push_back(static_cast<double>(adcout) / 1023.0);
     }
 
     return extensions;
