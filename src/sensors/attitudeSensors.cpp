@@ -78,13 +78,16 @@ namespace demo {
    */
   std::vector<double> AttitudeSensors::measureImplementation() {
     std::vector<double> result;
-    int rec = 0;
     char buf[64];
-
+    int rec;
+    
     // read input from serial port
     // TODO: move "2-chars-minimum-check" out of this function (maybe blocks the program if there is no input on serial port)
-    while (rec <= 1) {
-      rec = ::read (fd_, buf, 63);
+    for (unsigned int n = 0; n < 10; ++n) {
+      rec = 0;
+      while (rec <= 1) {
+        rec = ::read (fd_, buf, 63);
+      }
     }
 
     // parse results
