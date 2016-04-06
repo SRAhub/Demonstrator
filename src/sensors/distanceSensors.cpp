@@ -31,9 +31,11 @@ namespace demo {
       pins_.at(n).set(Pin::Digital::High);
       std::this_thread::sleep_for(std::chrono::microseconds(10));
       pins_.at(n).set(Pin::Digital::Low);
+      
+      pins_.at(n).waitForSignalEdge(std::chrono::milliseconds(250));
 
       // TODO: If we can set `maximalMeasurableDistance_`, we need to adjust the wait time to a dynamic value, too.
-      distances.push_back(std::chrono::duration_cast<std::chrono::microseconds>(pins_.at(n).waitForSignalEdge(std::chrono::milliseconds(250))).count() / 0.0058);
+      distances.push_back(std::chrono::duration_cast<std::chrono::microseconds>(pins_.at(n).waitForSignalEdge(std::chrono::milliseconds(2))).count() / 0.0058);
       pins_.at(n).set(Pin::Digital::Low);
     }
 
