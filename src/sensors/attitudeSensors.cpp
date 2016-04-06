@@ -21,14 +21,14 @@ namespace demo {
     : Sensors(1),
       uart_(std::move(uart)) {
     // try to open /dev/ttyAMA0; this must be explicitly enabled! (search for "/dev/ttyAMA0 raspberry pi" on the web)
-    fd_ = open ("/dev/ttyAMA0", O_RDWR | O_NOCTTY | O_NDELAY);
+    fd_ = ::open ("/dev/ttyAMA0", O_RDWR | O_NOCTTY | O_NDELAY);
     if (fd_ < 0) {
       throw std::runtime_error ("Couldn't open /dev/ttyAMA0\r\n\tPlease check your permissions.\r\n\tError: " + std::string (strerror (errno) ) );
     }
 
     // set up serial port settings
-    tcgetattr (fd_, &oldTio_);
-    memset (&newTio_, 0, sizeof newTio_);
+    ::tcgetattr (fd_, &oldTio_);
+    std::memset (&newTio_, 0, sizeof newTio_);
 
     newTio_.c_cflag = CRTSCTS | CS8 | CLOCAL | CREAD;
     newTio_.c_iflag = IGNPAR | ICRNL;
@@ -55,10 +55,10 @@ namespace demo {
     newTio_.c_cc[VEOL2]    = 0; //'\n'; // \0
 
     // set i/o speed/baudrate
-    cfsetispeed (&newTio_, B57600);
-    cfsetospeed (&newTio_, B57600);
-    tcflush (fd_, TCIFLUSH);
-    tcsetattr (fd_, TCSANOW, &newTio_);
+    ::cfsetispeed (&newTio_, B57600);
+    ::cfsetospeed (&newTio_, B57600);
+    ::tcflush (fd_, TCIFLUSH);
+    ::tcsetattr (fd_, TCSANOW, &newTio_);
   }
 
 
@@ -68,9 +68,9 @@ namespace demo {
    */
   AttitudeSensors::~AttitudeSensors () {
     // reset port to previous state
-    tcsetattr (fd_, TCSANOW, &oldTio_);
+    ::tcsetattr (fd_, TCSANOW, &oldTio_);
     if (fd_ != -1) {
-      close (fd_);
+      ::close (fd_);
     }
   }
 
@@ -80,7 +80,7 @@ namespace demo {
    * @brief   Returns the rotation of the sensor (roll/pitch/yaw).
    * @return  Rotation values (roll/pitch/yaw).
    */
-  std::vector<double> AttitudeSensors::measureImplementation () const {
+  std::vector<double> AttitudeSensors::measureImplementation() {
     std::vector<double> result;
     int rec = 0;
     char buf[64];
@@ -88,16 +88,16 @@ namespace demo {
     // read input from serial port
     // TODO: move "2-chars-minimum-check" out of this function (maybe blocks the program if there is no input on serial port)
     while (rec <= 1) {
-      rec = read (fd_, buf, 63);
+      rec = ::read (fd_, buf, 63);
     }
 
     // parse results
     buf[rec] = 0;
     std::string text = buf;
     text = text.substr (text.find_first_of ("=") + 1);
-    result.push_back(stod (text.substr (0, text.find_first_of (",") ) ) * M_PI / 180.0);
-    result.push_back(stod (text.substr (text.find_first_of (",") + 1, text.find_last_of (",") ) ) * M_PI / 180.0);
-    result.push_back(stod (text.substr (text.find_last_of (",") + 1) ) * M_PI / 180.0);
+    result.push_back(std::stod(text.substr (0, text.find_first_of (","))) * arma::datum::pi / 180.0);
+    result.push_back(std::stod(text.substr (text.find_first_of (",") + 1, text.find_last_of (","))) * arma::datum::pi / 180.0);
+    result.push_back(std::stod(text.substr (text.find_last_of (",") + 1)) * arma::datum::pi / 180.0);
 
     return result;
   }
@@ -106,6 +106,6 @@ namespace demo {
    * @brief Set the current position to (0, 0, 0).
    */
   void AttitudeSensors::reset () {
-    write (fd_, "#r", 2);
+    ::write(fd_, "#r", 2);
   }
 }

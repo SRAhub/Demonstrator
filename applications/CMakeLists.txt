@@ -111,6 +111,14 @@ target_link_libraries(distanceIndicators ${WIRINGPI_LIBRARIES})
 target_link_libraries(distanceIndicators ${ARMADILLO_LIBRARIES})
 target_link_libraries(distanceIndicators ${DEMONSTRATOR_LIBRARIES})
 
+add_executable(attitudeSensors
+  attitudeSensors.cpp
+)
+
+target_link_libraries(attitudeSensors ${WIRINGPI_LIBRARIES})
+target_link_libraries(attitudeSensors ${ARMADILLO_LIBRARIES})
+target_link_libraries(attitudeSensors ${DEMONSTRATOR_LIBRARIES})
+
 message(STATUS "")
 message(STATUS "Noticable CMAKE variables:")
 message(STATUS "- CMAKE_PREFIX_PATH = ${CMAKE_PREFIX_PATH}.")

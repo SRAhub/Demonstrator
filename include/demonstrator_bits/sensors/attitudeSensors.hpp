@@ -1,5 +1,7 @@
 #pragma once
 
+#include <termios.h>
+
 // Armadillo
 #include <armadillo>
 
@@ -20,8 +22,14 @@ namespace demo {
 
     void reset();
 
+    ~AttitudeSensors();
+    
    protected:
     Uart uart_;
+    
+    int fd_;
+    struct termios newTio_;
+    struct termios oldTio_;
    
     std::vector<double> measureImplementation() override;
   };
