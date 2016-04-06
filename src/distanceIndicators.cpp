@@ -41,10 +41,9 @@ namespace demo {
       const double distance = std::max(std::min(distances.at(n), maximalDistance_), minimalDistance_);
       
       if (distance > warningDistance_) {
-        states.push_back(((1 << static_cast<unsigned int>(std::ceil(((distance - warningDistance_) / (maximalDistance_ - warningDistance_)) * 8.0)) - 1)) << 2);
-        // states.push_back(1 << static_cast<unsigned int>(distance * 8.0) - 1); 
+        states.push_back(0b001111111100 & (static_cast<unsigned int>(std::pow(2.0, std::ceil(8.0 * (distance - warningDistance_) / (maximalDistance_ - warningDistance_))) - 1.0)  << 2));
       } else {
-        states.push_back(2 + (distance <= minimalDistance_ ? 1 : 0));
+        states.push_back(0b000000000011 & (2 + (distance <= minimalDistance_ ? 1 : 0)));
       }
     }
 

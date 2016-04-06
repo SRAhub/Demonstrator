@@ -104,7 +104,7 @@ void run_sensor() {
   
   while(1) {
     distanceIndicators.setIndication(distanceSensors.measure());
-    std::this_thread::sleep_for(std::chrono::seconds(1));
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
   }
 }
 
