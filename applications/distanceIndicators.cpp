@@ -66,7 +66,7 @@ void run_default() {
   distanceIndicators.setMaximalDistance(0.20);
   
   while(1) {
-    for (double distance = distanceIndicators.getMaximalDistance(); distance > distanceIndicators.getMinimalDistance(); distance -= 0.02) {
+    for (double distance = distanceIndicators.getMaximalDistance(); distance > distanceIndicators.getMinimalDistance() - 0.02; distance -= 0.02) {
       std::cout << "Setting distance indication for " << distance << "m" << std::endl;
       distanceIndicators.setIndication(std::vector<double>(distanceIndicators.numberOfIndicators_, distance));
       std::this_thread::sleep_for(std::chrono::seconds(1));
