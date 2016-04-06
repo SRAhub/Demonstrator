@@ -15,7 +15,7 @@
 /**
  * @brief Open and set up the serial port the sensor is connected to.
  */
-AHRS::AHRS (Uart uart) {
+AttitudeSensors::AttitudeSensors (Uart uart) {
   // try to open /dev/ttyAMA0; this must be explicitly enabled! (search for "/dev/ttyAMA0 raspberry pi" on the web)
   fd_ = open ("/dev/ttyAMA0", O_RDWR | O_NOCTTY | O_NDELAY);
   if (fd_ < 0) {
@@ -62,7 +62,7 @@ AHRS::AHRS (Uart uart) {
 /**
  * @brief Close the serial port.
  */
-AHRS::~AHRS () {
+AttitudeSensors::~AttitudeSensors () {
   // reset port to previous state
   tcsetattr (fd_, TCSANOW, &oldTio_);
   if (fd_ != -1) {
@@ -76,7 +76,7 @@ AHRS::~AHRS () {
  * @brief   Returns the rotation of the sensor (roll/pitch/yaw).
  * @return  Rotation values (roll/pitch/yaw).
  */
-std::vector<double> AHRS::measureImplementation () const {
+std::vector<double> AttitudeSensors::measureImplementation () const {
   std::vector<double> result;
   int rec = 0;
   char buf[64];
@@ -101,6 +101,6 @@ std::vector<double> AHRS::measureImplementation () const {
 /**
  * @brief Set the current position to (0, 0, 0).
  */
-void AHRS::reset () {
+void AttitudeSensors::reset () {
   write (fd_, "#r", 2);
 }
