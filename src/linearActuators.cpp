@@ -24,6 +24,13 @@ namespace demo {
   void LinearActuators::setExtensions(
         const std::vector<double>& extensions,
         const std::vector<double>& speeds) {
+          
+    std::vector<bool> forwards = {true, false, false, false, false, false};
+    std::vector<double> speeds = speeds;
+    servoControllers_.run(forwards, speeds);
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    servoControllers_.stop();
+          
     stopReachExtension_ = false;
     reachExtension(extensions, speeds);
     // reachExtensionThread_ = std::thread([=] {reachExtension(extensions, speeds);});
@@ -61,7 +68,7 @@ namespace demo {
       }
       
       servoControllers_.run(forwards, speeds);
-      std::this_thread::sleep_for(std::chrono::milliseconds(500));
+      std::this_thread::sleep_for(std::chrono::milliseconds(10));
       currentExtension = extensionSensors_.measure();
     
       hasReachedPosition = true;
