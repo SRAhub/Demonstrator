@@ -135,6 +135,14 @@ target_link_libraries(servoControllers ${WIRINGPI_LIBRARIES})
 target_link_libraries(servoControllers ${ARMADILLO_LIBRARIES})
 target_link_libraries(servoControllers ${DEMONSTRATOR_LIBRARIES})
 
+add_executable(linearActuators
+  linearActuators.cpp
+)
+
+target_link_libraries(linearActuators ${WIRINGPI_LIBRARIES})
+target_link_libraries(linearActuators ${ARMADILLO_LIBRARIES})
+target_link_libraries(linearActuators ${DEMONSTRATOR_LIBRARIES})
+
 message(STATUS "")
 message(STATUS "Noticable CMAKE variables:")
 message(STATUS "- CMAKE_PREFIX_PATH = ${CMAKE_PREFIX_PATH}.")

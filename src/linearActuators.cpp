@@ -7,14 +7,65 @@ namespace demo {
       const std::vector<unsigned int>& i2cChannels,
       Spi spi,
       const std::vector<unsigned int>& spiChannels)
-    : servoControllers_(std::move(directionPins), std::move(i2c), i2cChannels),
+    : numberOfActuators_(directionPins.size()),
+      servoControllers_(std::move(directionPins), std::move(i2c), i2cChannels),
       extensionSensors_(std::move(spi), spiChannels) {
     if (servoControllers_.numberOfControllers_ != extensionSensors_.numberOfSensors_) {
       throw std::logic_error("LinearActuators: The number of controllers must be equal to the number of sensors.");
     }
+    
+    extensionSensors_.setMinimalMeasurableValue(0.1);
+    extensionSensors_.setMaximalMeasurableValue(1.0);
   }
   
+  void LinearActuators::setExtensions(
+        const std::vector<double>& extensions,
+        const std::vector<double>& speeds) {
+    reachExtensionThread_ = std::thread([this, extensions, speeds] {reachExtension(extensions, speeds);});
+  }
   
+  void LinearActuators::reachExtension(
+      const std::vector<double>& extensions,
+      const std::vector<double>& maximalSpeeds) {
+    std::vector<double> currentExtension = extensionSensors_.measure();
+        
+    bool hasReachedPosition = true;
+    for (std::size_t n = 0; n < numberOfActuators_; ++n) { 
+      if (std::abs(extensions.at(n) - currentExtension.at(n)) > maximalExtensionDeviation_) {
+        hasReachedPosition = false;
+      }
+    }
+    
+    std::vector<bool> forwards = {false, false, false, false, false, false};
+    std::vector<double> speeds = maximalSpeeds;
+    while (!hasReachedPosition && !stopReachExtension_) {
+      for (std::size_t n = 0; n < numberOfActuators_; ++n) {  
+        const double deviation = currentExtension.at(n) - extensions.at(n);
+      
+        if (std::abs(deviation) <= maximalExtensionDeviation_) {
+          speeds.at(n) = 0.0;
+        } else {
+          speeds.at(n) = std::max(0.25, maximalSpeeds.at(n) * std::min(1.0, 2.0 * deviation));
+          
+          if (deviation > 0) {
+            forwards.at(n) = false;
+          } else {
+            forwards.at(n) = true;
+          }
+        }
+      }
+      
+      servoControllers_.run(forwards, speeds);
+      currentExtension = extensionSensors_.measure();
+    
+      hasReachedPosition = true;
+      for (std::size_t n = 0; n < numberOfActuators_; ++n) { 
+        if (std::abs(extensions.at(n) - currentExtension.at(n)) > maximalExtensionDeviation_) {
+          hasReachedPosition = false;
+        }
+      }
+    }
+  }
   
   void LinearActuators::setMinimalExtension(
       const double minimalExtension) {
@@ -40,6 +91,19 @@ namespace demo {
   
   double LinearActuators::getMaximalExtension() const {
     return maximalExtension_;
+  }
+
+  void LinearActuators::setMaximalExtensionDeviation(
+      const double maximalExtensionDeviation) {
+    if (!std::isfinite(maximalExtensionDeviation)) {
+      throw std::domain_error("LinearActuators.setMaximalExtensionDeviation: The maximal extension deviation must be finite.");
+    }
+    
+    maximalExtensionDeviation_ = maximalExtensionDeviation;
+  }
+  
+  double LinearActuators::getMaximalExtensionDeviation() const {
+    return maximalExtensionDeviation_;
   }
 
   void LinearActuators::setMinimalSpeed(

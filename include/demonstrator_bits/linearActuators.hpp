@@ -1,6 +1,7 @@
 #pragma once
 
 // C++ standard library
+#include <thread>
 #include <vector>
 
 // Demonstrator
@@ -21,6 +22,8 @@ namespace demo {
    */
   class LinearActuators {
    public:
+    const std::size_t numberOfActuators_;
+   
     explicit LinearActuators(
         std::vector<Pin> directionPins,
         I2c i2c,
@@ -35,7 +38,7 @@ namespace demo {
      */
     void setExtensions(
         const std::vector<double>& extensions,
-        const std::vector<double>& speeds);
+        const std::vector<double>& maximalSpeeds);
 
     void setMinimalExtension(
         const double minimalExtension);
@@ -45,6 +48,10 @@ namespace demo {
         const double maximalExtension);
     double getMaximalExtension() const;
 
+    void setMaximalExtensionDeviation(
+        const double maximalExtensionDeviation);
+    double getMaximalExtensionDeviation() const;
+    
     void setMinimalSpeed(
         const double minimalSpeed);
     double getMinimalSpeed() const;
@@ -54,8 +61,8 @@ namespace demo {
     double getMaximalSpeed() const;
 
    protected:
-    const ServoControllers servoControllers_;
-    const ExtensionSensors extensionSensors_;
+    ServoControllers servoControllers_;
+    ExtensionSensors extensionSensors_;
 
     /**
      * Minimal/maximal allowed extension of each actuator, in cm.
@@ -64,11 +71,20 @@ namespace demo {
      */
     double minimalExtension_;
     double maximalExtension_;
+    
+    double maximalExtensionDeviation_;
 
     /**
      * Minimal/maximal allowed extension speed of each actuator, in cm/second.
      */
     double minimalSpeed_;
     double maximalSpeed_;
+    
+    bool stopReachExtension_;
+    std::thread reachExtensionThread_;
+    
+    void reachExtension(
+        const std::vector<double>& extensions,
+        const std::vector<double>& maximalSpeeds);
   };
 }
