@@ -143,6 +143,14 @@ target_link_libraries(linearActuators ${WIRINGPI_LIBRARIES})
 target_link_libraries(linearActuators ${ARMADILLO_LIBRARIES})
 target_link_libraries(linearActuators ${DEMONSTRATOR_LIBRARIES})
 
+add_executable(stewartPlatform
+  stewartPlatform.cpp
+)
+
+target_link_libraries(stewartPlatform ${WIRINGPI_LIBRARIES})
+target_link_libraries(stewartPlatform ${ARMADILLO_LIBRARIES})
+target_link_libraries(stewartPlatform ${DEMONSTRATOR_LIBRARIES})
+
 message(STATUS "")
 message(STATUS "Noticable CMAKE variables:")
 message(STATUS "- CMAKE_PREFIX_PATH = ${CMAKE_PREFIX_PATH}.")
