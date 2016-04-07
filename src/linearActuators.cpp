@@ -1,5 +1,8 @@
 #include "demonstrator_bits/linearActuators.hpp"
 
+// C++ standard library
+#include <chrono>
+
 namespace demo {
   LinearActuators::LinearActuators(
       std::vector<Pin> directionPins,
