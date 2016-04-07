@@ -19,7 +19,8 @@ namespace demo {
         const std::vector<double>& extensions,
         const std::vector<double>& speeds) {
     stopReachExtension_ = false;
-    reachExtensionThread_ = std::thread([=]{reachExtension(extensions, speeds);});
+    reachExtension(extensions, speeds);
+    // reachExtensionThread_ = std::thread([=]{reachExtension(extensions, speeds);});
   }
   
   void LinearActuators::reachExtension(

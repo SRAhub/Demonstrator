@@ -27,6 +27,8 @@ namespace demo {
         I2c i2c,
         const std::vector<unsigned int>& channels);
 
+    ServoControllers(ServoControllers&&);
+    
     void run(
         const std::vector<bool>& forwards,
         const std::vector<double>& speeds);
