@@ -75,15 +75,15 @@ void run_default() {
   
   while(1) {
     for (std::size_t n = 0; n < 6; ++n) {
-      extensions.at(n) += 0.1;
+      extensions.at(n) += 0.2;
       linearActuators.setExtensions(extensions, maximalSpeeds);
-      std::this_thread::sleep_for(std::chrono::milliseconds(500));
+      std::this_thread::sleep_for(std::chrono::seconds(1));
     }
     
     for (std::size_t n = 0; n < 6; ++n) {
-      extensions.at(n) -= 0.1;
+      extensions.at(n) -= 0.2;
       linearActuators.setExtensions(extensions, maximalSpeeds);
-      std::this_thread::sleep_for(std::chrono::milliseconds(500));
+      std::this_thread::sleep_for(std::chrono::seconds(1));
     }
   }
 }
