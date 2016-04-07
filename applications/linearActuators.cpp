@@ -79,7 +79,7 @@ void run_default() {
     for (std::size_t n = 0; n < 6; ++n) {
       std::cout << "Moving actuator " << n << " down." << std::endl;
       
-      extensions.at(n) -= 0.2;
+      extensions.at(n) -= 0.1;
       linearActuators.setExtensions(extensions, maximalSpeeds);
       std::this_thread::sleep_for(std::chrono::seconds(1));
       
@@ -88,7 +88,7 @@ void run_default() {
     for (std::size_t n = 0; n < 6; ++n) {
       std::cout << "Moving actuator " << n << " up." << std::endl;
       
-      extensions.at(n) += 0.2;
+      extensions.at(n) += 0.1;
       linearActuators.setExtensions(extensions, maximalSpeeds);
       std::this_thread::sleep_for(std::chrono::seconds(1));
     }
