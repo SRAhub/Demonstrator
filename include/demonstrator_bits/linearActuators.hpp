@@ -25,11 +25,8 @@ namespace demo {
     const std::size_t numberOfActuators_;
    
     explicit LinearActuators(
-        std::vector<Pin> directionPins,
-        I2c i2c,
-        const std::vector<unsigned int>& i2cChannels,
-        Spi spi,
-        const std::vector<unsigned int>& spiChannels);
+        ServoControllers servoControllers,
+        ExtensionSensors extensionSensors);
 
     /**
      * Let each actuator approach its new position. This method blocks until all actuators have reached their extension!

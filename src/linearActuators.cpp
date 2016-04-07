@@ -5,20 +5,14 @@
 
 namespace demo {
   LinearActuators::LinearActuators(
-      std::vector<Pin> directionPins,
-      I2c i2c,
-      const std::vector<unsigned int>& i2cChannels,
-      Spi spi,
-      const std::vector<unsigned int>& spiChannels)
-    : numberOfActuators_(directionPins.size()),
-      servoControllers_(std::move(directionPins), std::move(i2c), i2cChannels),
-      extensionSensors_(std::move(spi), spiChannels) {
+      ServoControllers servoControllers,
+      ExtensionSensors extensionSensors)
+    : numberOfActuators_(servoControllers.numberOfControllers_),
+      servoControllers_(std::move(servoControllers)),
+      extensionSensors_(std::move(extensionSensors)) {
     if (servoControllers_.numberOfControllers_ != extensionSensors_.numberOfSensors_) {
       throw std::logic_error("LinearActuators: The number of controllers must be equal to the number of sensors.");
     }
-    
-    extensionSensors_.setMinimalMeasurableValue(0.1);
-    extensionSensors_.setMaximalMeasurableValue(1.0);
   }
   
   void LinearActuators::setExtensions(

@@ -59,19 +59,33 @@ void run_default() {
   directionPins.push_back(demo::Gpio::allocatePin(26));
   demo::I2c i2c = demo::Gpio::allocateI2c();
   std::vector<unsigned int> i2cChannels = {0, 1, 2, 3, 4, 5};
+  demo::ServoControllers servoControllers(std::move(directionPins), std::move(i2c), i2cChannels);
   
   demo::Spi spi = demo::Gpio::allocateSpi();
   std::vector<unsigned int> spiChannels = {0, 1, 2, 3, 4, 5};
+  demo::ExtensionSensors extensionSensors(std::move(spi), spiChannels);
+  extensionSensors.setMinimalMeasurableValue(0.1);
+  extensionSensors.setMaximalMeasurableValue(1.0);
   
-  demo::LinearActuators linearActuators(std::move(directionPins), std::move(i2c), i2cChannels, std::move(spi), spiChannels);
+  std::vector<double> extensions = extensionSensors.measure();
+  const std::vector<double> maximalSpeeds = {1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
+  
+  demo::LinearActuators linearActuators(std::move(servoControllers), std::move(extensionSensors));
   linearActuators.setMaximalExtensionDeviation(0.05);
   
-  // while(1) {
-    std::vector<double> extensions = {0.5, 0.5, 0.5, 0.5, 0.5, 0.5};
-    std::vector<double> maximalSpeeds = {1.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+  while(1) {
+    for (std::size_t n = 0; n < 6; ++n) {
+      extensions.at(n) += 0.1;
+      linearActuators.setExtensions(extensions, maximalSpeeds);
+      std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    }
     
-    linearActuators.setExtensions(extensions, maximalSpeeds);
-  // }
+    for (std::size_t n = 0; n < 6; ++n) {
+      extensions.at(n) -= 0.1;
+      linearActuators.setExtensions(extensions, maximalSpeeds);
+      std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    }
+  }
 }
 
 void run_calibration() {

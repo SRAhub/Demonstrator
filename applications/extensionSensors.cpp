@@ -61,7 +61,7 @@ void run_default() {
     const std::vector<double> extensions = extensionSensors.measure();
     for (std::size_t n = 0; n < extensions.size(); ++n) {
       std::cout << "Sensor " << n << ": " << extensions.at(n) << std::endl;
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+      std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
   }
 }
