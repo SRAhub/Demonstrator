@@ -64,6 +64,7 @@ void run_default() {
   std::vector<unsigned int> spiChannels = {0, 1, 2, 3, 4, 5};
   
   demo::LinearActuators linearActuators(std::move(directionPins), std::move(i2c), i2cChannels, std::move(spi), spiChannels);
+  linearActuators.setMaximalExtensionDeviation(0.05);
   
   while(1) {
     std::vector<bool> extensions = {0.5, 0.5, 0.5, 0.5, 0.5, 0.5};
