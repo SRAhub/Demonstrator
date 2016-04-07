@@ -8,24 +8,31 @@ namespace demo {
   class NetworkAdapter {
    public:
     explicit NetworkAdapter(
+        const std::string& hostname,
         const unsigned int port);
+    ~NetworkAdapter();
 
-    // Functions for receiving data
-    int openIncommingConnectionSocket(
-        const std::string& hostname);
+
     std::string receive(
-        const std::string& hostname);
+        //const std::string& hostname
+        const int fd);
+    void send(
+        //const std::string& hostname,
+        const int fd,
+        const std::string& data);
 
-    // Functions for sending data
+
+
+   protected:
+    int openIncommingConnectionSocket(
+        //const std::string& hostname
+        );
     int establishOutgoingConnectionSocket(
         const std::string& hostname,
         const unsigned int port);
-    void send(
-        const std::string& hostname,
-        const std::string& data);
 
-   protected:
-    int incommingSocketDescriptor_;
-    std::map<std::string, int> outgoingSocketDescriptors_;
+    //int incommingSocketDescriptor_;
+    //std::map<std::string, int> outgoingSocketDescriptors_;
+    std::string hostname_;
   };
 }
