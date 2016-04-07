@@ -66,12 +66,12 @@ void run_default() {
   demo::LinearActuators linearActuators(std::move(directionPins), std::move(i2c), i2cChannels, std::move(spi), spiChannels);
   linearActuators.setMaximalExtensionDeviation(0.05);
   
-  while(1) {
+  // while(1) {
     std::vector<double> extensions = {0.5, 0.5, 0.5, 0.5, 0.5, 0.5};
     std::vector<double> maximalSpeeds = {1.0, 0.0, 0.0, 0.0, 0.0, 0.0};
     
     linearActuators.setExtensions(extensions, maximalSpeeds);
-  }
+  // }
 }
 
 void run_calibration() {
