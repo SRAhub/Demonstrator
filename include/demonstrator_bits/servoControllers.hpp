@@ -26,8 +26,6 @@ namespace demo {
         std::vector<Pin> directionPins,
         I2c i2c,
         const std::vector<unsigned int>& channels);
-
-    ServoControllers(ServoControllers&&);
     
     void run(
         const std::vector<bool>& forwards,
