@@ -7,32 +7,28 @@
 namespace demo {
   class NetworkAdapter {
    public:
+    NetworkAdapter() = delete;
+    NetworkAdapter(NetworkAdapter&) = delete;
+    NetworkAdapter operator=(NetworkAdapter&) = delete;
     explicit NetworkAdapter(
-        const std::string& hostname,
         const unsigned int port);
     ~NetworkAdapter();
 
 
     std::string receive(
-        //const std::string& hostname
-        const int fd);
+        const std::string& hostname);
     void send(
-        //const std::string& hostname,
-        const int fd,
+        const std::string& hostname,
         const std::string& data);
 
 
 
    protected:
-    int openIncommingConnectionSocket(
-        //const std::string& hostname
-        );
+    int openIncommingConnectionSocket();
     int establishOutgoingConnectionSocket(
         const std::string& hostname,
         const unsigned int port);
 
-    //int incommingSocketDescriptor_;
-    //std::map<std::string, int> outgoingSocketDescriptors_;
-    std::string hostname_;
+    int incomingSocketDescriptor_;
   };
 }
