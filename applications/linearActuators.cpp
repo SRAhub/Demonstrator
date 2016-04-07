@@ -71,22 +71,24 @@ void run_default() {
   const std::vector<double> maximalSpeeds = {1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
   
   demo::LinearActuators linearActuators(std::move(servoControllers), std::move(extensionSensors));
+  linearActuators.setMinimalSpeed(0.5);
+  linearActuators.setMaximalSpeed(1.0);
   linearActuators.setMaximalExtensionDeviation(0.05);
   
   while(1) {
     for (std::size_t n = 0; n < 6; ++n) {
-      std::cout << "Moving actuator " << n << " up." << std::endl;
+      std::cout << "Moving actuator " << n << " down." << std::endl;
       
-      extensions.at(n) += 0.2;
+      extensions.at(n) -= 0.1;
       linearActuators.setExtensions(extensions, maximalSpeeds);
       std::this_thread::sleep_for(std::chrono::seconds(1));
       
     }
     
     for (std::size_t n = 0; n < 6; ++n) {
-      std::cout << "Moving actuator " << n << " down." << std::endl;
+      std::cout << "Moving actuator " << n << " up." << std::endl;
       
-      extensions.at(n) -= 0.2;
+      extensions.at(n) += 0.1;
       linearActuators.setExtensions(extensions, maximalSpeeds);
       std::this_thread::sleep_for(std::chrono::seconds(1));
     }
