@@ -24,15 +24,8 @@ namespace demo {
   void LinearActuators::setExtensions(
         const std::vector<double>& extensions,
         const std::vector<double>& speeds) {
-          
-    std::vector<bool> forwards = {true, false, false, false, false, false};
-    servoControllers_.run(forwards, speeds);
-    std::this_thread::sleep_for(std::chrono::milliseconds(500));
-    servoControllers_.stop();
-          
     stopReachExtension_ = false;
-    reachExtension(extensions, speeds);
-    // reachExtensionThread_ = std::thread([=] {reachExtension(extensions, speeds);});
+    reachExtensionThread_ = std::thread([=]{reachExtension(extensions, speeds);});
   }
   
   void LinearActuators::reachExtension(
@@ -56,7 +49,7 @@ namespace demo {
         if (std::abs(deviation) <= maximalExtensionDeviation_) {
           speeds.at(n) = 0.0;
         } else {
-          speeds.at(n) = std::max(0.25, maximalSpeeds.at(n) * std::min(1.0, 2.0 * deviation));
+          speeds.at(n) = std::max(minimalSpeed_, maximalSpeeds.at(n) * std::min(maximalSpeed_, 5.0 * deviation));
           
           if (deviation > 0) {
             forwards.at(n) = false;
