@@ -38,16 +38,17 @@ namespace demo {
       std::cout << "Allocating SPI pins" << std::endl;
     }
     
-    if (ownedPins_.at(7) || ownedPins_.at(8) || ownedPins_.at(9) || ownedPins_.at(10) || ownedPins_.at(11)) {
+    // The pin number is reduced by 2 as the GPIO pins range from 2 to 27, but the array's indices range from 0 to 25.
+    if (ownedPins_.at(5) || ownedPins_.at(6) || ownedPins_.at(7) || ownedPins_.at(8) || ownedPins_.at(9)) {
       throw std::runtime_error("The SPI pins must not already be allocated");
     }
 
     // The pin number is reduced by 2 as the GPIO pins range from 2 to 27, but the array's indices range from 0 to 25.
+    ownedPins_.at(5) = true;
+    ownedPins_.at(6) = true;
     ownedPins_.at(7) = true;
     ownedPins_.at(8) = true;
     ownedPins_.at(9) = true;
-    ownedPins_.at(10) = true;
-    ownedPins_.at(11) = true;
 
     return Spi();
   }
@@ -55,6 +56,7 @@ namespace demo {
   I2c Gpio::allocateI2c() {
     std::lock_guard<std::mutex> lock(mutex_);
 
+    // The pin number is reduced by 2 as the GPIO pins range from 2 to 27, but the array's indices range from 0 to 25.
     if (ownedPins_.at(0) || ownedPins_.at(1)) {
       throw std::runtime_error("The I2C pins must not already be allocated");
     }
@@ -73,6 +75,7 @@ namespace demo {
       std::cout << "Allocating UART pins" << std::endl;
     }
 
+    // The pin number is reduced by 2 as the GPIO pins range from 2 to 27, but the array's indices range from 0 to 25.
     if (ownedPins_.at(12) || ownedPins_.at(13)) {
       throw std::runtime_error("The UART pins must not already be allocated");
     }
@@ -107,8 +110,11 @@ namespace demo {
     }
     
     if (spi.ownsSpi_) {
-      ownedPins_.at(2) = false;
-      ownedPins_.at(3) = false;
+      ownedPins_.at(5) = false;
+      ownedPins_.at(6) = false;
+      ownedPins_.at(7) = false;
+      ownedPins_.at(8) = false;
+      ownedPins_.at(9) = false;
       spi.ownsSpi_ = false;
     }
   }
@@ -122,8 +128,8 @@ namespace demo {
     }
     
     if (i2c.ownsI2c_) {
-      ownedPins_.at(2) = false;
-      ownedPins_.at(3) = false;
+      ownedPins_.at(0) = false;
+      ownedPins_.at(1) = false;
       i2c.ownsI2c_ = false;
     }
   }
@@ -137,8 +143,8 @@ namespace demo {
     }
     
     if (uart.ownsUart_) {
-      ownedPins_.at(2) = false;
-      ownedPins_.at(3) = false;
+      ownedPins_.at(12) = false;
+      ownedPins_.at(13) = false;
       uart.ownsUart_ = false;
     }
   }
