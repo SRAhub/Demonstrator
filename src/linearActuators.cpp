@@ -26,7 +26,6 @@ namespace demo {
         const std::vector<double>& speeds) {
           
     std::vector<bool> forwards = {true, false, false, false, false, false};
-    std::vector<double> speeds = speeds;
     servoControllers_.run(forwards, speeds);
     std::this_thread::sleep_for(std::chrono::milliseconds(500));
     servoControllers_.stop();
