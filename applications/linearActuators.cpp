@@ -67,7 +67,7 @@ void run_default() {
   linearActuators.setMaximalExtensionDeviation(0.05);
   
   while(1) {
-    std::vector<bool> extensions = {0.5, 0.5, 0.5, 0.5, 0.5, 0.5};
+    std::vector<double> extensions = {0.5, 0.5, 0.5, 0.5, 0.5, 0.5};
     std::vector<double> maximalSpeeds = {1.0, 0.0, 0.0, 0.0, 0.0, 0.0};
     
     linearActuators.setExtensions(extensions, maximalSpeeds);
