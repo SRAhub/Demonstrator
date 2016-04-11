@@ -30,7 +30,7 @@ namespace demo {
      */
     static Pin allocatePin(
         const unsigned int pinNumber);
-        
+
     /**
      * Asks for ownership of the SPI pins (for a single slave, excluding pin `GPIO7`, i.e. `CE1`).
      * **Note:** We assume the WiringPi was set up using `::wiringPiSetupGpio()`.

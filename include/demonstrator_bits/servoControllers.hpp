@@ -1,6 +1,7 @@
 #pragma once
 
 // C++ standard library
+#include <cstddef>
 #include <vector>
 
 // Armadillo
@@ -26,17 +27,31 @@ namespace demo {
         std::vector<Pin> directionPins,
         I2c i2c,
         const std::vector<unsigned int>& channels);
-    
+
     void run(
         const std::vector<bool>& forwards,
-        const std::vector<double>& speeds);
+        const arma::Row<double>& speeds);
 
     void stop();
-    
+
+    void setMinimalSpeed(
+        const double minimalSpeed);
+    double getMinimalSpeed() const;
+
+    void setMaximalSpeed(
+        const double maximalSpeed);
+    double getMaximalSpeed() const;
+
    protected:
     std::vector<Pin> directionPins_;
-    
+
     I2c i2c_;
     const std::vector<unsigned int> channels_;
+
+    /**
+     * Minimal/maximal allowed extension speed of each actuator, in cm/second.
+     */
+    double minimalSpeed_;
+    double maximalSpeed_;
   };
 }

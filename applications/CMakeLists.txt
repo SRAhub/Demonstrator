@@ -96,6 +96,7 @@ endif()
 # ---------------------
 
 add_executable(distanceSensors
+  commandline.cpp
   distanceSensors.cpp
 )
 
@@ -104,6 +105,7 @@ target_link_libraries(distanceSensors ${ARMADILLO_LIBRARIES})
 target_link_libraries(distanceSensors ${DEMONSTRATOR_LIBRARIES})
 
 add_executable(distanceIndicators
+  commandline.cpp
   distanceIndicators.cpp
 )
 
@@ -112,6 +114,7 @@ target_link_libraries(distanceIndicators ${ARMADILLO_LIBRARIES})
 target_link_libraries(distanceIndicators ${DEMONSTRATOR_LIBRARIES})
 
 add_executable(attitudeSensors
+  commandline.cpp
   attitudeSensors.cpp
 )
 
@@ -120,6 +123,7 @@ target_link_libraries(attitudeSensors ${ARMADILLO_LIBRARIES})
 target_link_libraries(attitudeSensors ${DEMONSTRATOR_LIBRARIES})
 
 add_executable(extensionSensors
+  commandline.cpp
   extensionSensors.cpp
 )
 
@@ -128,6 +132,7 @@ target_link_libraries(extensionSensors ${ARMADILLO_LIBRARIES})
 target_link_libraries(extensionSensors ${DEMONSTRATOR_LIBRARIES})
 
 add_executable(servoControllers
+  commandline.cpp
   servoControllers.cpp
 )
 
@@ -136,20 +141,13 @@ target_link_libraries(servoControllers ${ARMADILLO_LIBRARIES})
 target_link_libraries(servoControllers ${DEMONSTRATOR_LIBRARIES})
 
 add_executable(linearActuators
+  commandline.cpp
   linearActuators.cpp
 )
 
 target_link_libraries(linearActuators ${WIRINGPI_LIBRARIES})
 target_link_libraries(linearActuators ${ARMADILLO_LIBRARIES})
 target_link_libraries(linearActuators ${DEMONSTRATOR_LIBRARIES})
-
-add_executable(stewartPlatform
-  stewartPlatform.cpp
-)
-
-target_link_libraries(stewartPlatform ${WIRINGPI_LIBRARIES})
-target_link_libraries(stewartPlatform ${ARMADILLO_LIBRARIES})
-target_link_libraries(stewartPlatform ${DEMONSTRATOR_LIBRARIES})
 
 message(STATUS "")
 message(STATUS "Noticable CMAKE variables:")

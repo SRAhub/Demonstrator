@@ -1,5 +1,6 @@
 // C++ standard library
 #include <chrono>
+#include <iomanip>
 #include <thread>
 
 // WiringPi
@@ -8,46 +9,28 @@
 // Demonstrator
 #include <demonstrator>
 
-bool parseError = false;
-void show_help();
-void run_default();
-void run_calibration();
-void parse_options(
-    const int argc,
-    const char* argv[]);
+// Application
+#include "commandline.hpp"
+
+void showHelp();
+void runDefault(
+    demo::DistanceSensors&& distanceSensors);
+void runCalibration(
+    demo::DistanceSensors&& distanceSensors);
 
 int main (const int argc, const char* argv[]) {
-  if (argc > 1 && argv[1][0] != '-') {
-    if (std::string(argv[1]) == "calibrate") {
-      parse_options(argc, argv);
-      run_calibration();
-    } else {
-      ::parseError = true;
-      show_help();
-    }    
-  } else {
-    parse_options(argc, argv);
-    run_default();
+  if (hasOption(argc, argv, "-h") || hasOption(argc, argv, "--help")) {
+    showHelp();
+    // Terminates the program after the help is shown.
+    return 0;
   }
   
-  return parseError ? 1 : 0;  
-}
-
-void show_help() {
-  std::cout << "Usage:\n";
-  std::cout << "  program [options ...]\n";
-  std::cout << "    Prints measurements for each sensor until the program is terminated\n";
-  std::cout << "\n";
-  std::cout << "  program calibrate [options ...]\n";
-  std::cout << "    Starts the sensor calibration\n";
-  std::cout << "\n";
-  std::cout << "  Options:\n";
-  std::cout << "         --verbose    Prints additional (debug) information\n";
-  std::cout << "    -h | --help       Displays this help\n";
-  std::cout << std::flush;
-}
-
-void run_default() {
+  if (hasOption(argc, argv, "--verbose")) {
+    ::demo::isVerbose = true;
+  }
+  
+  // Initialises WiringPi and uses the BCM pin layout.
+  // For an overview on the pin layout, use the `gpio readall` command on a Raspberry Pi.
   ::wiringPiSetupGpio();
   
   std::vector<demo::Pin> pins;
@@ -62,47 +45,48 @@ void run_default() {
   distanceSensors.setMinimalMeasurableValue(0.03); 
   distanceSensors.setMaximalMeasurableValue(0.35);
   
-  while(1) {
-    const std::vector<double> distances = distanceSensors.measure();
-    for (std::size_t n = 0; n < distances.size(); ++n) {
-      std::cout << "Sensor " << n << ": " << distances.at(n) << std::endl;
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    }
+  if (hasOption(argc, argv, "calibrate")) {
+    runCalibration(std::move(distanceSensors));
+  } else {
+    runDefault(std::move(distanceSensors));
   }
-}
-
-void run_calibration() {
-  std::vector<demo::Pin> pins;
-  pins.push_back(demo::Gpio::allocatePin(17));
-  pins.push_back(demo::Gpio::allocatePin(27));
-  pins.push_back(demo::Gpio::allocatePin(22));
-  pins.push_back(demo::Gpio::allocatePin(10));
-  pins.push_back(demo::Gpio::allocatePin(25));
-  pins.push_back(demo::Gpio::allocatePin(11));
-  demo::DistanceSensors distanceSensors(std::move(pins));
   
+  return 0;  
+}
+
+void showHelp() {
+  std::cout << "Usage:\n";
+  std::cout << "  program [options ...]\n";
+  std::cout << "    Prints measurements for each sensor until the program is terminated\n";
+  std::cout << "\n";
+  std::cout << "  program calibrate [options ...]\n";
+  std::cout << "    Starts the sensor calibration\n";
+  std::cout << "\n";
+  std::cout << "  Options:\n";
+  std::cout << "         --verbose    Prints additional (debug) information\n";
+  std::cout << "    -h | --help       Displays this help\n";
+  std::cout << std::flush;
+}
+
+void runDefault(
+    demo::DistanceSensors&& distanceSensors) {
   while(1) {
-    const std::vector<double> distances = distanceSensors.measure();
-    for (std::size_t n = 0; n < distances.size(); ++n) {
-      std::cout << "Sensor " << n << ": " << distances.at(n) << std::endl;
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    std::cout << "+--------------+--------------+--------------+--------------+--------------+--------------+\n"
+              << "| Sensor 1 [m] | Sensor 2 [m] | Sensor 3 [m] | Sensor 4 [m] | Sensor 5 [m] | Sensor 6 [m] |\n"
+              << "+--------------+--------------+--------------+--------------+--------------+--------------+" << std::endl;
+    for (unsigned int n = 0; n < 10; ++n) {
+      const arma::Row<double>& distances = distanceSensors.measure();
+      std::cout << "|";
+      for (std::size_t k = 0; k < distanceSensors.numberOfSensors_; ++k) {
+         std::cout << " " << std::setw(12) << distances(k) << " |";
+      }
+      std::cout << std::endl;
+      std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
   }
 }
 
-void parse_options(
-    const int argc,
-    const char* argv[]) {
-  for (std::size_t n = 1; n < argc; ++n) {
-    std::string option = argv[n];
-    
-    if ((option == "-h") || (option == "--help")) {
-      show_help();
-    } else if (option == "--verbose") {
-      ::demo::isVerbose = true;
-    } else {
-      ::parseError = true;
-      show_help();
-    }
-  }
+void runCalibration(
+    demo::DistanceSensors&& distanceSensors) {
+  // TODO Use the Stewart platform, to self-calibrate the sensors.
 }

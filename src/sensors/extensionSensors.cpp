@@ -2,9 +2,9 @@
 
 // C++ standard library
 #include <algorithm>
+#include <cstddef>
 
 // Demonstrator
-#include "demonstrator_bits/gpio.hpp"
 #include "demonstrator_bits/spi.hpp"
 
 namespace demo {
@@ -14,11 +14,10 @@ namespace demo {
       : Sensors(channels.size()),
         spi_(std::move(spi)),
         channels_(channels) {
-
   }
 
-  std::vector<double> ExtensionSensors::measureImplementation() {
-    std::vector<double> extensions;
+  arma::Row<double> ExtensionSensors::measureImplementation() {
+    arma::Row<double> extensions;
     for (std::size_t n = 0; n < numberOfSensors_; ++n) {
       spi_.set(Spi::Pin::ChipSelect, Spi::Digital::High);
       spi_.set(Spi::Pin::Clock, Spi::Digital::Low);
@@ -51,7 +50,7 @@ namespace demo {
 
       adcout >>= 1;
 
-      extensions.push_back(static_cast<double>(adcout) / 1023.0);
+      extensions(n) = static_cast<double>(adcout) / 1023.0;
     }
 
     return extensions;

@@ -4,6 +4,9 @@
 #include <cstddef>
 #include <vector>
 
+// Armadillo
+#include <armadillo>
+
 // Demonstrator
 #include "demonstrator_bits/pin.hpp"
 
@@ -44,7 +47,7 @@ namespace demo {
      * Update the LED bars to indicate the assigned distances, as described in the class documentation.
      */
     void setIndication(
-        const std::vector<double>& distances);
+        const arma::Row<double>& distances);
 
     void setMinimalDistance(
         const double minimalDistance);

@@ -1,5 +1,5 @@
 #pragma once
-#include "demonstrator_bits/config.hpp" // IWYU pragma: keep
+#include "demonstrator_bits/config.hpp"
 
 // C++ standard library
 #include <chrono>

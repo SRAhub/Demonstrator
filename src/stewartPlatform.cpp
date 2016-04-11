@@ -1,39 +1,32 @@
 #include "demonstrator_bits/stewartPlatform.hpp"
 
+// C++ standard library
+#include <algorithm>
+#include <stdexcept>
+
 namespace demo {
   StewartPlatform::StewartPlatform(
-      LinearActuators linearActuators)
-    : linearActuators_(std::move(linearActuators)) {
-      
+      LinearActuators linearActuators,
+      arma::Mat<double>::fixed<3, 6> baseJointsPosition,
+      arma::Mat<double>::fixed<3, 6> endEffectorJointsRelativePosition,
+      arma::Row<double>::fixed<6> actuatorsMinimalLength,
+      arma::Row<double>::fixed<6> actuatorsMaximalLength)
+      : linearActuators_(std::move(linearActuators)),
+        baseJointsPosition_(baseJointsPosition),
+        endEffectorJointsRelativePosition_(endEffectorJointsRelativePosition) {
+    if (linearActuators_.numberOfActuators_ != 6) {
+      throw std::invalid_argument("LinearActuators: A Stewart platform must have 6 actuators.");
+    }
   }
-  
+
   void StewartPlatform::setEndEffectorPose(
       const arma::Col<double>::fixed<6>& endEffectorPose) {
-    arma::Mat<double>::fixed<3, 6> baseJointsPiosition({
-       -0.0302769856567722, -0.0664251770004387, 0.023,
-       0.0726643835616438, -0.0069919497714374, 0.023,
-       0.0726643835616438, 0.0069919497714374, 0.023,
-       -0.0302769856567722, 0.0664251770004387, 0.023,
-       -0.0423873979048716, 0.0594332272290012, 0.023,
-       -0.0423873979048716, -0.0594332272290012, 0.023
-    });
+    arma::Row<double>::fixed<6> extensions = arma::sqrt(arma::sum(arma::square(static_cast<arma::Mat<double>>(endEffectorJointsRelativePosition_ + endEffectorPose.head(3) - baseJointsPosition_))));
 
-    arma::Mat<double>::fixed<3, 6> relativeEndeffectorJointsPosition({
-      0.0302769856567722, -0.0664251770004387, -0.023,
-      0.0423873979048716, -0.0594332272290012, -0.023,
-      0.0423873979048716, 0.0594332272290012, -0.023,
-      0.0302769856567722, 0.0664251770004387, -0.023,
-      -0.0726643835616438, 0.0069919497714374, -0.023,
-      -0.0726643835616438, -0.0069919497714374, -0.023
-    });
-    
-    std::vector<double> extensions = arma::conv_to<std::vector<double>>::from(arma::sqrt(arma::sum(arma::square(static_cast<arma::Mat<double>>(relativeEndeffectorJointsPosition + endEffectorPose.head(3) + 0.22 - baseJointsPiosition)))));
-    
-    linearActuators_.setExtensions(extensions, std::vector<double>(extensions.size(), 1.0));
+    linearActuators_.setExtensions(extensions, arma::ones<arma::Row<double>>(6));
   }
-  
+
   void StewartPlatform::setRelativeEndEffectorPose(
       const arma::Col<double>::fixed<6>& endEffectorPose) {
-      
   }
 }

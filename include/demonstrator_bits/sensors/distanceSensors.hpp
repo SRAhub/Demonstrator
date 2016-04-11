@@ -29,7 +29,7 @@ namespace demo {
 
    protected:
     std::vector<Pin> pins_;
-    
-    std::vector<double> measureImplementation() override;
+
+    arma::Row<double> measureImplementation() override;
   };
 }

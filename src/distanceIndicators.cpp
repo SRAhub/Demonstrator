@@ -1,12 +1,13 @@
 #include "demonstrator_bits/distanceIndicators.hpp"
 
 // C++ standard library
+#include <algorithm>
 #include <bitset>
 #include <chrono>
 #include <cmath>
 #include <ratio>
+#include <stdexcept>
 #include <thread>
-#include <utility>
 // IWYU pragma: no_include <ext/alloc_traits.h>
 
 namespace demo {
@@ -21,27 +22,29 @@ namespace demo {
     } else if (dataPins_.size() != numberOfIndicators_) {
       throw std::invalid_argument("DistanceIndicators: The number of data pins must be equal to the number of indicators.");
     }
-          
+
     clockPin_.set(Pin::Digital::Low);
   }
 
   void DistanceIndicators::setIndication(
-      const std::vector<double>& distances) {
+      const arma::Row<double>& distances) {
     if (distances.size() != numberOfIndicators_) {
       throw std::invalid_argument("DistanceIndicators.setIndication: The number of distances must be equal to the number of indicators.");
-    } else if(minimalDistance_ >= warningDistance_) {
+    } else if (minimalDistance_ >= warningDistance_) {
       throw std::logic_error("DistanceIndicators.setIndication: The warning distance must be greater than the minimal one.");
     } else if (warningDistance_ >= maximalDistance_) {
       throw std::logic_error("DistanceIndicators.setIndication: The maximal distance must be greater than the warning distance.");
     }
-    
+
+    const arma::Row<double>& limitedDistances = arma::clamp(distances, minimalDistance_, maximalDistance_);
+
     // Calculate LED states. The lowest LED (red) is stored at index 0.
     std::vector<std::bitset<12>> states;
-    for (std::size_t n = 0; n < distances.size(); ++n) {
+    for (std::size_t n = 0; n < distances.n_elem; ++n) {
       const double distance = std::max(std::min(distances.at(n), maximalDistance_), minimalDistance_);
-      
+
       if (distance > warningDistance_) {
-        states.push_back(0b001111111100 & (static_cast<unsigned int>(std::pow(2.0, std::ceil(8.0 * (distance - warningDistance_) / (maximalDistance_ - warningDistance_))) - 1.0)  << 2));
+        states.push_back(0b001111111100 & (static_cast<unsigned int>(std::pow(2.0, std::ceil(8.0 * (distance - warningDistance_) / (maximalDistance_ - warningDistance_))) - 1.0) << 2));
       } else {
         states.push_back(0b000000000011 & (2 + (distance <= minimalDistance_ ? 1 : 0)));
       }

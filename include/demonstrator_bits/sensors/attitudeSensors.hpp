@@ -1,5 +1,6 @@
 #pragma once
 
+// Unix library
 #include <termios.h>
 
 // Armadillo
@@ -18,19 +19,19 @@ namespace demo {
   class AttitudeSensors : public Sensors {
    public:
     AttitudeSensors(
-      Uart uart);
+        Uart uart);
 
     void reset();
 
     ~AttitudeSensors();
-    
+
    protected:
     Uart uart_;
-    
-    int fd_;
-    struct termios newTio_;
-    struct termios oldTio_;
-   
-    std::vector<double> measureImplementation() override;
+
+    int fileDescriptor_;
+    struct termios newSerial_;
+    struct termios oldSerial_;
+
+    arma::Row<double> measureImplementation() override;
   };
 }

@@ -3,6 +3,9 @@
 // C++ standard library
 #include <vector>
 
+// Armadillo
+#include <armadillo>
+
 // Demonstrator
 #include "demonstrator_bits/sensors.hpp"
 #include "demonstrator_bits/spi.hpp"
@@ -25,7 +28,7 @@ namespace demo {
    protected:
     Spi spi_;
     const std::vector<unsigned int> channels_;
-    
-    std::vector<double> measureImplementation() override;
+
+    arma::Row<double> measureImplementation() override;
   };
 }

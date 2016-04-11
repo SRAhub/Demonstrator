@@ -1,7 +1,9 @@
 #include "demonstrator_bits/i2c.hpp"
+#include "demonstrator_bits/config.hpp"
 
 // C++ standard library
 #include <iostream>
+#include <stdexcept>
 
 // WiringPi
 #include <wiringPiI2C.h>
@@ -42,7 +44,7 @@ namespace demo {
     if (::demo::isVerbose) {
       std::cout << "Setting register " << registerNumber << " to " << value << std::endl;
     }
-    
+
     if (!ownsI2c_) {
       throw std::runtime_error("I2C must be owned to be accessed.");
     }
@@ -55,17 +57,17 @@ namespace demo {
     if (::demo::isVerbose) {
       std::cout << "Reading register " << registerNumber << ". ";
     }
-    
+
     if (!ownsI2c_) {
       throw std::runtime_error("I2C must be owned to be accessed.");
     }
-    
+
     unsigned int output = static_cast<unsigned int>(::wiringPiI2CReadReg8(fileDescriptor_, static_cast<int>(registerNumber)));
-    
+
     if (::demo::isVerbose) {
       std::cout << "Received " << output << "." << std::endl;
     }
-    
+
     return output;
   }
 

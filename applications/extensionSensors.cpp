@@ -1,5 +1,6 @@
 // C++ standard library
 #include <chrono>
+#include <iomanip>
 #include <thread>
 
 // WiringPi
@@ -8,32 +9,47 @@
 // Demonstrator
 #include <demonstrator>
 
-bool parseError = false;
-void show_help();
-void run_default();
-void run_calibration();
-void parse_options(
-    const int argc,
-    const char* argv[]);
+// Application
+#include "commandline.hpp"
+
+void showHelp();
+void runDefault(
+    demo::ExtensionSensors&& extensionSensors);
+void runCalibration(
+    demo::ExtensionSensors&& extensionSensors);
 
 int main (const int argc, const char* argv[]) {
-  if (argc > 1 && argv[1][0] != '-') {
-    if (std::string(argv[1]) == "calibrate") {
-      parse_options(argc, argv);
-      run_calibration();
-    } else {
-      ::parseError = true;
-      show_help();
-    }    
-  } else {
-    parse_options(argc, argv);
-    run_default();
+  if (hasOption(argc, argv, "-h") || hasOption(argc, argv, "--help")) {
+    showHelp();
+    // Terminates the program after the help is shown.
+    return 0;
   }
   
-  return parseError ? 1 : 0;  
+  if (hasOption(argc, argv, "--verbose")) {
+    ::demo::isVerbose = true;
+  }
+  
+  // Initialises WiringPi and uses the BCM pin layout.
+  // For an overview on the pin layout, use the `gpio readall` command on a Raspberry Pi.
+  ::wiringPiSetupGpio();
+  
+  demo::Spi spi = demo::Gpio::allocateSpi();
+  std::vector<unsigned int> channels = {0, 1, 2, 3, 4, 5};
+  
+  demo::ExtensionSensors extensionSensors(std::move(spi), channels);
+  extensionSensors.setMinimalMeasurableValue(0.0); 
+  extensionSensors.setMaximalMeasurableValue(1.0);
+  
+  if (hasOption(argc, argv, "calibrate")) {
+    runCalibration(std::move(extensionSensors));
+  } else {
+    runDefault(std::move(extensionSensors));
+  }
+  
+  return 0;  
 }
 
-void show_help() {
+void showHelp() {
   std::cout << "Usage:\n";
   std::cout << "  program [options ...]\n";
   std::cout << "    Prints measurements for each sensor until the program is terminated\n";
@@ -47,42 +63,25 @@ void show_help() {
   std::cout << std::flush;
 }
 
-void run_default() {
-  ::wiringPiSetupGpio();
-  
-  demo::Spi spi = demo::Gpio::allocateSpi();
-  std::vector<unsigned int> channels = {0, 1, 2, 3, 4, 5};
-  
-  demo::ExtensionSensors extensionSensors(std::move(spi), channels);
-  extensionSensors.setMinimalMeasurableValue(0.0); 
-  extensionSensors.setMaximalMeasurableValue(1.0);
-  
+void runDefault(
+    demo::ExtensionSensors&& extensionSensors) {
   while(1) {
-    const std::vector<double> extensions = extensionSensors.measure();
-    for (std::size_t n = 0; n < extensions.size(); ++n) {
-      std::cout << "Sensor " << n << ": " << extensions.at(n) << std::endl;
+    std::cout << "+--------------+--------------+--------------+--------------+--------------+--------------+\n"
+              << "| Sensor 1 [m] | Sensor 2 [m] | Sensor 3 [m] | Sensor 4 [m] | Sensor 5 [m] | Sensor 6 [m] |\n"
+              << "+--------------+--------------+--------------+--------------+--------------+--------------+" << std::endl;
+    for (unsigned int n = 0; n < 10; ++n) {
+      const arma::Row<double>& extensions = extensionSensors.measure();
+      std::cout << "|";
+      for (std::size_t k = 0; k < extensionSensors.numberOfSensors_; ++k) {
+         std::cout << " " << std::setw(12) << extensions(k) << " |";
+      }
+      std::cout << std::endl;
       std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
   }
 }
 
-void run_calibration() {
+void runCalibration(
+    demo::ExtensionSensors&& extensionSensors) {
   
-}
-
-void parse_options(
-    const int argc,
-    const char* argv[]) {
-  for (std::size_t n = 1; n < argc; ++n) {
-    std::string option = argv[n];
-    
-    if ((option == "-h") || (option == "--help")) {
-      show_help();
-    } else if (option == "--verbose") {
-      ::demo::isVerbose = true;
-    } else {
-      ::parseError = true;
-      show_help();
-    }
-  }
 }

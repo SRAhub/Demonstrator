@@ -1,7 +1,9 @@
 #include "demonstrator_bits/spi.hpp"
+#include "demonstrator_bits/config.hpp"
 
 // C++ standard library
 #include <iostream>
+#include <stdexcept>
 
 // WiringPi
 #include <wiringPi.h>
@@ -35,7 +37,7 @@ namespace demo {
     if (::demo::isVerbose) {
       std::cout << "Setting pin " << static_cast<unsigned int>(pin) << " to " << static_cast<unsigned int>(value) << std::endl;
     }
-    
+
     if (!ownsSpi_) {
       throw std::runtime_error("SPI must be owned to be accessed.");
     }
@@ -49,18 +51,18 @@ namespace demo {
     if (::demo::isVerbose) {
       std::cout << "Reading pin " << static_cast<unsigned int>(pin) << ". ";
     }
-    
+
     if (!ownsSpi_) {
       throw std::runtime_error("SPI must be owned to be accessed.");
     }
 
     ::pinMode(static_cast<int>(pin), INPUT);
     Digital output = (::digitalRead(static_cast<int>(pin)) == 0 ? Digital::Low : Digital::High);
-    
+
     if (::demo::isVerbose) {
       std::cout << "Received " << static_cast<unsigned int>(output) << "." << std::endl;
     }
-    
+
     return output;
   }
 

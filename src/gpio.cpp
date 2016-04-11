@@ -1,16 +1,16 @@
 #include "demonstrator_bits/gpio.hpp"
-#include "demonstrator_bits/config.hpp" // IWYU pragma: keep
+#include "demonstrator_bits/config.hpp"
 
 // C++ standard library
 #include <iostream>
 #include <mutex>
-#include <string>
+#include <stdexcept>
 
 namespace demo {
   // Sets all elements in `ownedPins_` to false.
   decltype(Gpio::ownedPins_) Gpio::ownedPins_({});
   decltype(Gpio::mutex_) Gpio::mutex_;
-  
+
   Pin Gpio::allocatePin(
       const unsigned int pinNumber) {
     std::lock_guard<std::mutex> lock(mutex_);
@@ -18,10 +18,10 @@ namespace demo {
     if (::demo::isVerbose) {
       std::cout << "Allocating pin " << pinNumber << std::endl;
     }
-    
+
     if (pinNumber < 2 || pinNumber > 27) {
       throw std::domain_error("The pin number must be within [2, 27].");
-    } else if(ownedPins_.at(pinNumber - 2)) {
+    } else if (ownedPins_.at(pinNumber - 2)) {
       throw std::runtime_error("The pin must not already be allocated.");
     }
 
@@ -37,7 +37,7 @@ namespace demo {
     if (::demo::isVerbose) {
       std::cout << "Allocating SPI pins" << std::endl;
     }
-    
+
     // The pin number is reduced by 2 as the GPIO pins range from 2 to 27, but the array's indices range from 0 to 25.
     if (ownedPins_.at(5) || ownedPins_.at(6) || ownedPins_.at(7) || ownedPins_.at(8) || ownedPins_.at(9)) {
       throw std::runtime_error("The SPI pins must not already be allocated");
@@ -94,7 +94,7 @@ namespace demo {
     if (::demo::isVerbose) {
       std::cout << "Deallocating pin " << pin.pinNumber_ << std::endl;
     }
-    
+
     if (pin.ownsPin_) {
       ownedPins_.at(pin.pinNumber_ - 2) = false;
       pin.ownsPin_ = false;
@@ -108,7 +108,7 @@ namespace demo {
     if (::demo::isVerbose) {
       std::cout << "Deallocating SPI pins" << std::endl;
     }
-    
+
     if (spi.ownsSpi_) {
       ownedPins_.at(5) = false;
       ownedPins_.at(6) = false;
@@ -126,7 +126,7 @@ namespace demo {
     if (::demo::isVerbose) {
       std::cout << "Deallocating I2C pins" << std::endl;
     }
-    
+
     if (i2c.ownsI2c_) {
       ownedPins_.at(0) = false;
       ownedPins_.at(1) = false;
@@ -141,7 +141,7 @@ namespace demo {
     if (::demo::isVerbose) {
       std::cout << "Deallocating UART pins" << std::endl;
     }
-    
+
     if (uart.ownsUart_) {
       ownedPins_.at(12) = false;
       ownedPins_.at(13) = false;

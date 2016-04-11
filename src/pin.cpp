@@ -1,10 +1,10 @@
 #include "demonstrator_bits/pin.hpp"
-#include "demonstrator_bits/config.hpp" // IWYU pragma: keep
+#include "demonstrator_bits/config.hpp"
 
 // C++ standard library
 #include <iostream>
 #include <ratio>
-#include <string>
+#include <stdexcept>
 #include <thread>
 
 // WiringPi
@@ -42,7 +42,7 @@ namespace demo {
     if (::demo::isVerbose) {
       std::cout << "Setting pin " << pinNumber_ << " to " << static_cast<unsigned int>(value) << std::endl;
     }
-        
+
     if (!ownsPin_) {
       throw std::runtime_error("The pin must be owned to be accessed.");
     }
@@ -60,18 +60,18 @@ namespace demo {
     if (::demo::isVerbose) {
       std::cout << "Reading pin " << pinNumber_ << ". ";
     }
-    
+
     if (!ownsPin_) {
       throw std::runtime_error("The pin must be owned to be accessed.");
     }
 
     ::pinMode(static_cast<int>(pinNumber_), INPUT);
     Digital output = (::digitalRead(static_cast<int>(pinNumber_)) == 0 ? Digital::Low : Digital::High);
-    
+
     if (::demo::isVerbose) {
       std::cout << "Received " << static_cast<unsigned int>(output) << "." << std::endl;
     }
-    
+
     return output;
   }
 
@@ -80,7 +80,7 @@ namespace demo {
     if (::demo::isVerbose) {
       std::cout << "Waiting for signal edge on pin " << pinNumber_ << ". ";
     }
-    
+
     if (!ownsPin_) {
       throw std::runtime_error("The pin must be owned to be accessed.");
     }
@@ -88,7 +88,7 @@ namespace demo {
     // Hard deactivates verbosity, as the following commands may spam the console to much, especially if the time-out is reached.
     bool wasVerbose = ::demo::isVerbose;
     ::demo::isVerbose = false;
-    
+
     Digital currentSignal = get();
 
     auto start = std::chrono::steady_clock::now();
@@ -102,19 +102,19 @@ namespace demo {
         if (::demo::isVerbose) {
           std::cout << "Timeout." << std::endl;
         }
-        
+
         return timeout;
       }
     }
 
     std::chrono::microseconds duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-    
+
     // Restore verbosity
     ::demo::isVerbose = wasVerbose;
     if (::demo::isVerbose) {
       std::cout << "Took " << duration.count() << "us." << std::endl;
     }
-    
+
     return duration;
   }
 

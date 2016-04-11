@@ -9,32 +9,45 @@
 // Demonstrator
 #include <demonstrator>
 
-bool parseError = false;
-void show_help();
-void run_default();
-void run_calibration();
-void parse_options(
-    const int argc,
-    const char* argv[]);
+// Application
+#include "commandline.hpp"
+
+void showHelp();
+void runDefault(
+    demo::AttitudeSensors&& attitudeSensors);
+void runCalibration(
+    demo::AttitudeSensors&& attitudeSensors);
 
 int main (const int argc, const char* argv[]) {
-  if (argc > 1 && argv[1][0] != '-') {
-    if (std::string(argv[1]) == "calibrate") {
-      parse_options(argc, argv);
-      run_calibration();
-    } else {
-      ::parseError = true;
-      show_help();
-    }    
-  } else {
-    parse_options(argc, argv);
-    run_default();
+  if (hasOption(argc, argv, "-h") || hasOption(argc, argv, "--help")) {
+    showHelp();
+    // Terminates the program after the help is shown.
+    return 0;
   }
   
-  return parseError ? 1 : 0;  
+  if (hasOption(argc, argv, "--verbose")) {
+    ::demo::isVerbose = true;
+  }
+  
+  // Initialises WiringPi and uses the BCM pin layout.
+  // For an overview on the pin layout, use the `gpio readall` command on a Raspberry Pi.
+  ::wiringPiSetupGpio();
+  
+  demo::Uart uart = demo::Gpio::allocateUart();
+  demo::AttitudeSensors attitudeSensors(std::move(uart));
+  attitudeSensors.setMinimalMeasurableValue(-arma::datum::pi); 
+  attitudeSensors.setMaximalMeasurableValue(arma::datum::pi);
+  
+  if (hasOption(argc, argv, "calibrate")) {
+    runCalibration(std::move(attitudeSensors));
+  } else {
+    runDefault(std::move(attitudeSensors));
+  }
+  
+  return 0;  
 }
 
-void show_help() {
+void showHelp() {
   std::cout << "Usage:\n";
   std::cout << "  program [options ...]\n";
   std::cout << "    Prints measurements for each sensor until the program is terminated\n";
@@ -48,38 +61,25 @@ void show_help() {
   std::cout << std::flush;
 }
 
-void run_default() {
-  ::wiringPiSetupGpio();
-  
-  demo::Uart uart = demo::Gpio::allocateUart();
-  demo::AttitudeSensors attitudeSensors(std::move(uart));
-  attitudeSensors.setMinimalMeasurableValue(-arma::datum::pi); 
-  attitudeSensors.setMaximalMeasurableValue(arma::datum::pi);
-  
+void runDefault(
+    demo::AttitudeSensors&& attitudeSensors) {
   while(1) {
-    const std::vector<double> attitude = attitudeSensors.measure();
-    std::cout << "alpha: " << std::setw(10) << attitude.at(0) << "radian | beta: " << std::setw(10) << attitude.at(1) << "radian | gamma: " << std::setw(10) << attitude.at(2) << "radian" << std::endl;
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
-  }
-}
-
-void run_calibration() {
-  
-}
-
-void parse_options(
-    const int argc,
-    const char* argv[]) {
-  for (std::size_t n = 1; n < argc; ++n) {
-    std::string option = argv[n];
-    
-    if ((option == "-h") || (option == "--help")) {
-      show_help();
-    } else if (option == "--verbose") {
-      ::demo::isVerbose = true;
-    } else {
-      ::parseError = true;
-      show_help();
+    std::cout << "+-----------------+-----------------+-----------------+\n"
+              << "| Roll [radians]  | Pitch [radians] |  Yaw [radians]  |\n"
+              << "+-----------------+-----------------+-----------------+" << std::endl;
+    for (unsigned int n = 0; n < 10; ++n) {
+      const arma::Row<double>& attitudes = attitudeSensors.measure();
+      std::cout << "|";
+      for (std::size_t k = 0; k < attitudeSensors.numberOfSensors_; ++k) {
+         std::cout << " " << std::setw(15) << attitudes(k) << " |";
+      }
+      std::cout << std::endl;
+      std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
   }
+}
+
+void runCalibration(
+    demo::AttitudeSensors&& attitudeSensors) {
+  // TODO Use the Stewart platform, to self-calibrate the sensors.
 }
