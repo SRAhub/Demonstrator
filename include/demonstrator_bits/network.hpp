@@ -6,6 +6,9 @@
 namespace demo {
   class NetworkAdapter {
    public:
+    NetworkAdapter() = delete;
+    NetworkAdapter(NetworkAdapter&) = delete;
+    NetworkAdapter operator=(NetworkAdapter&) = delete;
     explicit NetworkAdapter(
         const unsigned int port);
 
