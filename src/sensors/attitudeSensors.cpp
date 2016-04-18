@@ -22,8 +22,7 @@ namespace demo {
   AttitudeSensors::AttitudeSensors(
       Uart&& uart)
       : Sensors(3),
-        uart_(std::move(uart)),
-        attitudes_(numberOfSensors_) {
+        uart_(std::move(uart)) {
     // try to open /dev/ttyAMA0; this must be explicitly enabled! (search for "/dev/ttyAMA0 raspberry pi" on the web)
     fileDescriptor_ = ::open("/dev/ttyAMA0", O_RDWR | O_NOCTTY | O_NDELAY);
     if (fileDescriptor_ < 0) {

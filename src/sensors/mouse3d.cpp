@@ -16,8 +16,7 @@
 
 namespace demo {
   Mouse3d::Mouse3d()
-      : Sensors(8),
-        displacements_(numberOfSensors_) {
+      : Sensors(8) {
     std::size_t maximalNumberOfEventDeviceIds = 32;
     for (std::size_t n = 0; n < maximalNumberOfEventDeviceIds; n++) {
       fileDescriptor_ = ::open(("/dev/input/event" + std::to_string(n)).c_str(), O_RDWR | O_NONBLOCK);
