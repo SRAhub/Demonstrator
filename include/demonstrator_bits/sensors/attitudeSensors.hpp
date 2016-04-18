@@ -47,7 +47,7 @@ namespace demo {
     struct termios newSerial_;
     struct termios oldSerial_;
 
-    arma::Row<double>::fixed<8> attitudes_;
+    arma::Row<double>::fixed<3> attitudes_;
 
     std::atomic<bool> killContinuousMeasurementThread_;
     std::thread continuousMeasurementThread_;
