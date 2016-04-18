@@ -23,7 +23,7 @@ void runSingle(
     const double extension);
 void runCalibration(
     demo::LinearActuators& linearActuators);
-void measure(
+arma::Cube<double> measure(
     demo::LinearActuators& linearActuators);
 
 int main (const int argc, const char* argv[]) {
@@ -160,14 +160,14 @@ void runCalibration(
  */
 arma::Cube<double> measure(
     demo::LinearActuators& linearActuators) {
-  const std::array<int, 8> extensions {.1, .2, .3, .4, .5, .6, .7, .8};
-  linearActuators.setNumberOfSamplesPerMeasurment(1);
+  const std::array<double, 8> extensions {.1, .2, .3, .4, .5, .6, .7, .8};
+  linearActuators.getExtensionSensors().setNumberOfSamplesPerMeasurment(1);
   arma::Cube<double> result;
 
   std::cout << "Starting measurement\n";
   for (int i = 0; i < extensions.size(); i++) {
     if (i != 0) {
-      std::cout << "Extending to " << distance << "%\n";
+      std::cout << "Extending to " << extensions.at(i) << "%\n";
       runAll(linearActuators, extensions.at(i));
       std::cout << "Reached target extension.\n";
       for (std::size_t device = 0; device < linearActuators.numberOfActuators_; device++) {
@@ -180,7 +180,7 @@ arma::Cube<double> measure(
     }
     if (i != extensions.size() - 1) {
       runAll(linearActuators, extensions.at(i + 1));
-      std::cout << "Retracting to " << distance << "%\n";
+      std::cout << "Retracting to " << extensions.at(i) << "%\n";
       runAll(linearActuators, extensions.at(i));
       std::cout << "Reached target extension.\n";
       for (std::size_t device = 0; device < linearActuators.numberOfActuators_; device++) {
