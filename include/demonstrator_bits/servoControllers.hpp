@@ -24,9 +24,18 @@ namespace demo {
     std::size_t numberOfControllers_;
 
     explicit ServoControllers(
-        std::vector<Pin> directionPins,
-        I2c i2c,
+        std::vector<Pin>&& directionPins,
+        I2c&& i2c,
         const std::vector<unsigned int>& channels);
+
+    explicit ServoControllers(
+        ServoControllers&& servoControllers);
+
+    ServoControllers& operator=(
+        ServoControllers&& servoControllers);
+
+    ServoControllers(ServoControllers&) = delete;
+    ServoControllers& operator=(ServoControllers&) = delete;
 
     void run(
         const std::vector<bool>& forwards,

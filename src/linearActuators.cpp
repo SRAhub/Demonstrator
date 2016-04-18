@@ -10,8 +10,8 @@
 
 namespace demo {
   LinearActuators::LinearActuators(
-      ServoControllers servoControllers,
-      ExtensionSensors extensionSensors)
+      ServoControllers&& servoControllers,
+      ExtensionSensors&& extensionSensors)
       : numberOfActuators_(servoControllers.numberOfControllers_),
         servoControllers_(std::move(servoControllers)),
         extensionSensors_(std::move(extensionSensors)) {
@@ -23,9 +23,21 @@ namespace demo {
   void LinearActuators::setExtensions(
       const arma::Row<double>& extensions,
       const arma::Row<double>& speeds) {
-    stopReachExtension_ = false;
-    reachExtension(extensions, speeds);
-    // reachExtensionThread_ = std::thread([=]{reachExtension(extensions, speeds);});
+    killReachExtensionThread_ = false;
+    reachExtensionThread_ = std::thread(&LinearActuators::reachExtension, this, extensions, speeds);
+  }
+
+  LinearActuators::LinearActuators(
+      LinearActuators&& linearActuators)
+      : LinearActuators(std::move(linearActuators.servoControllers_), std::move(linearActuators.extensionSensors_)) {
+  }
+
+  LinearActuators& LinearActuators::operator=(
+      LinearActuators&& linearActuators) {
+    servoControllers_ = std::move(linearActuators.servoControllers_);
+    extensionSensors_ = std::move(linearActuators.extensionSensors_);
+
+    return *this;
   }
 
   arma::Row<double> LinearActuators::getExtensions() {
@@ -41,7 +53,7 @@ namespace demo {
 
     std::vector<bool> forwards = {false, false, false, false, false, false};
     arma::Row<double> speeds = maximalSpeeds;
-    while (!hasReachedPosition && !stopReachExtension_) {
+    while (!hasReachedPosition && !killReachExtensionThread_) {
       const arma::Row<double>& deviations = currentExtension - extensions;
       for (std::size_t n = 0; n < numberOfActuators_; ++n) {
         if (std::abs(deviations(n)) <= maximalExtensionDeviation_) {

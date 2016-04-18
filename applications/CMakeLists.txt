@@ -30,6 +30,9 @@ include_directories(${WIRINGPI_INCLUDE_DIR})
 find_package(Armadillo 6.400.0 REQUIRED)
 include_directories(${ARMADILLO_INCLUDE_DIR})
 
+find_package(Mantella 0.12.0 REQUIRED)
+include_directories(${MANTELLA_INCLUDE_DIR})
+
 find_package(Demonstrator 0.20.0 REQUIRED)
 include_directories(${DEMONSTRATOR_INCLUDE_DIR})
 
@@ -102,6 +105,7 @@ add_executable(distanceSensors
 
 target_link_libraries(distanceSensors ${WIRINGPI_LIBRARIES})
 target_link_libraries(distanceSensors ${ARMADILLO_LIBRARIES})
+target_link_libraries(distanceSensors ${MANTELLA_LIBRARIES})
 target_link_libraries(distanceSensors ${DEMONSTRATOR_LIBRARIES})
 
 add_executable(distanceIndicators
@@ -111,6 +115,7 @@ add_executable(distanceIndicators
 
 target_link_libraries(distanceIndicators ${WIRINGPI_LIBRARIES})
 target_link_libraries(distanceIndicators ${ARMADILLO_LIBRARIES})
+target_link_libraries(distanceIndicators ${MANTELLA_LIBRARIES})
 target_link_libraries(distanceIndicators ${DEMONSTRATOR_LIBRARIES})
 
 add_executable(attitudeSensors
@@ -120,6 +125,7 @@ add_executable(attitudeSensors
 
 target_link_libraries(attitudeSensors ${WIRINGPI_LIBRARIES})
 target_link_libraries(attitudeSensors ${ARMADILLO_LIBRARIES})
+target_link_libraries(attitudeSensors ${MANTELLA_LIBRARIES})
 target_link_libraries(attitudeSensors ${DEMONSTRATOR_LIBRARIES})
 
 add_executable(extensionSensors
@@ -129,6 +135,7 @@ add_executable(extensionSensors
 
 target_link_libraries(extensionSensors ${WIRINGPI_LIBRARIES})
 target_link_libraries(extensionSensors ${ARMADILLO_LIBRARIES})
+target_link_libraries(extensionSensors ${MANTELLA_LIBRARIES})
 target_link_libraries(extensionSensors ${DEMONSTRATOR_LIBRARIES})
 
 add_executable(servoControllers
@@ -138,6 +145,7 @@ add_executable(servoControllers
 
 target_link_libraries(servoControllers ${WIRINGPI_LIBRARIES})
 target_link_libraries(servoControllers ${ARMADILLO_LIBRARIES})
+target_link_libraries(servoControllers ${MANTELLA_LIBRARIES})
 target_link_libraries(servoControllers ${DEMONSTRATOR_LIBRARIES})
 
 add_executable(linearActuators
@@ -147,7 +155,18 @@ add_executable(linearActuators
 
 target_link_libraries(linearActuators ${WIRINGPI_LIBRARIES})
 target_link_libraries(linearActuators ${ARMADILLO_LIBRARIES})
+target_link_libraries(linearActuators ${MANTELLA_LIBRARIES})
 target_link_libraries(linearActuators ${DEMONSTRATOR_LIBRARIES})
+
+add_executable(stewartPlatform
+  commandline.cpp
+  stewartPlatform.cpp
+)
+
+target_link_libraries(stewartPlatform ${WIRINGPI_LIBRARIES})
+target_link_libraries(stewartPlatform ${ARMADILLO_LIBRARIES})
+target_link_libraries(stewartPlatform ${MANTELLA_LIBRARIES})
+target_link_libraries(stewartPlatform ${DEMONSTRATOR_LIBRARIES})
 
 message(STATUS "")
 message(STATUS "Noticable CMAKE variables:")

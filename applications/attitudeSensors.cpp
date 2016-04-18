@@ -14,9 +14,9 @@
 
 void showHelp();
 void runDefault(
-    demo::AttitudeSensors&& attitudeSensors);
+    demo::AttitudeSensors& attitudeSensors);
 void runCalibration(
-    demo::AttitudeSensors&& attitudeSensors);
+    demo::AttitudeSensors& attitudeSensors);
 
 int main (const int argc, const char* argv[]) {
   if (hasOption(argc, argv, "-h") || hasOption(argc, argv, "--help")) {
@@ -39,9 +39,9 @@ int main (const int argc, const char* argv[]) {
   attitudeSensors.setMaximalMeasurableValue(arma::datum::pi);
   
   if (hasOption(argc, argv, "calibrate")) {
-    runCalibration(std::move(attitudeSensors));
+    runCalibration(attitudeSensors);
   } else {
-    runDefault(std::move(attitudeSensors));
+    runDefault(attitudeSensors);
   }
   
   return 0;  
@@ -62,7 +62,7 @@ void showHelp() {
 }
 
 void runDefault(
-    demo::AttitudeSensors&& attitudeSensors) {
+    demo::AttitudeSensors& attitudeSensors) {
   while(1) {
     std::cout << "+-----------------+-----------------+-----------------+\n"
               << "| Roll [radians]  | Pitch [radians] |  Yaw [radians]  |\n"
@@ -80,6 +80,6 @@ void runDefault(
 }
 
 void runCalibration(
-    demo::AttitudeSensors&& attitudeSensors) {
+    demo::AttitudeSensors& attitudeSensors) {
   // TODO Use the Stewart platform, to self-calibrate the sensors.
 }

@@ -7,17 +7,28 @@
 #include <ratio>
 #include <thread>
 // IWYU pragma: no_include <ext/alloc_traits.h>
-// IWYU pragma: no_include <ext/new_allocator.h>
 
 namespace demo {
   DistanceSensors::DistanceSensors(
-      std::vector<Pin> pins)
+      std::vector<Pin>&& pins)
       : Sensors(pins.size()),
         pins_(std::move(pins)) {
     for (std::size_t n = 0; n < numberOfSensors_; ++n) {
       pins_.at(n).set(Pin::Digital::Low);
       std::this_thread::sleep_for(std::chrono::microseconds(2));
     }
+  }
+
+  DistanceSensors::DistanceSensors(
+      DistanceSensors&& distanceSensors)
+      : DistanceSensors(std::move(distanceSensors.pins_)) {
+  }
+
+  DistanceSensors& DistanceSensors::operator=(
+      DistanceSensors&& distanceSensors) {
+    pins_ = std::move(distanceSensors.pins_);
+
+    return *this;
   }
 
   arma::Row<double> DistanceSensors::measureImplementation() {

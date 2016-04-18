@@ -11,8 +11,8 @@
 
 namespace demo {
   ServoControllers::ServoControllers(
-      std::vector<Pin> directionPins,
-      I2c i2c,
+      std::vector<Pin>&& directionPins,
+      I2c&& i2c,
       const std::vector<unsigned int>& channels)
       : numberOfControllers_(directionPins.size()),
         directionPins_(std::move(directionPins)),
@@ -39,6 +39,23 @@ namespace demo {
     i2c_.set(0x00, oldmode);
     std::this_thread::sleep_for(std::chrono::milliseconds(5));
     i2c_.set(0x00, oldmode | 0xa1);
+  }
+
+  ServoControllers::ServoControllers(
+      ServoControllers&& servoControllers)
+      : ServoControllers(std::move(servoControllers.directionPins_), std::move(servoControllers.i2c_), servoControllers.channels_) {
+  }
+
+  ServoControllers& ServoControllers::operator=(
+      ServoControllers&& servoControllers) {
+    if (channels_ != servoControllers.channels_) {
+      throw std::invalid_argument("ServoControllers.operator=: The channels must be equal.");
+    }
+
+    directionPins_ = std::move(servoControllers.directionPins_);
+    i2c_ = std::move(servoControllers.i2c_);
+
+    return *this;
   }
 
   void ServoControllers::run(

@@ -1,5 +1,4 @@
 #pragma once
-#include "demonstrator_bits/config.hpp"
 
 // C++ standard library
 #include <chrono>
@@ -27,9 +26,6 @@ namespace demo {
       High = 1 // HIGH
     };
 
-    Pin& operator=(Pin&) = delete;
-    Pin(Pin&) = delete;
-
     /**
      * Take over ownership from `other`.
      */
@@ -39,6 +35,9 @@ namespace demo {
      * Take over ownership from `other`.
      */
     Pin& operator=(Pin&&);
+
+    Pin& operator=(Pin&) = delete;
+    Pin(Pin&) = delete;
 
     /**
      * Switch this pin to `output` mode and set it to the assigned value.

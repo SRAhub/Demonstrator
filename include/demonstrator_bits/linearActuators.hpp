@@ -1,6 +1,7 @@
 #pragma once
 
 // C++ standard library
+#include <atomic>
 #include <cstddef>
 #include <thread>
 
@@ -25,8 +26,17 @@ namespace demo {
     const std::size_t numberOfActuators_;
 
     explicit LinearActuators(
-        ServoControllers servoControllers,
-        ExtensionSensors extensionSensors);
+        ServoControllers&& servoControllers,
+        ExtensionSensors&& extensionSensors);
+
+    explicit LinearActuators(
+        LinearActuators&& linearActuators);
+
+    LinearActuators& operator=(
+        LinearActuators&& linearActuators);
+
+    LinearActuators(LinearActuators&) = delete;
+    LinearActuators& operator=(LinearActuators&) = delete;
 
     /**
      * Let each actuator approach its new position. This method blocks until all actuators have reached their extension!
@@ -68,7 +78,7 @@ namespace demo {
 
     double maximalExtensionDeviation_;
 
-    bool stopReachExtension_;
+    std::atomic<bool> killReachExtensionThread_;
     std::thread reachExtensionThread_;
 
     void reachExtension(

@@ -20,7 +20,7 @@ namespace demo {
    * @brief Open and set up the serial port the sensor is connected to.
    */
   AttitudeSensors::AttitudeSensors(
-      Uart uart)
+      Uart&& uart)
       : Sensors(3),
         uart_(std::move(uart)) {
     // try to open /dev/ttyAMA0; this must be explicitly enabled! (search for "/dev/ttyAMA0 raspberry pi" on the web)
@@ -62,12 +62,27 @@ namespace demo {
     ::cfsetospeed(&newSerial_, B57600);
     ::tcflush(fileDescriptor_, TCIFLUSH);
     ::tcsetattr(fileDescriptor_, TCSANOW, &newSerial_);
+
+    killContinuousMeasurementThread_ = false;
+    continuousMeasurementThread_ = std::thread(&AttitudeSensors::continuousMeasurement, this);
   }
 
-  /**
-   * @brief Close the serial port.
-   */
+  AttitudeSensors::AttitudeSensors(
+      AttitudeSensors&& attitudeSensors)
+      : AttitudeSensors(std::move(attitudeSensors.uart_)) {
+  }
+
+  AttitudeSensors& AttitudeSensors::operator=(
+      AttitudeSensors&& attitudeSensors) {
+    uart_ = std::move(attitudeSensors.uart_);
+
+    return *this;
+  }
+
   AttitudeSensors::~AttitudeSensors() {
+    killContinuousMeasurementThread_ = true;
+    continuousMeasurementThread_.join();
+
     // reset port to previous state
     ::tcsetattr(fileDescriptor_, TCSANOW, &oldSerial_);
     if (fileDescriptor_ != -1) {
@@ -75,33 +90,25 @@ namespace demo {
     }
   }
 
-  /**
-   * @brief   Returns the rotation of the sensor (roll/pitch/yaw).
-   * @return  Rotation values (roll/pitch/yaw).
-   */
   arma::Row<double> AttitudeSensors::measureImplementation() {
-    arma::Row<double> attitudes;
+    return attitudes_;
+  }
 
-    // read input from serial port
-    // TODO: move "2-chars-minimum-check" out of this function (maybe blocks the program if there is no input on serial port)
+  void AttitudeSensors::continuousMeasurement() {
     char buffer[64];
-    int numberOfReceivedChars;
-    for (unsigned int n = 0; n < 10; ++n) {
-      numberOfReceivedChars = 0;
-      while (numberOfReceivedChars <= 1) {
-        numberOfReceivedChars = ::read(fileDescriptor_, buffer, 63);
-      }
-    }
 
-    // parse results
-    buffer[numberOfReceivedChars] = 0;
+    int numberOfReceivedChars = 0;
+    while (numberOfReceivedChars <= 1) {
+      numberOfReceivedChars = ::read(fileDescriptor_, buffer, 63);
+    }
+    buffer[numberOfReceivedChars] = '\0';
+
     std::string text = buffer;
     text = text.substr(text.find_first_of("=") + 1);
-    attitudes(0) = std::stod(text.substr(0, text.find_first_of(",")));
-    attitudes(1) = std::stod(text.substr(text.find_first_of(",") + 1, text.find_last_of(",")));
-    attitudes(2) = std::stod(text.substr(text.find_last_of(",") + 1));
-
-    return attitudes * arma::datum::pi / 180.0;
+    attitudes_(0) = std::stod(text.substr(0, text.find_first_of(",")));
+    attitudes_(1) = std::stod(text.substr(text.find_first_of(",") + 1, text.find_last_of(",")));
+    attitudes_(2) = std::stod(text.substr(text.find_last_of(",") + 1));
+    attitudes_ *= arma::datum::pi / 180.0;
   }
 
   /**

@@ -14,10 +14,10 @@
 
 void showHelp();
 void runDefault(
-    demo::DistanceIndicators&& distanceIndicators);
+    demo::DistanceIndicators& distanceIndicators);
 void runSensor(
-    demo::DistanceIndicators&& distanceIndicators,
-    demo::DistanceSensors&& distanceSensors);
+    demo::DistanceIndicators& distanceIndicators,
+    demo::DistanceSensors& distanceSensors);
 
 int main (const int argc, const char* argv[]) {
   if (hasOption(argc, argv, "-h") || hasOption(argc, argv, "--help")) {
@@ -42,7 +42,6 @@ int main (const int argc, const char* argv[]) {
   dataPins.push_back(demo::Gpio::allocatePin(13));
   dataPins.push_back(demo::Gpio::allocatePin(19));
   dataPins.push_back(demo::Gpio::allocatePin(26));
-  
   demo::DistanceIndicators distanceIndicators(std::move(clockPin), std::move(dataPins));
   distanceIndicators.setMinimalDistance(0.05); 
   distanceIndicators.setWarningDistance(0.08);
@@ -60,9 +59,9 @@ int main (const int argc, const char* argv[]) {
   distanceSensors.setMaximalMeasurableValue(0.35);
   
   if (hasOption(argc, argv, "sensor")) {
-    runSensor(std::move(distanceIndicators), std::move(distanceSensors));
+    runSensor(distanceIndicators, distanceSensors);
   } else {
-    runDefault(std::move(distanceIndicators));
+    runDefault(distanceIndicators);
   }
   
   return 0;  
@@ -74,7 +73,7 @@ void showHelp() {
   std::cout << "    Runs from the minimal to the maximal distance\n";
   std::cout << "\n";
   std::cout << "  program sensor [options ...]\n";
-  std::cout << "    Uses the distance sensor as input\n";
+  std::cout << "    Uses the distance sensors as input devices\n";
   std::cout << "\n";
   std::cout << "  Options:\n";
   std::cout << "         --verbose    Prints additional (debug) information\n";
@@ -83,7 +82,7 @@ void showHelp() {
 }
 
 void runDefault(
-    demo::DistanceIndicators&& distanceIndicators) {
+    demo::DistanceIndicators& distanceIndicators) {
   while(1) {
     for (const auto distance : arma::linspace(distanceIndicators.getMaximalDistance(), distanceIndicators.getWarningDistance(), 9)) {
       std::cout << "Distance = " << distance << "m" << std::endl;
@@ -97,8 +96,8 @@ void runDefault(
 }
 
 void runSensor(
-    demo::DistanceIndicators&& distanceIndicators,
-    demo::DistanceSensors&& distanceSensors) {
+    demo::DistanceIndicators& distanceIndicators,
+    demo::DistanceSensors& distanceSensors) {
   while(1) {
     std::cout << "+--------------+--------------+--------------+--------------+--------------+--------------+\n"
               << "| Sensor 1 [m] | Sensor 2 [m] | Sensor 3 [m] | Sensor 4 [m] | Sensor 5 [m] | Sensor 6 [m] |\n"

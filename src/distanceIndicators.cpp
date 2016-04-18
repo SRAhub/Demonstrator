@@ -12,11 +12,11 @@
 
 namespace demo {
   DistanceIndicators::DistanceIndicators(
-      Pin clockPin,
-      std::vector<Pin> dataPins)
+      Pin&& clockPin,
+      std::vector<Pin>&& dataPins)
       : numberOfIndicators_(dataPins.size()),
-        dataPins_(std::move(dataPins)),
-        clockPin_(std::move(clockPin)) {
+        clockPin_(std::move(clockPin)),
+        dataPins_(std::move(dataPins)) {
     if (numberOfIndicators_ == 0) {
       throw std::domain_error("DistanceIndicators: The number of indicators must be greater than 0.");
     } else if (dataPins_.size() != numberOfIndicators_) {
@@ -24,6 +24,19 @@ namespace demo {
     }
 
     clockPin_.set(Pin::Digital::Low);
+  }
+
+  DistanceIndicators::DistanceIndicators(
+      DistanceIndicators&& distanceIndicator)
+      : DistanceIndicators(std::move(distanceIndicator.clockPin_), std::move(distanceIndicator.dataPins_)) {
+  }
+
+  DistanceIndicators& DistanceIndicators::operator=(
+      DistanceIndicators&& distanceIndicator) {
+    clockPin_ = std::move(distanceIndicator.clockPin_);
+    dataPins_ = std::move(distanceIndicator.dataPins_);
+
+    return *this;
   }
 
   void DistanceIndicators::setIndication(

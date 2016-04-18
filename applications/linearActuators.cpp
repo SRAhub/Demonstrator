@@ -67,9 +67,9 @@ int main (const int argc, const char* argv[]) {
 
   if (hasOption(argc, argv, "calibrate")) {
     runCalibration(linearActuators);
-  } else if (argc > 3 && argv[2][0] != '-') {
+  } else if (argc > 2 & argv[1][0] != '-' & argv[2][0] != '-') {
     runSingle(linearActuators, std::stoi(argv[1]), std::stod(argv[2]));
-  } else if (argc > 2 && argv[1][0] != '-') {
+  } else if (argc > 1 & argv[1][0] != '-') {
     runAll(linearActuators, std::stod(argv[1]));
   } else {
     runDefault(linearActuators);

@@ -40,6 +40,9 @@ include_directories(${WIRINGPI_INCLUDE_DIR})
 find_package(Armadillo 6.400.0 REQUIRED)
 include_directories(${ARMADILLO_INCLUDE_DIR})
 
+find_package(Mantella 0.12.0 REQUIRED)
+include_directories(${MANTELLA_INCLUDE_DIR})
+
 # --------------------
 # CONFIGURING COMPILER
 # --------------------
@@ -138,6 +141,7 @@ add_library(demonstrator SHARED
   src/sensors/attitudeSensors.cpp
   src/sensors/distanceSensors.cpp
   src/sensors/extensionSensors.cpp
+  src/sensors/mouse3d.cpp
 
   # Controllers and Actuators
   src/servoControllers.cpp
@@ -146,15 +150,13 @@ add_library(demonstrator SHARED
 
   # Indicators
   src/distanceIndicators.cpp
-
-  # Input devices
-  src/mouse3d.cpp
 )
 
 # Linking against prerequirements
 
 target_link_libraries(demonstrator ${WIRINGPI_LIBRARIES})
 target_link_libraries(demonstrator ${ARMADILLO_LIBRARIES})
+target_link_libraries(demonstrator ${MANTELLA_LIBRARIES})
 
 # ---------------
 # INSTALL LIBRARY
