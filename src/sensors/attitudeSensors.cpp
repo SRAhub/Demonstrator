@@ -23,6 +23,37 @@ namespace demo {
       Uart&& uart)
       : Sensors(3),
         uart_(std::move(uart)) {
+          
+  }
+
+  AttitudeSensors::AttitudeSensors(
+      AttitudeSensors&& attitudeSensors)
+      : AttitudeSensors(std::move(attitudeSensors.uart_)) {
+  }
+
+  AttitudeSensors& AttitudeSensors::operator=(
+      AttitudeSensors&& attitudeSensors) {
+    uart_ = std::move(attitudeSensors.uart_);
+
+    return *this;
+  }
+
+  AttitudeSensors::~AttitudeSensors() {
+    killContinuousMeasurementThread_ = true;
+    continuousMeasurementThread_.join();
+
+    // reset port to previous state
+    ::tcsetattr(fileDescriptor_, TCSANOW, &oldSerial_);
+    if (fileDescriptor_ != -1) {
+      ::close(fileDescriptor_);
+    }
+  }
+
+  arma::Row<double> AttitudeSensors::measureImplementation() {
+    return attitudes_;
+  }
+  
+  void AttitudeSensors::run() {
     // try to open /dev/ttyAMA0; this must be explicitly enabled! (search for "/dev/ttyAMA0 raspberry pi" on the web)
     fileDescriptor_ = ::open("/dev/ttyAMA0", O_RDWR | O_NOCTTY | O_NDELAY);
     if (fileDescriptor_ < 0) {
@@ -65,33 +96,6 @@ namespace demo {
 
     killContinuousMeasurementThread_ = false;
     continuousMeasurementThread_ = std::thread(&AttitudeSensors::continuousMeasurement, this);
-  }
-
-  AttitudeSensors::AttitudeSensors(
-      AttitudeSensors&& attitudeSensors)
-      : AttitudeSensors(std::move(attitudeSensors.uart_)) {
-  }
-
-  AttitudeSensors& AttitudeSensors::operator=(
-      AttitudeSensors&& attitudeSensors) {
-    uart_ = std::move(attitudeSensors.uart_);
-
-    return *this;
-  }
-
-  AttitudeSensors::~AttitudeSensors() {
-    killContinuousMeasurementThread_ = true;
-    continuousMeasurementThread_.join();
-
-    // reset port to previous state
-    ::tcsetattr(fileDescriptor_, TCSANOW, &oldSerial_);
-    if (fileDescriptor_ != -1) {
-      ::close(fileDescriptor_);
-    }
-  }
-
-  arma::Row<double> AttitudeSensors::measureImplementation() {
-    return attitudes_;
   }
 
   void AttitudeSensors::continuousMeasurement() {

@@ -34,6 +34,8 @@ namespace demo {
     AttitudeSensors(AttitudeSensors&) = delete;
     AttitudeSensors& operator=(AttitudeSensors&) = delete;
 
+    void run();
+    
     void reset();
 
     ~AttitudeSensors();
