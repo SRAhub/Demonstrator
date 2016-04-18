@@ -69,7 +69,7 @@ namespace demo {
       throw std::domain_error("ServoControllers.run: All speeds must be within [0, 1].");
     }
 
-    const arma::Row<double>& limitedSpeeds = arma::clamp(speeds, minimalSpeed_, maximalSpeed_);
+    const arma::Row<double>& limitedSpeeds = arma::clamp(speeds, 0, maximalSpeed_);
 
     for (std::size_t n = 0; n < numberOfControllers_; ++n) {
       directionPins_.at(n).set(forwards.at(n) ? Pin::Digital::Low : Pin::Digital::High);
@@ -83,19 +83,6 @@ namespace demo {
 
   void ServoControllers::stop() {
     run(std::vector<bool>(numberOfControllers_, true), arma::zeros<arma::Row<double>>(numberOfControllers_));
-  }
-
-  void ServoControllers::setMinimalSpeed(
-      const double minimalSpeed) {
-    if (!std::isfinite(minimalSpeed)) {
-      throw std::domain_error("ServoControllers.setMinimalSpeed: The minimal speed must be finite.");
-    }
-
-    minimalSpeed_ = minimalSpeed;
-  }
-
-  double ServoControllers::getMinimalSpeed() const {
-    return minimalSpeed_;
   }
 
   void ServoControllers::setMaximalSpeed(

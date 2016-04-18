@@ -47,7 +47,6 @@ int main (const int argc, const char* argv[]) {
   demo::I2c i2c = demo::Gpio::allocateI2c();
   std::vector<unsigned int> i2cChannels = {0, 1, 2, 3, 4, 5};
   demo::ServoControllers servoControllers(std::move(directionPins), std::move(i2c), i2cChannels);
-  servoControllers.setMinimalSpeed(0.75);
   servoControllers.setMaximalSpeed(1.0);
   
   demo::Spi spi = demo::Gpio::allocateSpi();

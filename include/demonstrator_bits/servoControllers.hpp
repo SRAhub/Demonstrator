@@ -43,10 +43,6 @@ namespace demo {
 
     void stop();
 
-    void setMinimalSpeed(
-        const double minimalSpeed);
-    double getMinimalSpeed() const;
-
     void setMaximalSpeed(
         const double maximalSpeed);
     double getMaximalSpeed() const;
@@ -57,10 +53,6 @@ namespace demo {
     I2c i2c_;
     const std::vector<unsigned int> channels_;
 
-    /**
-     * Minimal/maximal allowed extension speed of each actuator, in cm/second.
-     */
-    double minimalSpeed_;
     double maximalSpeed_;
   };
 }

@@ -46,6 +46,7 @@ int main (const int argc, const char* argv[]) {
   demo::I2c i2c = demo::Gpio::allocateI2c();
   std::vector<unsigned int> channels = {0, 1, 2, 3, 4, 5};
   demo::ServoControllers servoControllers(std::move(directionPins), std::move(i2c), channels);
+  servoControllers.setMaximalSpeed(1.0);
   
   run(servoControllers, std::stoi(argv[1]));
   
@@ -69,7 +70,7 @@ void run(
     demo::ServoControllers& servoControllers,
     const std::size_t n) {
   std::vector<bool> forwards(servoControllers.numberOfControllers_, false);
-  arma::Col<double> speeds(servoControllers.numberOfControllers_, arma::fill::zeros);
+  arma::Row<double> speeds(servoControllers.numberOfControllers_, arma::fill::zeros);
   speeds(n) = 1.0;
   
   std::cout << "Pressing `+` will move the servo one step up and pressing `-` will move it one step down\n";
