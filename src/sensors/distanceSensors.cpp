@@ -39,7 +39,7 @@ namespace demo {
      * 4. Reset the pin to its initial state for the next measurement.
      */
 
-    arma::Row<double> distances;
+    arma::Row<double> distances(numberOfSensors_);
     for (std::size_t n = 0; n < numberOfSensors_; ++n) {
       pins_.at(n).set(Pin::Digital::High);
       std::this_thread::sleep_for(std::chrono::microseconds(10));

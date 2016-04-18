@@ -34,7 +34,7 @@ namespace demo {
   }
 
   arma::Row<double> ExtensionSensors::measureImplementation() {
-    arma::Row<double> extensions;
+    arma::Row<double> extensions(numberOfSensors_);
     for (std::size_t n = 0; n < numberOfSensors_; ++n) {
       spi_.set(Spi::Pin::ChipSelect, Spi::Digital::High);
       spi_.set(Spi::Pin::Clock, Spi::Digital::Low);
