@@ -22,8 +22,17 @@ namespace demo {
   class ExtensionSensors : public Sensors {
    public:
     explicit ExtensionSensors(
-        Spi spi,
+        Spi&& spi,
         const std::vector<unsigned int>& channels);
+
+    explicit ExtensionSensors(
+        ExtensionSensors&& extensionSensors);
+
+    ExtensionSensors& operator=(
+        ExtensionSensors&& extensionSensors);
+
+    ExtensionSensors(ExtensionSensors&) = delete;
+    ExtensionSensors& operator=(ExtensionSensors&) = delete;
 
    protected:
     Spi spi_;

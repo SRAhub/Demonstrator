@@ -13,7 +13,7 @@
 
 void showHelp();
 void run(
-    demo::ServoControllers&& servoControllers,
+    demo::ServoControllers& servoControllers,
     const std::size_t n);
 
 int main (const int argc, const char* argv[]) {
@@ -45,10 +45,9 @@ int main (const int argc, const char* argv[]) {
   directionPins.push_back(demo::Gpio::allocatePin(26));
   demo::I2c i2c = demo::Gpio::allocateI2c();
   std::vector<unsigned int> channels = {0, 1, 2, 3, 4, 5};
-  
   demo::ServoControllers servoControllers(std::move(directionPins), std::move(i2c), channels);
   
-  run(std::move(servoControllers), std::stoi(argv[1]));
+  run(servoControllers, std::stoi(argv[1]));
   
   return 0;  
 }
@@ -67,7 +66,7 @@ void showHelp() {
 }
 
 void run(
-    demo::ServoControllers&& servoControllers,
+    demo::ServoControllers& servoControllers,
     const std::size_t n) {
   std::vector<bool> forwards(servoControllers.numberOfControllers_, false);
   arma::Col<double> speeds(servoControllers.numberOfControllers_, arma::fill::zeros);

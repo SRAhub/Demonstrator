@@ -39,9 +39,18 @@ namespace demo {
      */
     const std::size_t numberOfIndicators_;
 
-    DistanceIndicators(
-        Pin clockPin,
-        std::vector<Pin> dataPins);
+    explicit DistanceIndicators(
+        Pin&& clockPin,
+        std::vector<Pin>&& dataPins);
+
+    explicit DistanceIndicators(
+        DistanceIndicators&& distanceIndicators);
+
+    DistanceIndicators& operator=(
+        DistanceIndicators&& distanceIndicators);
+
+    DistanceIndicators(DistanceIndicators&) = delete;
+    DistanceIndicators& operator=(DistanceIndicators&) = delete;
 
     /**
      * Update the LED bars to indicate the assigned distances, as described in the class documentation.
@@ -63,16 +72,16 @@ namespace demo {
 
    protected:
     /**
-     * These pins are connected to the DI pins on the LED bars.
-     */
-    std::vector<Pin> dataPins_;
-
-    /**
      * This pin is connected to the DCKI (clock) pins of *all* LED bars.
      *
      * The clock signal is only changed during `setIndication()` calls. In between, its value is `low`.
      */
     Pin clockPin_;
+
+    /**
+     * These pins are connected to the DI pins on the LED bars.
+     */
+    std::vector<Pin> dataPins_;
 
     /**
      * For distances less than this value, the indicator will show the "closest distance" pattern.

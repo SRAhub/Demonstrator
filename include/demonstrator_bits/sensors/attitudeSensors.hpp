@@ -6,6 +6,10 @@
 // Armadillo
 #include <armadillo>
 
+// C++ standard library
+#include <atomic>
+#include <thread>
+
 // Demonstrator
 #include "demonstrator_bits/sensors.hpp"
 #include "demonstrator_bits/uart.hpp"
@@ -18,8 +22,17 @@ namespace demo {
    */
   class AttitudeSensors : public Sensors {
    public:
-    AttitudeSensors(
-        Uart uart);
+    explicit AttitudeSensors(
+        Uart&& uart);
+
+    explicit AttitudeSensors(
+        AttitudeSensors&& attitudeSensors);
+
+    AttitudeSensors& operator=(
+        AttitudeSensors&& attitudeSensors);
+
+    AttitudeSensors(AttitudeSensors&) = delete;
+    AttitudeSensors& operator=(AttitudeSensors&) = delete;
 
     void reset();
 
@@ -32,6 +45,12 @@ namespace demo {
     struct termios newSerial_;
     struct termios oldSerial_;
 
+    arma::Row<double>::fixed<8> attitudes_;
+
+    std::atomic<bool> killContinuousMeasurementThread_;
+    std::thread continuousMeasurementThread_;
+
     arma::Row<double> measureImplementation() override;
+    void continuousMeasurement();
   };
 }

@@ -39,6 +39,7 @@
 #include "demonstrator_bits/sensors/attitudeSensors.hpp"
 #include "demonstrator_bits/sensors/distanceSensors.hpp"
 #include "demonstrator_bits/sensors/extensionSensors.hpp"
+#include "demonstrator_bits/sensors/mouse3d.hpp"
 
 // Controllers and Actuators
 #include "demonstrator_bits/servoControllers.hpp"
@@ -47,7 +48,4 @@
 
 // Indicators
 #include "demonstrator_bits/distanceIndicators.hpp"
-
-// Input devices
-#include "demonstrator_bits/mouse3d.hpp"
 // IWYU pragma: end_exports

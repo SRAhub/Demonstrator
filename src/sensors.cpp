@@ -15,6 +15,20 @@ namespace demo {
     setNumberOfSamplesPerMeasurment(1);
   }
 
+  Sensors::Sensors(
+      Sensors&& sensors)
+      : Sensors(sensors.numberOfSensors_) {
+  }
+
+  Sensors& Sensors::operator=(
+      Sensors&& sensors) {
+    if (numberOfSensors_ != sensors.numberOfSensors_) {
+      throw std::invalid_argument("Sensors.operator=: The number of sensors must be equal.");
+    }
+
+    return *this;
+  }
+
   arma::Row<double> Sensors::measure() {
     if (maximalMeasurableValue_ < minimalMeasurableValue_) {
       throw std::logic_error("Sensors.measure: The maximal measurable value must be grater than or equal to the minimal one.");

@@ -4,19 +4,30 @@
 #include <string>
 
 namespace demo {
-  class NetworkAdapter {
+  class Network {
    public:
-    NetworkAdapter() = delete;
-    NetworkAdapter(NetworkAdapter&) = delete;
-    NetworkAdapter operator=(NetworkAdapter&) = delete;
-    explicit NetworkAdapter(
-        const unsigned int port);
+    explicit Network(
+        const unsigned int port_);
 
-    std::string receive(
-        const int fileDescriptor);
+    explicit Network(
+        Network&& network);
+
+    Network& operator=(
+        Network&& network);
+
+    Network(Network&) = delete;
+    Network& operator=(Network&) = delete;
+
+    ~Network();
 
     void send(
         const std::string& hostname,
+        const unsigned int port,
         const std::string& data);
+
+    std::string receive();
+
+   protected:
+    int queuedSocketDescriptors_;
   };
 }

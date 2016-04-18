@@ -14,9 +14,9 @@
 
 void showHelp();
 void runDefault(
-    demo::ExtensionSensors&& extensionSensors);
+    demo::ExtensionSensors& extensionSensors);
 void runCalibration(
-    demo::ExtensionSensors&& extensionSensors);
+    demo::ExtensionSensors& extensionSensors);
 
 int main (const int argc, const char* argv[]) {
   if (hasOption(argc, argv, "-h") || hasOption(argc, argv, "--help")) {
@@ -41,9 +41,9 @@ int main (const int argc, const char* argv[]) {
   extensionSensors.setMaximalMeasurableValue(1.0);
   
   if (hasOption(argc, argv, "calibrate")) {
-    runCalibration(std::move(extensionSensors));
+    runCalibration(extensionSensors);
   } else {
-    runDefault(std::move(extensionSensors));
+    runDefault(extensionSensors);
   }
   
   return 0;  
@@ -64,7 +64,7 @@ void showHelp() {
 }
 
 void runDefault(
-    demo::ExtensionSensors&& extensionSensors) {
+    demo::ExtensionSensors& extensionSensors) {
   while(1) {
     std::cout << "+--------------+--------------+--------------+--------------+--------------+--------------+\n"
               << "| Sensor 1 [m] | Sensor 2 [m] | Sensor 3 [m] | Sensor 4 [m] | Sensor 5 [m] | Sensor 6 [m] |\n"
@@ -82,6 +82,6 @@ void runDefault(
 }
 
 void runCalibration(
-    demo::ExtensionSensors&& extensionSensors) {
+    demo::ExtensionSensors& extensionSensors) {
   
 }

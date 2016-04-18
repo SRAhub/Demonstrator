@@ -3,17 +3,34 @@
 // C++ standard library
 #include <algorithm>
 #include <cstddef>
+#include <stdexcept>
 
 // Demonstrator
 #include "demonstrator_bits/spi.hpp"
 
 namespace demo {
   ExtensionSensors::ExtensionSensors(
-      Spi spi,
+      Spi&& spi,
       const std::vector<unsigned int>& channels)
       : Sensors(channels.size()),
         spi_(std::move(spi)),
         channels_(channels) {
+  }
+
+  ExtensionSensors::ExtensionSensors(
+      ExtensionSensors&& extensionSensors)
+      : ExtensionSensors(std::move(extensionSensors.spi_), extensionSensors.channels_) {
+  }
+
+  ExtensionSensors& ExtensionSensors::operator=(
+      ExtensionSensors&& extensionSensors) {
+    if (channels_ != extensionSensors.channels_) {
+      throw std::invalid_argument("ExtensionSensors.operator=: The channels must be equal.");
+    }
+
+    spi_ = std::move(extensionSensors.spi_);
+
+    return *this;
   }
 
   arma::Row<double> ExtensionSensors::measureImplementation() {

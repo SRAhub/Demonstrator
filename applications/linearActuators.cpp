@@ -13,12 +13,12 @@
 
 void showHelp();
 void runDefault(
-    demo::LinearActuators&& linearActuators);
+    demo::LinearActuators& linearActuators);
 void runAll(
-    demo::LinearActuators&& linearActuators,
+    demo::LinearActuators& linearActuators,
     const double extension);
 void runSingle(
-    demo::LinearActuators&& linearActuators,
+    demo::LinearActuators& linearActuators,
     const std::size_t n,
     const double extension);
 
@@ -61,12 +61,12 @@ int main (const int argc, const char* argv[]) {
   linearActuators.setMaximalExtension(0.8);
   linearActuators.setMaximalExtensionDeviation(0.05);
   
-  if (argc > 3 && argv[2][0] != '-') {
-    runSingle(std::move(linearActuators), std::stoi(argv[1]), std::stod(argv[2]));
-  } else if (argc > 2 && argv[1][0] != '-') {
-    runAll(std::move(linearActuators), std::stod(argv[1]));
+  if (argc > 2 & argv[1][0] != '-' & argv[2][0] != '-') {
+    runSingle(linearActuators, std::stoi(argv[1]), std::stod(argv[2]));
+  } else if (argc > 1 & argv[1][0] != '-') {
+    runAll(linearActuators, std::stod(argv[1]));
   } else {
-    runDefault(std::move(linearActuators));
+    runDefault(linearActuators);
   }
   
   return 0;  
@@ -90,7 +90,7 @@ void showHelp() {
 }
 
 void runDefault(
-    demo::LinearActuators&& linearActuators) {
+    demo::LinearActuators& linearActuators) {
   arma::Row<double> extensions = linearActuators.getExtensions();
   const arma::Row<double> maximalSpeeds(linearActuators.numberOfActuators_, arma::fill::ones);
   
@@ -114,13 +114,13 @@ void runDefault(
 }
 
 void runAll(
-    demo::LinearActuators&& linearActuators,
+    demo::LinearActuators& linearActuators,
     double extension) {
   linearActuators.setExtensions(arma::zeros<arma::Row<double>>(linearActuators.numberOfActuators_) + extension, arma::ones<arma::Row<double>>(linearActuators.numberOfActuators_));
 }
 
 void runSingle(
-    demo::LinearActuators&& linearActuators,
+    demo::LinearActuators& linearActuators,
     const std::size_t n,
     const double extension) {
   arma::Row<double> extensions = linearActuators.getExtensions();

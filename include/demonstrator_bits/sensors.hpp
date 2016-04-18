@@ -11,8 +11,17 @@ namespace demo {
    public:
     const std::size_t numberOfSensors_;
 
-    Sensors(
+    explicit Sensors(
         const std::size_t numberOfSensors);
+
+    explicit Sensors(
+        Sensors&& sensors);
+
+    Sensors& operator=(
+        Sensors&& sensors);
+
+    Sensors(Sensors&) = delete;
+    Sensors& operator=(Sensors&) = delete;
 
     arma::Row<double> measure();
 

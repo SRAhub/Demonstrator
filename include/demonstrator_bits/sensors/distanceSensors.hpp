@@ -24,8 +24,17 @@
 namespace demo {
   class DistanceSensors : public Sensors {
    public:
-    DistanceSensors(
-        std::vector<Pin> pins);
+    explicit DistanceSensors(
+        std::vector<Pin>&& pins);
+
+    explicit DistanceSensors(
+        DistanceSensors&& distanceSensors);
+
+    DistanceSensors& operator=(
+        DistanceSensors&& distanceSensors);
+
+    DistanceSensors(DistanceSensors&) = delete;
+    DistanceSensors& operator=(DistanceSensors&) = delete;
 
    protected:
     std::vector<Pin> pins_;
