@@ -143,13 +143,13 @@ add_library(demonstrator SHARED
   src/sensors/extensionSensors.cpp
   src/sensors/mouse3d.cpp
 
+  # Indicators
+  src/distanceIndicators.cpp
+
   # Controllers and Actuators
   src/servoControllers.cpp
   src/linearActuators.cpp
   src/stewartPlatform.cpp
-
-  # Indicators
-  src/distanceIndicators.cpp
 )
 
 # Linking against prerequirements
