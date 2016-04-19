@@ -36,12 +36,20 @@ namespace demo {
 
     arma::Mat<double> measurements(numberOfSamplesPerMeasuement_, numberOfSensors_);
     for (std::size_t n = 0; n < numberOfSamplesPerMeasuement_; ++n) {
-      measurements.row(n) = arma::Row<double>(measureImplementation());
+      const double measurementIndex = std::min(std::max(arma::Row<double>(measureImplementation()), minimalMeasurableValue_), maximalMeasurableValue_) / measurementCorrections_.n_elem;
+      
+      const std::size_t lowerMeasurementIndex = static_cast<std::size_t>(std::floor(measurementIndex));
+      const std::size_t upperMeasurementIndex = static_cast<std::size_t>(std::ceil(measurementIndex));
+      
+      if (lowerMeasurementIndex == upperMeasurementIndex) {
+        measurements.row(n) = measurementCorrections_(lowerMeasurementIndex);
+      } else {
+        const measurementIndexDifferenz = lowerMeasurementIndex - measurementIndex;
+        measurements.row(n) =  (1 - measurementIndexDifferenz) * measurementCorrections_(lowerMeasurementIndex) +  measurementIndexDifferenz * measurementCorrections_(upperMeasurementIndex);
+      }
     }
 
-    // Correction
-
-    return arma::median(static_cast<arma::Mat<double>>(arma::clamp(measurements, minimalMeasurableValue_, maximalMeasurableValue_)));
+    return arma::median(measurements);
   }
 
   void Sensors::setMinimalMeasurableValue(
