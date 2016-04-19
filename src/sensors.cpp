@@ -71,8 +71,8 @@ namespace demo {
 
   void Sensors::setMeasurementCorrections(
       const arma::Mat<double>& measurementCorrections) {
-    if (measurementCorrections.size() != numberOfSensors_) {
-      throw std::domain_error("Sensors.setMeasurementCorrections: The number of measurement corrections must be equal to the number of sensors.");
+    if (measurementCorrections.n_cols != numberOfSensors_) {
+      throw std::domain_error("Sensors.setMeasurementCorrections: The number of measurement corrections columns must be equal to the number of sensors.");
     } else if (!measurementCorrections.is_finite()) {
       throw std::domain_error("Sensors.setMeasurementCorrections: All measurement corrections must be finite.");
     }
