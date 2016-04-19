@@ -1,10 +1,14 @@
 #include "demonstrator_bits/spi.hpp"
+#include "demonstrator_bits/config.hpp"
+
+// C++ standard library
+#include <iostream>
+#include <stdexcept>
 
 // WiringPi
 #include <wiringPi.h>
 
 // Demonstrator
-#include "demonstrator_bits/assert.hpp"
 #include "demonstrator_bits/gpio.hpp"
 
 namespace demo {
@@ -30,7 +34,13 @@ namespace demo {
   void Spi::set(
       const Pin pin,
       const Spi::Digital value) {
-    verify(ownsSpi_, "The ownership of the SPI pins has been transferred");
+    if (::demo::isVerbose) {
+      std::cout << "Setting pin " << static_cast<unsigned int>(pin) << " to " << static_cast<unsigned int>(value) << std::endl;
+    }
+
+    if (!ownsSpi_) {
+      throw std::runtime_error("SPI must be owned to be accessed.");
+    }
 
     ::pinMode(static_cast<int>(pin), OUTPUT);
     ::digitalWrite(static_cast<int>(pin), static_cast<int>(value));
@@ -38,10 +48,22 @@ namespace demo {
 
   Spi::Digital Spi::get(
       const Pin pin) {
-    verify(ownsSpi_, "The ownership of the SPI pins has been transferred");
+    if (::demo::isVerbose) {
+      std::cout << "Reading pin " << static_cast<unsigned int>(pin) << ". ";
+    }
+
+    if (!ownsSpi_) {
+      throw std::runtime_error("SPI must be owned to be accessed.");
+    }
 
     ::pinMode(static_cast<int>(pin), INPUT);
-    return (::digitalRead(static_cast<int>(pin)) == 0 ? Digital::Low : Digital::High);
+    Digital output = (::digitalRead(static_cast<int>(pin)) == 0 ? Digital::Low : Digital::High);
+
+    if (::demo::isVerbose) {
+      std::cout << "Received " << static_cast<unsigned int>(output) << "." << std::endl;
+    }
+
+    return output;
   }
 
   Spi::~Spi() {

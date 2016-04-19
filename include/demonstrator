@@ -5,15 +5,16 @@
 //
 // http://opensource.org/licenses/MIT
 //
-// Demonstrator core team:
-//   Sebastian Niemann <niemann@sra.uni-hannover.de> (Main developer)
+// Demonstrator team:
+//   Sebastian Niemann <niemann@sra.uni-hannover.de> (Team leader)
 //   Niklas Witzel
 //   Philipp Schiffmann
+//   Daniel Kiechle
 //------------------------------------------------------------------------------
 #pragma once
 
 #define DEMONSTRATOR_VERSION_MAJOR 0
-#define DEMONSTRATOR_VERSION_MINOR 10
+#define DEMONSTRATOR_VERSION_MINOR 20
 #define DEMONSTRATOR_VERSION_PATCH 0
 
 //
@@ -22,9 +23,6 @@
 // IWYU pragma: begin_exports
 // Configuration
 #include "demonstrator_bits/config.hpp"
-
-// Assertion
-#include "demonstrator_bits/assert.hpp"
 
 // GPIO
 #include "demonstrator_bits/gpio.hpp"
@@ -37,9 +35,11 @@
 #include "demonstrator_bits/network.hpp"
 
 // Sensors
-#include "demonstrator_bits/attitudeSensors.hpp"
-#include "demonstrator_bits/distanceSensors.hpp"
-#include "demonstrator_bits/extensionSensors.hpp"
+#include "demonstrator_bits/sensors.hpp"
+#include "demonstrator_bits/sensors/attitudeSensors.hpp"
+#include "demonstrator_bits/sensors/distanceSensors.hpp"
+#include "demonstrator_bits/sensors/extensionSensors.hpp"
+#include "demonstrator_bits/sensors/mouse3d.hpp"
 
 // Controllers and Actuators
 #include "demonstrator_bits/servoControllers.hpp"
@@ -48,7 +48,4 @@
 
 // Indicators
 #include "demonstrator_bits/distanceIndicators.hpp"
-
-// Input devices
-#include "demonstrator_bits/mouse3d.hpp"
 // IWYU pragma: end_exports

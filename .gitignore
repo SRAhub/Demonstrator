@@ -2,6 +2,25 @@
 bin/
 build/
 lib/
+
+# Qt Designer
+*.autosave
+*.user*
+*.cbp
+
+# Netbeans
+nbproject/
+
+# CLion
+*.iml
+.idea/
+
+# CMake
+CMakeCache.txt
+CMakeFiles
+Makefile
+cmake_install.cmake
+install_manifest.txt
 include/demonstrator_bits/config.hpp
 
 # Vagrant

@@ -1,51 +1,88 @@
 #pragma once
 
 // C++ standard library
-#include <vector>
+#include <atomic>
+#include <cstddef>
+#include <thread>
+
+// Armadillo
+#include <armadillo>
 
 // Demonstrator
-#include "demonstrator_bits/extensionSensors.hpp"
+#include "demonstrator_bits/sensors/extensionSensors.hpp"
 #include "demonstrator_bits/servoControllers.hpp"
-namespace demo {
-  class Pin;
-}
 
 namespace demo {
+
+  /**
+   * Represents an array of [INSERT PRODUCT NAME HERE][1] linear actuators.
+   *
+   * Each actuator can be instructed to approach a certain extension, and queried for its current extension. These features are implemented in the classes `ServoControllers` and `ExtensionSensors` and combined in this one.
+   *
+   * [1]: http://INSERT-PRODUCT-PAGE-HERE
+   */
   class LinearActuators {
    public:
+    const std::size_t numberOfActuators_;
+
     explicit LinearActuators(
-        std::vector<Pin> servoControllerDirectionPins,
-        const std::vector<unsigned int>& servoControllerChannels,
-        const std::vector<unsigned int>& extensionSensorChannels);
+        ServoControllers&& servoControllers,
+        ExtensionSensors&& extensionSensors);
 
+    explicit LinearActuators(
+        LinearActuators&& linearActuators);
+
+    LinearActuators& operator=(
+        LinearActuators&& linearActuators);
+
+    LinearActuators(LinearActuators&) = delete;
+    LinearActuators& operator=(LinearActuators&) = delete;
+
+    /**
+     * Let each actuator approach its new position. This method blocks until all actuators have reached their extension!
+     *
+     * Both `extensions` and `speeds` need to be between in range [0, 1]. Both values refer to a percentage of their respective intervals: [minimalExtension, maximalExtension] and [minimalSpeeds, maximalSpeeds].
+     */
     void setExtensions(
-        const std::vector<double>& extensions,
-        const std::vector<double>& speeds);
+        const arma::Row<double>& extensions,
+        const arma::Row<double>& maximalSpeeds);
 
-    void setMinimalExtensions(
-        const std::vector<double>& minimalExtensions);
-    std::vector<double> getMinimalExtensions() const;
+    arma::Row<double> getExtensions();
 
-    void setMaximalExtensions(
-        const std::vector<double>& maximalExtensions);
-    std::vector<double> getMaximalExtensions() const;
+    void setMinimalExtension(
+        const double minimalExtension);
+    double getMinimalExtension() const;
 
-    void setMinimalSpeeds(
-        const std::vector<double>& minimalSpeeds);
-    std::vector<double> getMinimalSpeeds() const;
+    void setMaximalExtension(
+        const double maximalExtension);
+    double getMaximalExtension() const;
 
-    void setMaximalSpeeds(
-        const std::vector<double>& maximalSpeeds);
-    std::vector<double> getMaximalSpeeds() const;
+    void setMaximalExtensionDeviation(
+        const double maximalExtensionDeviation);
+    double getMaximalExtensionDeviation() const;
+
+    ServoControllers& getServoControllers();
+    ExtensionSensors& getExtensionSensors();
 
    protected:
-    const ServoControllers servoControllers_;
-    const ExtensionSensors extensionSensors_;
+    ServoControllers servoControllers_;
+    ExtensionSensors extensionSensors_;
 
-    std::vector<double> minimalExtensions_;
-    std::vector<double> maximalExtensions_;
+    /**
+     * Minimal/maximal allowed extension of each actuator, in cm.
+     *
+     * Refers only to the movement margin, not the total length of the actuator.
+     */
+    double minimalExtension_;
+    double maximalExtension_;
 
-    std::vector<double> minimalSpeeds_;
-    std::vector<double> maximalSpeeds_;
+    double maximalExtensionDeviation_;
+
+    std::atomic<bool> killReachExtensionThread_;
+    std::thread reachExtensionThread_;
+
+    void reachExtension(
+        const arma::Row<double>& extensions,
+        const arma::Row<double>& maximalSpeeds);
   };
 }

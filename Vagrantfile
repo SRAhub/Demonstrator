@@ -9,5 +9,10 @@ Vagrant.configure(2) do |config|
     vb.memory = 1536
   end
 
-  config.vm.provision "shell", path: "./.system-setup.sh"
+  config.vm.provision "shell", inline: <<-SHELL
+    sudo apt-get update
+    sudo apt-get upgrade -y
+    
+    /vagrant/.setup.sh
+  SHELL
 end

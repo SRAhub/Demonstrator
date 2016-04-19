@@ -1,17 +1,24 @@
 #include "demonstrator_bits/i2c.hpp"
+#include "demonstrator_bits/config.hpp"
+
+// C++ standard library
+#include <iostream>
+#include <stdexcept>
 
 // WiringPi
 #include <wiringPiI2C.h>
 
 // Demonstrator
-#include "demonstrator_bits/assert.hpp"
 #include "demonstrator_bits/gpio.hpp"
 
 namespace demo {
-  I2c::I2c(
-      const int fileDescriptor)
-      : fileDescriptor_(fileDescriptor),
-        ownsI2c_(true) {}
+  I2c::I2c()
+      : fileDescriptor_(::wiringPiI2CSetup(0x40)),
+        ownsI2c_(true) {
+    if (fileDescriptor_ < 0) {
+      throw std::runtime_error("I2c: Could not connect to the I2C device.");
+    }
+  }
 
   I2c::I2c(I2c&& other)
       : fileDescriptor_(other.fileDescriptor_),
@@ -34,16 +41,34 @@ namespace demo {
   void I2c::set(
       const unsigned int registerNumber,
       const unsigned int value) {
-    verify(ownsI2c_, "The ownership of the I2C pins has been transferred");
+    if (::demo::isVerbose) {
+      std::cout << "Setting register " << registerNumber << " to " << value << std::endl;
+    }
+
+    if (!ownsI2c_) {
+      throw std::runtime_error("I2C must be owned to be accessed.");
+    }
 
     ::wiringPiI2CWriteReg8(fileDescriptor_, static_cast<int>(registerNumber), static_cast<int>(value));
   }
 
   unsigned int I2c::get(
       const unsigned int registerNumber) {
-    verify(ownsI2c_, "The ownership of the I2C pins has been transferred");
+    if (::demo::isVerbose) {
+      std::cout << "Reading register " << registerNumber << ". ";
+    }
 
-    return static_cast<unsigned int>(::wiringPiI2CReadReg8(fileDescriptor_, static_cast<int>(registerNumber)));
+    if (!ownsI2c_) {
+      throw std::runtime_error("I2C must be owned to be accessed.");
+    }
+
+    unsigned int output = static_cast<unsigned int>(::wiringPiI2CReadReg8(fileDescriptor_, static_cast<int>(registerNumber)));
+
+    if (::demo::isVerbose) {
+      std::cout << "Received " << output << "." << std::endl;
+    }
+
+    return output;
   }
 
   I2c::~I2c() {

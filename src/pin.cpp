@@ -1,15 +1,16 @@
 #include "demonstrator_bits/pin.hpp"
+#include "demonstrator_bits/config.hpp"
 
 // C++ standard library
+#include <iostream>
 #include <ratio>
-#include <string>
+#include <stdexcept>
 #include <thread>
 
 // WiringPi
 #include <wiringPi.h>
 
 // Demonstrator
-#include "demonstrator_bits/assert.hpp"
 #include "demonstrator_bits/gpio.hpp"
 
 namespace demo {
@@ -38,7 +39,13 @@ namespace demo {
 
   void Pin::set(
       const Pin::Digital value) {
-    verify(ownsPin_, "The ownership of pin " + std::to_string(pinNumber_) + " has been transferred");
+    if (::demo::isVerbose) {
+      std::cout << "Setting pin " << pinNumber_ << " to " << static_cast<unsigned int>(value) << std::endl;
+    }
+
+    if (!ownsPin_) {
+      throw std::runtime_error("The pin must be owned to be accessed.");
+    }
 
     ::pinMode(static_cast<int>(pinNumber_), OUTPUT);
     ::digitalWrite(static_cast<int>(pinNumber_), static_cast<int>(value));
@@ -50,15 +57,37 @@ namespace demo {
   }
 
   Pin::Digital Pin::get() {
-    verify(ownsPin_, "The ownership of pin " + std::to_string(pinNumber_) + " has been transferred");
+    if (::demo::isVerbose) {
+      std::cout << "Reading pin " << pinNumber_ << ". ";
+    }
+
+    if (!ownsPin_) {
+      throw std::runtime_error("The pin must be owned to be accessed.");
+    }
 
     ::pinMode(static_cast<int>(pinNumber_), INPUT);
-    return (::digitalRead(static_cast<int>(pinNumber_)) == 0 ? Digital::Low : Digital::High);
+    Digital output = (::digitalRead(static_cast<int>(pinNumber_)) == 0 ? Digital::Low : Digital::High);
+
+    if (::demo::isVerbose) {
+      std::cout << "Received " << static_cast<unsigned int>(output) << "." << std::endl;
+    }
+
+    return output;
   }
 
   std::chrono::microseconds Pin::waitForSignalEdge(
       const std::chrono::microseconds timeout) {
-    verify(ownsPin_, "The ownership of pin " + std::to_string(pinNumber_) + " has been transferred");
+    if (::demo::isVerbose) {
+      std::cout << "Waiting for signal edge on pin " << pinNumber_ << ". ";
+    }
+
+    if (!ownsPin_) {
+      throw std::runtime_error("The pin must be owned to be accessed.");
+    }
+
+    // Hard deactivates verbosity, as the following commands may spam the console to much, especially if the time-out is reached.
+    bool wasVerbose = ::demo::isVerbose;
+    ::demo::isVerbose = false;
 
     Digital currentSignal = get();
 
@@ -69,11 +98,24 @@ namespace demo {
       end = std::chrono::steady_clock::now();
 
       if (end - start >= timeout) {
+        ::demo::isVerbose = wasVerbose;
+        if (::demo::isVerbose) {
+          std::cout << "Timeout." << std::endl;
+        }
+
         return timeout;
       }
     }
 
-    return std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+    std::chrono::microseconds duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+
+    // Restore verbosity
+    ::demo::isVerbose = wasVerbose;
+    if (::demo::isVerbose) {
+      std::cout << "Took " << duration.count() << "us." << std::endl;
+    }
+
+    return duration;
   }
 
   Pin::~Pin() {
