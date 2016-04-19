@@ -64,6 +64,8 @@ message(STATUS "- Setting build type to 'Release'.")
 message(STATUS "  - Use 'cmake ... -DCMAKE_BUILD_TYPE=[Release|Debug]' to specify this.")
 set(CMAKE_BUILD_TYPE "Release")
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8")
+
 # ---------------------
 # BUILDING Applications
 # ---------------------
