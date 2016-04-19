@@ -65,7 +65,7 @@ namespace demo {
 
     // TODO intermediate extensions
 
-    if (arma::all(extensions >= linearActuators_.getMinimalExtension()) && arma::all(extensions <= linearActuators_.getMaximalExtension())) {
+    if (arma::all(extensions >= linearActuators_.minimalExtension_) && arma::all(extensions <= linearActuators_.maximalExtension_)) {
       linearActuators_.setExtensions(extensions, extensions / arma::max(extensions));
     }
   }

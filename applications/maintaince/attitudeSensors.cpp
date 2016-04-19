@@ -10,13 +10,11 @@
 #include <demonstrator>
 
 // Application
-#include "commandline.hpp"
+#include "../commandline.hpp"
+#include "../robot.hpp"
 
 void showHelp();
-void runDefault(
-    demo::AttitudeSensors& attitudeSensors);
-void runCalibration(
-    demo::AttitudeSensors& attitudeSensors);
+void runDefault();
 
 int main (const int argc, const char* argv[]) {
   if (hasOption(argc, argv, "-h") || hasOption(argc, argv, "--help")) {
@@ -33,17 +31,7 @@ int main (const int argc, const char* argv[]) {
   // For an overview on the pin layout, use the `gpio readall` command on a Raspberry Pi.
   ::wiringPiSetupGpio();
   
-  demo::Uart uart = demo::Gpio::allocateUart();
-  demo::AttitudeSensors attitudeSensors(std::move(uart));
-  attitudeSensors.setMinimalMeasurableValue(-arma::datum::pi); 
-  attitudeSensors.setMaximalMeasurableValue(arma::datum::pi);
-  attitudeSensors.runAsynchronous();
-  
-  if (hasOption(argc, argv, "calibrate")) {
-    runCalibration(attitudeSensors);
-  } else {
-    runDefault(attitudeSensors);
-  }
+  runDefault();
   
   return 0;  
 }
@@ -62,8 +50,9 @@ void showHelp() {
   std::cout << std::flush;
 }
 
-void runDefault(
-    demo::AttitudeSensors& attitudeSensors) {
+void runDefault() {
+  demo::AttitudeSensors attitudeSensors(std::move(createAttitudeSensors()));
+      
   while(1) {
     std::cout << "+-----------------+-----------------+-----------------+\n"
               << "| Roll [radians]  | Pitch [radians] |  Yaw [radians]  |\n"
@@ -78,9 +67,4 @@ void runDefault(
       std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
   }
-}
-
-void runCalibration(
-    demo::AttitudeSensors& attitudeSensors) {
-  // TODO Use the Stewart platform, to self-calibrate the sensors.
 }

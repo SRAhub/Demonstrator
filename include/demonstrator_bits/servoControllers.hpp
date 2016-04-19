@@ -21,12 +21,16 @@ namespace demo {
    */
   class ServoControllers {
    public:
-    std::size_t numberOfControllers_;
+    const std::size_t numberOfControllers_;
+    const std::vector<unsigned int> channels_;
+    
+    const double maximalSpeed_;
 
     explicit ServoControllers(
         std::vector<Pin>&& directionPins,
         I2c&& i2c,
-        const std::vector<unsigned int>& channels);
+        const std::vector<unsigned int>& channels,
+        const double maximalSpeed);
 
     explicit ServoControllers(
         ServoControllers&& servoControllers);
@@ -43,16 +47,9 @@ namespace demo {
 
     void stop();
 
-    void setMaximalSpeed(
-        const double maximalSpeed);
-    double getMaximalSpeed() const;
-
    protected:
     std::vector<Pin> directionPins_;
 
     I2c i2c_;
-    const std::vector<unsigned int> channels_;
-
-    double maximalSpeed_;
   };
 }

@@ -13,10 +13,16 @@
 namespace demo {
   DistanceIndicators::DistanceIndicators(
       Pin&& clockPin,
-      std::vector<Pin>&& dataPins)
+      std::vector<Pin>&& dataPins,
+      const double minimalDistance,
+      const double warningDistance,
+      const double maximalDistance)
       : numberOfIndicators_(dataPins.size()),
         clockPin_(std::move(clockPin)),
-        dataPins_(std::move(dataPins)) {
+        dataPins_(std::move(dataPins)),
+        minimalDistance_(minimalDistance),
+        warningDistance_(warningDistance),
+        maximalDistance_(maximalDistance) {
     if (numberOfIndicators_ == 0) {
       throw std::domain_error("DistanceIndicators: The number of indicators must be greater than 0.");
     } else if (dataPins_.size() != numberOfIndicators_) {
@@ -28,11 +34,21 @@ namespace demo {
 
   DistanceIndicators::DistanceIndicators(
       DistanceIndicators&& distanceIndicator)
-      : DistanceIndicators(std::move(distanceIndicator.clockPin_), std::move(distanceIndicator.dataPins_)) {
+      : DistanceIndicators(std::move(distanceIndicator.clockPin_), std::move(distanceIndicator.dataPins_), distanceIndicator.minimalDistance_, distanceIndicator.warningDistance_, distanceIndicator.maximalDistance_) {
   }
 
   DistanceIndicators& DistanceIndicators::operator=(
       DistanceIndicators&& distanceIndicator) {
+    if (numberOfIndicators_ != distanceIndicator.numberOfIndicators_) {
+      throw std::invalid_argument("DistanceIndicators.operator=: The number of indicators must be equal.");
+    } else if (std::abs(minimalDistance_ -  distanceIndicator.minimalDistance_) > 0) {
+      throw std::invalid_argument("DistanceIndicators.operator=: The minimal distances must be equal.");
+    } else if (std::abs(warningDistance_ -  distanceIndicator.warningDistance_) > 0) {
+      throw std::invalid_argument("DistanceIndicators.operator=: The warning distances values equal.");
+    } else if (std::abs(maximalDistance_ -  distanceIndicator.maximalDistance_) > 0) {
+      throw std::invalid_argument("DistanceIndicators.operator=: The maximal distances values equal.");
+    } 
+    
     clockPin_ = std::move(distanceIndicator.clockPin_);
     dataPins_ = std::move(distanceIndicator.dataPins_);
 
@@ -97,44 +113,5 @@ namespace demo {
         pin.set(Pin::Digital::Low);
       }
     }
-  }
-
-  void DistanceIndicators::setMinimalDistance(
-      const double minimalDistance) {
-    if (!std::isfinite(minimalDistance)) {
-      throw std::domain_error("DistanceIndicators.setMinimalDistance: The minimal distance must be finite.");
-    }
-
-    minimalDistance_ = minimalDistance;
-  }
-
-  double DistanceIndicators::getMinimalDistance() const {
-    return minimalDistance_;
-  }
-
-  void DistanceIndicators::setWarningDistance(
-      const double warningDistance) {
-    if (!std::isfinite(warningDistance)) {
-      throw std::domain_error("DistanceIndicators.setWarningDistance: The warning distance must be finite.");
-    }
-
-    warningDistance_ = warningDistance;
-  }
-
-  double DistanceIndicators::getWarningDistance() const {
-    return warningDistance_;
-  }
-
-  void DistanceIndicators::setMaximalDistance(
-      const double maximalDistance) {
-    if (!std::isfinite(maximalDistance)) {
-      throw std::domain_error("DistanceIndicators.setMaximalDistance: The maximal distance must be finite.");
-    }
-
-    maximalDistance_ = maximalDistance;
-  }
-
-  double DistanceIndicators::getMaximalDistance() const {
-    return maximalDistance_;
   }
 }

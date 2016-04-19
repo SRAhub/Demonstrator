@@ -11,24 +11,24 @@
 #include "demonstrator_bits/sensors.hpp"
 
 namespace demo {
-  class Mouse3d : public Sensors {
+  class Mouse3dSensors : public Sensors {
    public:
-    explicit Mouse3d(
+    explicit Mouse3dSensors(
         const double minimalDisplacement,
         const double maximalDisplacement);
 
-    explicit Mouse3d(
-        Mouse3d&& mouse3d);
+    explicit Mouse3dSensors(
+        Mouse3dSensors&& mouse3d);
 
-    Mouse3d& operator=(
-        Mouse3d&& mouse3d);
+    Mouse3dSensors& operator=(
+        Mouse3dSensors&& mouse3d);
 
-    Mouse3d(Mouse3d&) = delete;
-    Mouse3d& operator=(Mouse3d&) = delete;
+    Mouse3dSensors(Mouse3dSensors&) = delete;
+    Mouse3dSensors& operator=(Mouse3dSensors&) = delete;
     
     void runAsynchronous();
 
-    ~Mouse3d();
+    ~Mouse3dSensors();
 
    protected:
     int fileDescriptor_;

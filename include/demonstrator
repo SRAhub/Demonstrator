@@ -39,13 +39,13 @@
 #include "demonstrator_bits/sensors/attitudeSensors.hpp"
 #include "demonstrator_bits/sensors/distanceSensors.hpp"
 #include "demonstrator_bits/sensors/extensionSensors.hpp"
-#include "demonstrator_bits/sensors/mouse3d.hpp"
+#include "demonstrator_bits/sensors/mouse3dSensors.hpp"
+
+// Indicators
+#include "demonstrator_bits/distanceIndicators.hpp"
 
 // Controllers and Actuators
 #include "demonstrator_bits/servoControllers.hpp"
 #include "demonstrator_bits/linearActuators.hpp"
 #include "demonstrator_bits/stewartPlatform.hpp"
-
-// Indicators
-#include "demonstrator_bits/distanceIndicators.hpp"
 // IWYU pragma: end_exports

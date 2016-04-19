@@ -11,13 +11,38 @@
 namespace demo {
   LinearActuators::LinearActuators(
       ServoControllers&& servoControllers,
-      ExtensionSensors&& extensionSensors)
+      ExtensionSensors&& extensionSensors,
+      const double minimalExtension,
+      const double maximalExtension)
       : numberOfActuators_(servoControllers.numberOfControllers_),
         servoControllers_(std::move(servoControllers)),
-        extensionSensors_(std::move(extensionSensors)) {
+        extensionSensors_(std::move(extensionSensors)),
+        minimalExtension_(minimalExtension),
+        maximalExtension_(maximalExtension) {
     if (servoControllers_.numberOfControllers_ != extensionSensors_.numberOfSensors_) {
       throw std::logic_error("LinearActuators: The number of controllers must be equal to the number of sensors.");
     }
+  }
+
+  LinearActuators::LinearActuators(
+      LinearActuators&& linearActuators)
+      : LinearActuators(std::move(linearActuators.servoControllers_), std::move(linearActuators.extensionSensors_), linearActuators.minimalExtension_, linearActuators.maximalExtension_) {
+  }
+
+  LinearActuators& LinearActuators::operator=(
+      LinearActuators&& linearActuators) {
+    if (numberOfActuators_ != linearActuators.numberOfActuators_) {
+      throw std::invalid_argument("LinearActuators.operator=: The number of actuators must be equal.");
+    } else if (std::abs(minimalExtension_ -  linearActuators.minimalExtension_) > 0) {
+      throw std::invalid_argument("LinearActuators.operator=: The minimal extensions must be equal.");
+    } else if (std::abs(maximalExtension_ -  linearActuators.maximalExtension_) > 0) {
+      throw std::invalid_argument("LinearActuators.operator=: The minimal extensions must be equal.");
+    } 
+        
+    servoControllers_ = std::move(linearActuators.servoControllers_);
+    extensionSensors_ = std::move(linearActuators.extensionSensors_);
+
+    return *this;
   }
 
   void LinearActuators::setExtensions(
@@ -25,19 +50,6 @@ namespace demo {
       const arma::Row<double>& speeds) {
     killReachExtensionThread_ = false;
     reachExtensionThread_ = std::thread(&LinearActuators::reachExtension, this, extensions, speeds);
-  }
-
-  LinearActuators::LinearActuators(
-      LinearActuators&& linearActuators)
-      : LinearActuators(std::move(linearActuators.servoControllers_), std::move(linearActuators.extensionSensors_)) {
-  }
-
-  LinearActuators& LinearActuators::operator=(
-      LinearActuators&& linearActuators) {
-    servoControllers_ = std::move(linearActuators.servoControllers_);
-    extensionSensors_ = std::move(linearActuators.extensionSensors_);
-
-    return *this;
   }
 
   arma::Row<double> LinearActuators::getExtensions() {
@@ -77,32 +89,6 @@ namespace demo {
     }
 
     servoControllers_.stop();
-  }
-
-  void LinearActuators::setMinimalExtension(
-      const double minimalExtension) {
-    if (!std::isfinite(minimalExtension)) {
-      throw std::domain_error("LinearActuators.setMinimalExtension: The minimal extension must be finite.");
-    }
-
-    minimalExtension_ = minimalExtension;
-  }
-
-  double LinearActuators::getMinimalExtension() const {
-    return minimalExtension_;
-  }
-
-  void LinearActuators::setMaximalExtension(
-      const double maximalExtension) {
-    if (!std::isfinite(maximalExtension)) {
-      throw std::domain_error("LinearActuators.setMaximalExtension: The maximal extension must be finite.");
-    }
-
-    maximalExtension_ = maximalExtension;
-  }
-
-  double LinearActuators::getMaximalExtension() const {
-    return maximalExtension_;
   }
 
   void LinearActuators::setMaximalExtensionDeviation(

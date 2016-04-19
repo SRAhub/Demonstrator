@@ -38,10 +38,17 @@ namespace demo {
      * The number of distance indicators that are managed.
      */
     const std::size_t numberOfIndicators_;
+    
+    const double minimalDistance_;
+    const double warningDistance_;
+    const double maximalDistance_;
 
     explicit DistanceIndicators(
         Pin&& clockPin,
-        std::vector<Pin>&& dataPins);
+        std::vector<Pin>&& dataPins,
+        const double minimalDistance,
+        const double warningDistance,
+        const double maximalDistance);
 
     explicit DistanceIndicators(
         DistanceIndicators&& distanceIndicators);
@@ -58,18 +65,6 @@ namespace demo {
     void setIndication(
         const arma::Row<double>& distances);
 
-    void setMinimalDistance(
-        const double minimalDistance);
-    double getMinimalDistance() const;
-
-    void setWarningDistance(
-        const double warningDistance);
-    double getWarningDistance() const;
-
-    void setMaximalDistance(
-        const double maximalDistance);
-    double getMaximalDistance() const;
-
    protected:
     /**
      * This pin is connected to the DCKI (clock) pins of *all* LED bars.
@@ -82,20 +77,5 @@ namespace demo {
      * These pins are connected to the DI pins on the LED bars.
      */
     std::vector<Pin> dataPins_;
-
-    /**
-     * For distances less than this value, the indicator will show the "closest distance" pattern.
-     */
-    double minimalDistance_;
-
-    /**
-     * For distances greater than this value, the indicator will show one of the (red) warning patterns.
-     */
-    double warningDistance_;
-
-    /**
-     * For distances greater than this value, the indicator will show the "farthest distance" pattern.
-     */
-    double maximalDistance_;
   };
 }

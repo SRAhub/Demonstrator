@@ -36,9 +36,9 @@ namespace demo {
     if (numberOfSensors_ != sensors.numberOfSensors_) {
       throw std::invalid_argument("Sensors.operator=: The number of sensors must be equal.");
     } else if (std::abs(minimalMeasurableValue_ -  sensors.minimalMeasurableValue_) > 0) {
-      throw std::invalid_argument("Sensors.operator=: The minimal measurable values equal.");
+      throw std::invalid_argument("Sensors.operator=: The minimal measurable values must be equal.");
     } else if (std::abs(maximalMeasurableValue_ - sensors.maximalMeasurableValue_) > 0) {
-      throw std::invalid_argument("Sensors.operator=: The maximal measurable values equal.");
+      throw std::invalid_argument("Sensors.operator=: The maximal measurable values must be equal.");
     }
 
     return *this;

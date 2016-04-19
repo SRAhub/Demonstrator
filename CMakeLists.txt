@@ -107,7 +107,7 @@ add_library(demonstrator SHARED
   src/sensors/attitudeSensors.cpp
   src/sensors/distanceSensors.cpp
   src/sensors/extensionSensors.cpp
-  src/sensors/mouse3d.cpp
+  src/sensors/mouse3dSensors.cpp
 
   # Indicators
   src/distanceIndicators.cpp

@@ -1,4 +1,4 @@
-#include "demonstrator_bits/sensors/mouse3d.hpp"
+#include "demonstrator_bits/sensors/mouse3dSensors.hpp"
 
 // C++ standard library
 #include <cerrno>
@@ -15,22 +15,22 @@
 #include <sys/ioctl.h>
 
 namespace demo {
-  Mouse3d::Mouse3d(
+  Mouse3dSensors::Mouse3dSensors(
       const double minimalDisplacement,
       const double maximalDisplacement)
       : Sensors(8, minimalDisplacement, maximalDisplacement) {
         
   }
 
-  Mouse3d::Mouse3d(
-      Mouse3d&& mouse3d)
+  Mouse3dSensors::Mouse3dSensors(
+      Mouse3dSensors&& mouse3d)
       : Sensors(8, mouse3d.minimalMeasurableValue_, mouse3d.maximalMeasurableValue_) {
     fileDescriptor_ = mouse3d.fileDescriptor_;
     mouse3d.fileDescriptor_ = -1;
   }
 
-  Mouse3d& Mouse3d::operator=(
-      Mouse3d&& mouse3d) {
+  Mouse3dSensors& Mouse3dSensors::operator=(
+      Mouse3dSensors&& mouse3d) {
     fileDescriptor_ = mouse3d.fileDescriptor_;
     mouse3d.fileDescriptor_ = -1;
     
@@ -38,7 +38,7 @@ namespace demo {
     return *this;
   }
 
-  Mouse3d::~Mouse3d() {
+  Mouse3dSensors::~Mouse3dSensors() {
     killContinuousMeasurementThread_ = true;
     continuousMeasurementThread_.join();
 
@@ -47,11 +47,11 @@ namespace demo {
     }
   }
 
-  arma::Row<double> Mouse3d::measureImplementation() {
+  arma::Row<double> Mouse3dSensors::measureImplementation() {
     return displacements_;
   }
   
-  void Mouse3d::runAsynchronous() {
+  void Mouse3dSensors::runAsynchronous() {
     std::size_t maximalNumberOfEventDeviceIds = 32;
     for (std::size_t n = 0; n < maximalNumberOfEventDeviceIds; n++) {
       fileDescriptor_ = ::open(("/dev/input/event" + std::to_string(n)).c_str(), O_RDWR | O_NONBLOCK);
@@ -64,24 +64,24 @@ namespace demo {
           ::ioctl(fileDescriptor_, EVIOCGBIT(0, sizeof(eventTypeBitmask)), eventTypeBitmask);
 
           killContinuousMeasurementThread_ = false;
-          continuousMeasurementThread_ = std::thread(&Mouse3d::asynchronousMeasurement, this);
+          continuousMeasurementThread_ = std::thread(&Mouse3dSensors::asynchronousMeasurement, this);
 
           return;
         }
       }
     }
 
-    throw std::runtime_error("Mouse3d: Could not connect to the 3d mouse.");
+    throw std::runtime_error("Mouse3dSensors: Could not connect to the 3d mouse.");
   }
 
-  void Mouse3d::asynchronousMeasurement() {
+  void Mouse3dSensors::asynchronousMeasurement() {
     while (!killContinuousMeasurementThread_) {
       struct ::input_event inputEvent;
 
       int datasize = ::read(fileDescriptor_, &inputEvent, sizeof(inputEvent));
 
       if (datasize < 0) {
-        throw std::runtime_error("Mouse3d.continuousMeasurement: " + static_cast<std::string>(std::strerror(errno)));
+        throw std::runtime_error("Mouse3dSensors.continuousMeasurement: " + static_cast<std::string>(std::strerror(errno)));
       }
 
       if (datasize >= sizeof(inputEvent)) {

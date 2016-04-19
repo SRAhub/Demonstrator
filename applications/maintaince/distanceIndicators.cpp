@@ -10,14 +10,12 @@
 #include <demonstrator>
 
 // Application
-#include "commandline.hpp"
+#include "../commandline.hpp"
+#include "../robot.hpp"
 
 void showHelp();
-void runDefault(
-    demo::DistanceIndicators& distanceIndicators);
-void runSensor(
-    demo::DistanceIndicators& distanceIndicators,
-    demo::DistanceSensors& distanceSensors);
+void runDefault();
+void runSensor();
 
 int main (const int argc, const char* argv[]) {
   if (hasOption(argc, argv, "-h") || hasOption(argc, argv, "--help")) {
@@ -34,34 +32,10 @@ int main (const int argc, const char* argv[]) {
   // For an overview on the pin layout, use the `gpio readall` command on a Raspberry Pi.
   ::wiringPiSetupGpio();
   
-  demo::Pin clockPin = demo::Gpio::allocatePin(21);
-  std::vector<demo::Pin> dataPins;
-  dataPins.push_back(demo::Gpio::allocatePin(12));
-  dataPins.push_back(demo::Gpio::allocatePin(5));
-  dataPins.push_back(demo::Gpio::allocatePin(6));
-  dataPins.push_back(demo::Gpio::allocatePin(13));
-  dataPins.push_back(demo::Gpio::allocatePin(19));
-  dataPins.push_back(demo::Gpio::allocatePin(26));
-  demo::DistanceIndicators distanceIndicators(std::move(clockPin), std::move(dataPins));
-  distanceIndicators.setMinimalDistance(0.05); 
-  distanceIndicators.setWarningDistance(0.08);
-  distanceIndicators.setMaximalDistance(0.20);
-  
-  std::vector<demo::Pin> pins;
-  pins.push_back(demo::Gpio::allocatePin(17));
-  pins.push_back(demo::Gpio::allocatePin(27));
-  pins.push_back(demo::Gpio::allocatePin(22));
-  pins.push_back(demo::Gpio::allocatePin(10));
-  pins.push_back(demo::Gpio::allocatePin(25));
-  pins.push_back(demo::Gpio::allocatePin(11));
-  demo::DistanceSensors distanceSensors(std::move(pins));
-  distanceSensors.setMinimalMeasurableValue(0.03); 
-  distanceSensors.setMaximalMeasurableValue(0.35);
-  
   if (hasOption(argc, argv, "sensor")) {
-    runSensor(distanceIndicators, distanceSensors);
+    runSensor();
   } else {
-    runDefault(distanceIndicators);
+    runDefault();
   }
   
   return 0;  
@@ -81,23 +55,25 @@ void showHelp() {
   std::cout << std::flush;
 }
 
-void runDefault(
-    demo::DistanceIndicators& distanceIndicators) {
+void runDefault() {
+  demo::DistanceIndicators distanceIndicators(std::move(createDistanceIndicators()));
+  
   while(1) {
-    for (const auto distance : arma::linspace(distanceIndicators.getMaximalDistance(), distanceIndicators.getWarningDistance(), 9)) {
+    for (const auto distance : arma::linspace(distanceIndicators.maximalDistance_, distanceIndicators.warningDistance_, 9)) {
       std::cout << "Distance = " << distance << "m" << std::endl;
       distanceIndicators.setIndication(arma::zeros<arma::Row<double>>(distanceIndicators.numberOfIndicators_) + distance);
       std::this_thread::sleep_for(std::chrono::seconds(1));
     }
-    std::cout << "Distance = " << distanceIndicators.getMinimalDistance() << "m" << std::endl;
-    distanceIndicators.setIndication(arma::zeros<arma::Row<double>>(distanceIndicators.numberOfIndicators_) + distanceIndicators.getMinimalDistance());
+    std::cout << "Distance = " << distanceIndicators.minimalDistance_ << "m" << std::endl;
+    distanceIndicators.setIndication(arma::zeros<arma::Row<double>>(distanceIndicators.numberOfIndicators_) + distanceIndicators.minimalDistance_);
     std::this_thread::sleep_for(std::chrono::seconds(1));
   }
 }
 
-void runSensor(
-    demo::DistanceIndicators& distanceIndicators,
-    demo::DistanceSensors& distanceSensors) {
+void runSensor() {
+  demo::DistanceIndicators distanceIndicators(std::move(createDistanceIndicators()));
+  demo::DistanceSensors distanceSensors(std::move(createDistanceSensors()));
+    
   while(1) {
     std::cout << "+--------------+--------------+--------------+--------------+--------------+--------------+\n"
               << "| Sensor 1 [m] | Sensor 2 [m] | Sensor 3 [m] | Sensor 4 [m] | Sensor 5 [m] | Sensor 6 [m] |\n"

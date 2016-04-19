@@ -13,11 +13,13 @@ namespace demo {
   ServoControllers::ServoControllers(
       std::vector<Pin>&& directionPins,
       I2c&& i2c,
-      const std::vector<unsigned int>& channels)
+      const std::vector<unsigned int>& channels,
+      const double maximalSpeed)
       : numberOfControllers_(directionPins.size()),
         directionPins_(std::move(directionPins)),
         i2c_(std::move(i2c)),
-        channels_(channels) {
+        channels_(channels),
+        maximalSpeed_(maximalSpeed) {
     if (numberOfControllers_ == 0) {
       throw std::domain_error("ServoControllers: The number of controllers must be greater than 0.");
     } else if (directionPins_.size() != numberOfControllers_) {
@@ -43,14 +45,18 @@ namespace demo {
 
   ServoControllers::ServoControllers(
       ServoControllers&& servoControllers)
-      : ServoControllers(std::move(servoControllers.directionPins_), std::move(servoControllers.i2c_), servoControllers.channels_) {
+      : ServoControllers(std::move(servoControllers.directionPins_), std::move(servoControllers.i2c_), servoControllers.channels_, servoControllers.maximalSpeed_) {
   }
 
   ServoControllers& ServoControllers::operator=(
       ServoControllers&& servoControllers) {
-    if (channels_ != servoControllers.channels_) {
+    if (numberOfControllers_ != servoControllers.numberOfControllers_) {
+      throw std::invalid_argument("ServoControllers.operator=: The number of controllers must be equal.");
+    } else if (channels_ != servoControllers.channels_) {
       throw std::invalid_argument("ServoControllers.operator=: The channels must be equal.");
-    }
+    } else if (std::abs(maximalSpeed_ -  servoControllers.maximalSpeed_) > 0) {
+      throw std::invalid_argument("ServoControllers.operator=: The maximal speeds must equal.");
+    } 
 
     directionPins_ = std::move(servoControllers.directionPins_);
     i2c_ = std::move(servoControllers.i2c_);
@@ -83,18 +89,5 @@ namespace demo {
 
   void ServoControllers::stop() {
     run(std::vector<bool>(numberOfControllers_, true), arma::zeros<arma::Row<double>>(numberOfControllers_));
-  }
-
-  void ServoControllers::setMaximalSpeed(
-      const double maximalSpeed) {
-    if (!std::isfinite(maximalSpeed)) {
-      throw std::domain_error("ServoControllers.setMaximalSpeed: The maximal speed must be finite.");
-    }
-
-    maximalSpeed_ = maximalSpeed;
-  }
-
-  double ServoControllers::getMaximalSpeed() const {
-    return maximalSpeed_;
   }
 }

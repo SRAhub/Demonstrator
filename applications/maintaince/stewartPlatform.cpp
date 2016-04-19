@@ -10,19 +10,14 @@
 #include <demonstrator>
 
 // Application
-#include "commandline.hpp"
+#include "../commandline.hpp"
+#include "../robot.hpp"
 
 void showHelp();
-void runDefault(
-    demo::StewartPlatform& stewartPlatform);
-void runSensor(
-    demo::StewartPlatform& stewartPlatform);
+void runDefault();
+void runSensor();
 void runEndEffectorPose(
-    demo::StewartPlatform& stewartPlatform,
     const arma::Col<double>::fixed<6>& endEffectorPose);
-void runEvasion(
-    demo::StewartPlatform& stewartPlatform,
-    demo::Network& network);
 
 int main (const int argc, const char* argv[]) {
   if (hasOption(argc, argv, "-h") || hasOption(argc, argv, "--help")) {
@@ -39,56 +34,12 @@ int main (const int argc, const char* argv[]) {
   // For an overview on the pin layout, use the `gpio readall` command on a Raspberry Pi.
   ::wiringPiSetupGpio();
   
-  std::vector<demo::Pin> directionPins;
-  directionPins.push_back(demo::Gpio::allocatePin(22));
-  directionPins.push_back(demo::Gpio::allocatePin(5));
-  directionPins.push_back(demo::Gpio::allocatePin(6));
-  directionPins.push_back(demo::Gpio::allocatePin(13));
-  directionPins.push_back(demo::Gpio::allocatePin(19));
-  directionPins.push_back(demo::Gpio::allocatePin(26));
-  demo::I2c i2c = demo::Gpio::allocateI2c();
-  std::vector<unsigned int> i2cChannels = {0, 1, 2, 3, 4, 5};
-  demo::ServoControllers servoControllers(std::move(directionPins), std::move(i2c), i2cChannels);
-  servoControllers.setMaximalSpeed(1.0);
-  
-  demo::Spi spi = demo::Gpio::allocateSpi();
-  std::vector<unsigned int> spiChannels = {0, 1, 2, 3, 4, 5};
-  demo::ExtensionSensors extensionSensors(std::move(spi), spiChannels);
-  extensionSensors.setMinimalMeasurableValue(0.1);
-  extensionSensors.setMaximalMeasurableValue(1.0);
-  
-  demo::LinearActuators linearActuators(std::move(servoControllers), std::move(extensionSensors));
-  linearActuators.setMinimalExtension(0.1);
-  linearActuators.setMaximalExtension(0.8);
-  linearActuators.setMaximalExtensionDeviation(0.05);
-  
-  demo::Uart uart = demo::Gpio::allocateUart();
-  demo::AttitudeSensors attitudeSensors(std::move(uart));
-  attitudeSensors.setMinimalMeasurableValue(-arma::datum::pi); 
-  attitudeSensors.setMaximalMeasurableValue(arma::datum::pi);
-  attitudeSensors.runAsynchronous();
-  
-  arma::Mat<double>::fixed<3, 6> baseJointsPosition;
-  baseJointsPosition.load("baseJointsPosition.mat");
-  arma::Mat<double>::fixed<3, 6> endEffectorJointsRelativePosition;
-  endEffectorJointsRelativePosition.load("endEffectorJointsRelativePosition.mat");
-  arma::Row<double>::fixed<6> actuatorsMinimalLength;
-  actuatorsMinimalLength.load("actuatorsMinimalLength.mat");
-  arma::Row<double>::fixed<6> actuatorsMaximalLength;
-  actuatorsMaximalLength.load("actuatorsMaximalLength.mat");
-  
-  demo::StewartPlatform stewartPlatform(std::move(linearActuators), std::move(attitudeSensors), baseJointsPosition, endEffectorJointsRelativePosition, actuatorsMinimalLength, actuatorsMaximalLength);
-  
-  demo::Network network(9001);
-  
   if (hasOption(argc, argv, "sensor")) {
-    runSensor(stewartPlatform);
-  } else if (hasOption(argc, argv, "evasion")) {
-    runEvasion(stewartPlatform, network);
-  } else if (argc > 6 && argv[1][0] != '-' && argv[2][0] != '-' && argv[3][0] != '-' && argv[4][0] != '-' && argv[5][0] != '-' && argv[6][0] != '-') {
-    runEndEffectorPose(stewartPlatform, {std::stod(argv[1]), std::stod(argv[2]), std::stod(argv[3]), std::stod(argv[4]), std::stod(argv[5]), std::stod(argv[6])});
+    runSensor();
+  } if (argc > 6 && argv[1][0] != '-' && argv[2][0] != '-' && argv[3][0] != '-' && argv[4][0] != '-' && argv[5][0] != '-' && argv[6][0] != '-') {
+    runEndEffectorPose({std::stod(argv[1]), std::stod(argv[2]), std::stod(argv[3]), std::stod(argv[4]), std::stod(argv[5]), std::stod(argv[6])});
   } else {
-    runDefault(stewartPlatform);
+    runDefault();
   }
   
   return 0;  
@@ -116,8 +67,8 @@ void showHelp() {
   std::cout << std::flush;
 }
 
-void runDefault(
-    demo::StewartPlatform& stewartPlatform) {
+void runDefault() {
+  demo::StewartPlatform stewartPlatform(std::move(createStewartPlatform()));
   arma::Col<double>::fixed<6> endEffectorPose = stewartPlatform.getEndEffectorPose();
   
   while(1) {
@@ -189,8 +140,8 @@ void runDefault(
   }
 }
 
-void runSensor(
-    demo::StewartPlatform& stewartPlatform) {
+void runSensor() {
+  demo::StewartPlatform stewartPlatform(std::move(createStewartPlatform()));
   while(1) {
     std::cout << "+--------------+--------------+--------------+--------------+--------------+--------------+\n"
               << "|  x-axis [m]  |  y-axis  [m] |  z-axis [m]  |   roll [m]   |  pitch [m]   |   yaw [m]    |\n"
@@ -208,13 +159,7 @@ void runSensor(
 }
 
 void runEndEffectorPose(
-    demo::StewartPlatform& stewartPlatform,
     const arma::Col<double>::fixed<6>& endEffectorPose) {
+  demo::StewartPlatform stewartPlatform(std::move(createStewartPlatform()));
   stewartPlatform.setEndEffectorPose(endEffectorPose);
-}
-
-void runEvasion(
-    demo::StewartPlatform& stewartPlatform,
-    demo::Network& network) {
-      
 }

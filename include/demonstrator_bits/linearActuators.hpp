@@ -24,10 +24,15 @@ namespace demo {
   class LinearActuators {
    public:
     const std::size_t numberOfActuators_;
+    
+    const double minimalExtension_;
+    const double maximalExtension_;
 
     explicit LinearActuators(
         ServoControllers&& servoControllers,
-        ExtensionSensors&& extensionSensors);
+        ExtensionSensors&& extensionSensors,
+        const double minimalExtension,
+        const double maximalExtension);
 
     explicit LinearActuators(
         LinearActuators&& linearActuators);
@@ -49,14 +54,6 @@ namespace demo {
 
     arma::Row<double> getExtensions();
 
-    void setMinimalExtension(
-        const double minimalExtension);
-    double getMinimalExtension() const;
-
-    void setMaximalExtension(
-        const double maximalExtension);
-    double getMaximalExtension() const;
-
     void setMaximalExtensionDeviation(
         const double maximalExtensionDeviation);
     double getMaximalExtensionDeviation() const;
@@ -67,14 +64,6 @@ namespace demo {
    protected:
     ServoControllers servoControllers_;
     ExtensionSensors extensionSensors_;
-
-    /**
-     * Minimal/maximal allowed extension of each actuator, in cm.
-     *
-     * Refers only to the movement margin, not the total length of the actuator.
-     */
-    double minimalExtension_;
-    double maximalExtension_;
 
     double maximalExtensionDeviation_;
 
