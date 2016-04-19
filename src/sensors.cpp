@@ -36,17 +36,23 @@ namespace demo {
 
     arma::Mat<double> measurements(numberOfSamplesPerMeasuement_, numberOfSensors_);
     for (std::size_t n = 0; n < numberOfSamplesPerMeasuement_; ++n) {
-      const double measurementIndex = std::min(std::max(arma::Row<double>(measureImplementation()), minimalMeasurableValue_), maximalMeasurableValue_) / measurementCorrections_.n_elem;
+      arma::Row<double> measurment = measureImplementation();
       
-      const std::size_t lowerMeasurementIndex = static_cast<std::size_t>(std::floor(measurementIndex));
-      const std::size_t upperMeasurementIndex = static_cast<std::size_t>(std::ceil(measurementIndex));
-      
-      if (lowerMeasurementIndex == upperMeasurementIndex) {
-        measurements.row(n) = measurementCorrections_(lowerMeasurementIndex);
-      } else {
-        const measurementIndexDifferenz = lowerMeasurementIndex - measurementIndex;
-        measurements.row(n) =  (1 - measurementIndexDifferenz) * measurementCorrections_(lowerMeasurementIndex) +  measurementIndexDifferenz * measurementCorrections_(upperMeasurementIndex);
+      for (auto& measurmentEntry : measurment) {
+        const double measurementIndex = std::min(std::max(measurmentEntry, minimalMeasurableValue_), maximalMeasurableValue_) / measurementCorrections_.n_elem;
+        
+        const std::size_t lowerMeasurementIndex = static_cast<std::size_t>(std::floor(measurementIndex));
+        const std::size_t upperMeasurementIndex = static_cast<std::size_t>(std::ceil(measurementIndex));
+        
+        if (lowerMeasurementIndex == upperMeasurementIndex) {
+          measurmentEntry = measurementCorrections_(lowerMeasurementIndex);
+        } else {
+          const std::size_t measurementIndexDifferenz = lowerMeasurementIndex - measurementIndex;
+          measurmentEntry =  (1 - measurementIndexDifferenz) * measurementCorrections_(lowerMeasurementIndex) +  measurementIndexDifferenz * measurementCorrections_(upperMeasurementIndex);
+        }
       }
+      
+      measurements.row(n) = measurment;
     }
 
     return arma::median(measurements);
