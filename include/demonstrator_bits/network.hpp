@@ -2,30 +2,32 @@
 
 // C++ Standard Library
 #include <string>
-#include <map>
 
 namespace demo {
-  class NetworkAdapter {
+  class Network {
    public:
-    explicit NetworkAdapter(
-        const unsigned int port);
+    explicit Network(
+        const unsigned int port_);
 
-    // Functions for receiving data
-    int openIncommingConnectionSocket(
-        const std::string& hostname);
-    std::string receive(
-        const std::string& hostname);
+    explicit Network(
+        Network&& network);
 
-    // Functions for sending data
-    int establishOutgoingConnectionSocket(
-        const std::string& hostname,
-        const unsigned int port);
+    Network& operator=(
+        Network&& network);
+
+    Network(Network&) = delete;
+    Network& operator=(Network&) = delete;
+
+    ~Network();
+
     void send(
         const std::string& hostname,
+        const unsigned int port,
         const std::string& data);
 
+    std::string receive();
+
    protected:
-    int incommingSocketDescriptor_;
-    std::map<std::string, int> outgoingSocketDescriptors_;
+    int queuedSocketDescriptors_;
   };
 }

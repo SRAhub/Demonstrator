@@ -1,31 +1,21 @@
 cmake_minimum_required(VERSION 2.8.12 FATAL_ERROR)
 
-project(Demonstrator CXX C)
-
-# Retrieves the version numbers from "include/demonstrator", avoiding possible inconsistency.
-file(STRINGS "${PROJECT_SOURCE_DIR}/include/demonstrator" DEMONSTRATOR_HEADER_CONTENTS REGEX "#define DEMONSTRATOR_VERSION_[A-Z]+ ")
-string(REGEX REPLACE ".*#define DEMONSTRATOR_VERSION_MAJOR ([0-9]+).*" "\\1" DEMONSTRATOR_VERSION_MAJOR "${DEMONSTRATOR_HEADER_CONTENTS}")
-string(REGEX REPLACE ".*#define DEMONSTRATOR_VERSION_MINOR ([0-9]+).*" "\\1" DEMONSTRATOR_VERSION_MINOR "${DEMONSTRATOR_HEADER_CONTENTS}")
-string(REGEX REPLACE ".*#define DEMONSTRATOR_VERSION_PATCH ([0-9]+).*" "\\1" DEMONSTRATOR_VERSION_PATCH "${DEMONSTRATOR_HEADER_CONTENTS}")
-set(DEMONSTRATOR_VERSION "${DEMONSTRATOR_VERSION_MAJOR}.${DEMONSTRATOR_VERSION_MINOR}.${DEMONSTRATOR_VERSION_PATCH}")
+project(DemonstratorApplications CXX)
 
 # Adds additional cmake modules
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../cmake")
 
 if(APPLE)
   # Use @rpath on Mac OS X.
   set(CMAKE_MACOSX_RPATH ON)
 endif()
 
-# Development build options
-option(USE_CCACHE "Use ccache" OFF)
-
 mark_as_advanced(
   USE_CCACHE
 )
 
 message(STATUS "")
-message(STATUS "Building Demonstator (version: ${DEMONSTRATOR_VERSION}).")
+message(STATUS "Building Demonstator applications.")
 
 # ------------------------
 # CHECKING PREREQUIREMENTS
@@ -42,6 +32,9 @@ include_directories(${ARMADILLO_INCLUDE_DIR})
 
 find_package(Mantella 0.12.0 REQUIRED)
 include_directories(${MANTELLA_INCLUDE_DIR})
+
+find_package(Demonstrator 0.20.0 REQUIRED)
+include_directories(${DEMONSTRATOR_INCLUDE_DIR})
 
 # --------------------
 # CONFIGURING COMPILER
@@ -101,86 +94,79 @@ if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Release")
 endif()
 
-# ----------------
-# BUILDING LIBRARY
-# ----------------
+# ---------------------
+# BUILDING Applications
+# ---------------------
 
-message(STATUS "")
-message(STATUS "Configuring library build.")
-
-if(NOT CMAKE_LIBRARY_OUTPUT_DIRECTORY)
-  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
-endif()
-
-if(NOT CMAKE_ARCHIVE_OUTPUT_DIRECTORY)
-  set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
-endif()
-
-# Include Demonstrator
-include_directories(BEFORE ${PROJECT_SOURCE_DIR}/include)
-
-configure_file(${PROJECT_SOURCE_DIR}/include/demonstrator_bits/config.hpp.cmake ${PROJECT_SOURCE_DIR}/include/demonstrator_bits/config.hpp)
-
-# All paths must start with "src/"
-add_library(demonstrator SHARED
-  # Configuration
-  src/config.cpp
-
-  # GPIO
-  src/gpio.cpp
-  src/pin.cpp
-  src/spi.cpp
-  src/i2c.cpp
-  src/uart.cpp
-
-  # Network
-  src/network.cpp
-  
-  # Sensors
-  src/sensors.cpp
-  src/sensors/attitudeSensors.cpp
-  src/sensors/distanceSensors.cpp
-  src/sensors/extensionSensors.cpp
-  src/sensors/mouse3d.cpp
-
-  # Controllers and Actuators
-  src/servoControllers.cpp
-  src/linearActuators.cpp
-  src/stewartPlatform.cpp
-
-  # Indicators
-  src/distanceIndicators.cpp
+add_executable(distanceSensors
+  commandline.cpp
+  distanceSensors.cpp
 )
 
-# Linking against prerequirements
+target_link_libraries(distanceSensors ${WIRINGPI_LIBRARIES})
+target_link_libraries(distanceSensors ${ARMADILLO_LIBRARIES})
+target_link_libraries(distanceSensors ${MANTELLA_LIBRARIES})
+target_link_libraries(distanceSensors ${DEMONSTRATOR_LIBRARIES})
 
-target_link_libraries(demonstrator ${WIRINGPI_LIBRARIES})
-target_link_libraries(demonstrator ${ARMADILLO_LIBRARIES})
-target_link_libraries(demonstrator ${MANTELLA_LIBRARIES})
+add_executable(distanceIndicators
+  commandline.cpp
+  distanceIndicators.cpp
+)
 
-# ---------------
-# INSTALL LIBRARY
-# ---------------
+target_link_libraries(distanceIndicators ${WIRINGPI_LIBRARIES})
+target_link_libraries(distanceIndicators ${ARMADILLO_LIBRARIES})
+target_link_libraries(distanceIndicators ${MANTELLA_LIBRARIES})
+target_link_libraries(distanceIndicators ${DEMONSTRATOR_LIBRARIES})
 
-message(STATUS "")
-message(STATUS "Configuring library installation.")
+add_executable(attitudeSensors
+  commandline.cpp
+  attitudeSensors.cpp
+)
 
-if(NOT INSTALL_INCLUDE_DIR)
-  set(INSTALL_INCLUDE_DIR "include")
-endif()
+target_link_libraries(attitudeSensors ${WIRINGPI_LIBRARIES})
+target_link_libraries(attitudeSensors ${ARMADILLO_LIBRARIES})
+target_link_libraries(attitudeSensors ${MANTELLA_LIBRARIES})
+target_link_libraries(attitudeSensors ${DEMONSTRATOR_LIBRARIES})
 
-set_property(TARGET demonstrator PROPERTY VERSION ${DEMONSTRATOR_VERSION})
-set_property(TARGET demonstrator PROPERTY SOVERSION ${DEMONSTRATOR_VERSION_MAJOR})
+add_executable(extensionSensors
+  commandline.cpp
+  extensionSensors.cpp
+)
 
-install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/ DESTINATION ${INSTALL_INCLUDE_DIR} COMPONENT dev)
+target_link_libraries(extensionSensors ${WIRINGPI_LIBRARIES})
+target_link_libraries(extensionSensors ${ARMADILLO_LIBRARIES})
+target_link_libraries(extensionSensors ${MANTELLA_LIBRARIES})
+target_link_libraries(extensionSensors ${DEMONSTRATOR_LIBRARIES})
 
-if(NOT INSTALL_LIB_DIR)
-  set(INSTALL_LIB_DIR "lib")
-endif()
+add_executable(servoControllers
+  commandline.cpp
+  servoControllers.cpp
+)
 
-install(TARGETS demonstrator
-  ARCHIVE DESTINATION ${INSTALL_LIB_DIR}
-  LIBRARY DESTINATION ${INSTALL_LIB_DIR})
+target_link_libraries(servoControllers ${WIRINGPI_LIBRARIES})
+target_link_libraries(servoControllers ${ARMADILLO_LIBRARIES})
+target_link_libraries(servoControllers ${MANTELLA_LIBRARIES})
+target_link_libraries(servoControllers ${DEMONSTRATOR_LIBRARIES})
+
+add_executable(linearActuators
+  commandline.cpp
+  linearActuators.cpp
+)
+
+target_link_libraries(linearActuators ${WIRINGPI_LIBRARIES})
+target_link_libraries(linearActuators ${ARMADILLO_LIBRARIES})
+target_link_libraries(linearActuators ${MANTELLA_LIBRARIES})
+target_link_libraries(linearActuators ${DEMONSTRATOR_LIBRARIES})
+
+add_executable(stewartPlatform
+  commandline.cpp
+  stewartPlatform.cpp
+)
+
+target_link_libraries(stewartPlatform ${WIRINGPI_LIBRARIES})
+target_link_libraries(stewartPlatform ${ARMADILLO_LIBRARIES})
+target_link_libraries(stewartPlatform ${MANTELLA_LIBRARIES})
+target_link_libraries(stewartPlatform ${DEMONSTRATOR_LIBRARIES})
 
 message(STATUS "")
 message(STATUS "Noticable CMAKE variables:")

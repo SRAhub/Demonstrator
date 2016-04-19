@@ -51,6 +51,6 @@ sudo make install
 mkdir build
 cd build
 cmake ..
-make 
+make
 sudo make install
 ```
