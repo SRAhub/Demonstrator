@@ -5,17 +5,8 @@ project(DemonstratorApplications CXX)
 # Adds additional cmake modules
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../cmake")
 
-if(APPLE)
-  # Use @rpath on Mac OS X.
-  set(CMAKE_MACOSX_RPATH ON)
-endif()
-
-mark_as_advanced(
-  USE_CCACHE
-)
-
 message(STATUS "")
-message(STATUS "Building Demonstator applications.")
+message(STATUS "Building demonstator applications.")
 
 # ------------------------
 # CHECKING PREREQUIREMENTS
@@ -55,44 +46,23 @@ else()
   message(STATUS "- Detected neither Clang, GCC nor MSCV but '${CMAKE_CXX_COMPILER_ID}' instead. Compiler flags may not be optimal.")
 endif()
 
-if(USE_CCACHE)
-  find_program(CCACHE_FOUND ccache)
-  message(STATUS "- Trying to use ccache to speed up recompilations.")
-  message(STATUS "  - Use 'cmake ... -DUSE_CCACHE=OFF' to exclude this.")
-  if(CCACHE_FOUND)
-    message(STATUS "  - Using ccache.")
-    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
-    set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
-  else()
-    message(STATUS "  - ccache was no found on your system.")
-  endif()
-else()
-  message(STATUS "- Excluding ccache usage.")
-  message(STATUS "  - Use 'cmake ... -DUSE_CCACHE=ON' to add this.")
-endif()
-
-# ----------------------
-# SETTING COMPILER FLAGS
-# ----------------------
-
-message(STATUS "")
-message(STATUS "Setting compiler flags.")
-  if(NOT CMAKE_COMPILER_IS_MSCV)
-    message(STATUS "- Enabling C++14 features.")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
-  endif()
+message(STATUS "- Enabling C++14 features.")
+add_compile_options(-std=c++14)
 
 message(STATUS "- Adding SSE3, SSE4, AVX, ... support.")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native")
+add_compile_options(-march=native)
 
 message(STATUS "- Using level 3 code optimisation.")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
+add_compile_options(-O3)
 
-if(NOT CMAKE_BUILD_TYPE)
-  message(STATUS "- Setting build to 'Release'.")
-  message(STATUS "  - Use 'cmake ... -DCMAKE_BUILD_TYPE=[Release|Debug]' to specify this.")
-  set(CMAKE_BUILD_TYPE "Release")
-endif()
+message(STATUS "- Adding POSIX threading.")
+add_compile_options(-pthread)
+message(STATUS "  - Work-around compiler bug 42734: Trivial use of std::thread fails with 'pure virtual method called'.")
+add_definitions(-D__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8)
+
+message(STATUS "- Setting build type to 'Release'.")
+message(STATUS "  - Use 'cmake ... -DCMAKE_BUILD_TYPE=[Release|Debug]' to specify this.")
+set(CMAKE_BUILD_TYPE "Release")
 
 # ---------------------
 # BUILDING Applications
@@ -170,8 +140,9 @@ target_link_libraries(stewartPlatform ${DEMONSTRATOR_LIBRARIES})
 
 message(STATUS "")
 message(STATUS "Noticable CMAKE variables:")
-message(STATUS "- CMAKE_PREFIX_PATH = ${CMAKE_PREFIX_PATH}.")
+message(STATUS "- CMAKE_PREFIX_PATH = ${CMAKE_PREFIX_PATH}")
 message(STATUS "- CMAKE_BUILD_TYPE = ${CMAKE_BUILD_TYPE}")
+message(STATUS "- CMAKE_MODULE_PATH = ${CMAKE_MODULE_PATH}")
 message(STATUS "- CMAKE_LIBRARY_OUTPUT_DIRECTORY = ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
 message(STATUS "- ARCHIVE_OUTPUT_DIRECTORY = ${ARCHIVE_OUTPUT_DIRECTORY}")
 message(STATUS "- CMAKE_INSTALL_PREFIX = ${CMAKE_INSTALL_PREFIX}")

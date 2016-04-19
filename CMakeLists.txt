@@ -12,18 +12,6 @@ set(DEMONSTRATOR_VERSION "${DEMONSTRATOR_VERSION_MAJOR}.${DEMONSTRATOR_VERSION_M
 # Adds additional cmake modules
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
-if(APPLE)
-  # Use @rpath on Mac OS X.
-  set(CMAKE_MACOSX_RPATH ON)
-endif()
-
-# Development build options
-option(USE_CCACHE "Use ccache" OFF)
-
-mark_as_advanced(
-  USE_CCACHE
-)
-
 message(STATUS "")
 message(STATUS "Building Demonstator (version: ${DEMONSTRATOR_VERSION}).")
 
@@ -43,6 +31,8 @@ include_directories(${ARMADILLO_INCLUDE_DIR})
 find_package(Mantella 0.12.0 REQUIRED)
 include_directories(${MANTELLA_INCLUDE_DIR})
 
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/include)
+
 # --------------------
 # CONFIGURING COMPILER
 # --------------------
@@ -59,54 +49,33 @@ if(CMAKE_COMPILER_IS_CLANGXX)
 elseif(CMAKE_COMPILER_IS_GNUCXX)
   message(STATUS "- Detected GCC compiler.")
 else()
-  message(STATUS "- Detected neither Clang, GCC nor MSCV but '${CMAKE_CXX_COMPILER_ID}' instead. Compiler flags may not be optimal.")
+  message(STATUS "- Detected neither Clang, GCC nor MSCV but '${CMAKE_CXX_COMPILER_ID}' instead. Compiler flags may be incorrect.")
 endif()
 
-if(USE_CCACHE)
-  find_program(CCACHE_FOUND ccache)
-  message(STATUS "- Trying to use ccache to speed up recompilations.")
-  message(STATUS "  - Use 'cmake ... -DUSE_CCACHE=OFF' to exclude this.")
-  if(CCACHE_FOUND)
-    message(STATUS "  - Using ccache.")
-    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
-    set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
-  else()
-    message(STATUS "  - ccache was no found on your system.")
-  endif()
-else()
-  message(STATUS "- Excluding ccache usage.")
-  message(STATUS "  - Use 'cmake ... -DUSE_CCACHE=ON' to add this.")
-endif()
-
-# ----------------------
-# SETTING COMPILER FLAGS
-# ----------------------
-
-message(STATUS "")
-message(STATUS "Setting compiler flags.")
-  if(NOT CMAKE_COMPILER_IS_MSCV)
-    message(STATUS "- Enabling C++14 features.")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
-  endif()
+message(STATUS "- Enabling C++14 features.")
+add_compile_options(-std=c++14)
 
 message(STATUS "- Adding SSE3, SSE4, AVX, ... support.")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native")
+add_compile_options(-march=native)
 
 message(STATUS "- Using level 3 code optimisation.")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
+add_compile_options(-O3)
 
-if(NOT CMAKE_BUILD_TYPE)
-  message(STATUS "- Setting build to 'Release'.")
-  message(STATUS "  - Use 'cmake ... -DCMAKE_BUILD_TYPE=[Release|Debug]' to specify this.")
-  set(CMAKE_BUILD_TYPE "Release")
-endif()
+message(STATUS "- Adding POSIX threading.")
+add_compile_options(-pthread)
+message(STATUS "  - Work-around compiler bug 42734: Trivial use of std::thread fails with 'pure virtual method called'.")
+add_definitions(-D__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8)
 
-# ----------------
-# BUILDING LIBRARY
-# ----------------
+message(STATUS "- Setting build type to 'Release'.")
+message(STATUS "  - Use 'cmake ... -DCMAKE_BUILD_TYPE=[Release|Debug]' to specify this.")
+set(CMAKE_BUILD_TYPE "Release")
+
+# -----------
+# COMPILATION
+# -----------
 
 message(STATUS "")
-message(STATUS "Configuring library build.")
+message(STATUS "Configuring library compilation.")
 
 if(NOT CMAKE_LIBRARY_OUTPUT_DIRECTORY)
   set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
@@ -115,9 +84,6 @@ endif()
 if(NOT CMAKE_ARCHIVE_OUTPUT_DIRECTORY)
   set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 endif()
-
-# Include Demonstrator
-include_directories(BEFORE ${PROJECT_SOURCE_DIR}/include)
 
 configure_file(${PROJECT_SOURCE_DIR}/include/demonstrator_bits/config.hpp.cmake ${PROJECT_SOURCE_DIR}/include/demonstrator_bits/config.hpp)
 
@@ -158,12 +124,12 @@ target_link_libraries(demonstrator ${WIRINGPI_LIBRARIES})
 target_link_libraries(demonstrator ${ARMADILLO_LIBRARIES})
 target_link_libraries(demonstrator ${MANTELLA_LIBRARIES})
 
-# ---------------
-# INSTALL LIBRARY
-# ---------------
+# -----------
+# INSTALLTION
+# -----------
 
 message(STATUS "")
-message(STATUS "Configuring library installation.")
+message(STATUS "Configuring installation.")
 
 if(NOT INSTALL_INCLUDE_DIR)
   set(INSTALL_INCLUDE_DIR "include")
@@ -184,8 +150,9 @@ install(TARGETS demonstrator
 
 message(STATUS "")
 message(STATUS "Noticable CMAKE variables:")
-message(STATUS "- CMAKE_PREFIX_PATH = ${CMAKE_PREFIX_PATH}.")
+message(STATUS "- CMAKE_PREFIX_PATH = ${CMAKE_PREFIX_PATH}")
 message(STATUS "- CMAKE_BUILD_TYPE = ${CMAKE_BUILD_TYPE}")
+message(STATUS "- CMAKE_MODULE_PATH = ${CMAKE_MODULE_PATH}")
 message(STATUS "- CMAKE_LIBRARY_OUTPUT_DIRECTORY = ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
 message(STATUS "- ARCHIVE_OUTPUT_DIRECTORY = ${ARCHIVE_OUTPUT_DIRECTORY}")
 message(STATUS "- CMAKE_INSTALL_PREFIX = ${CMAKE_INSTALL_PREFIX}")
