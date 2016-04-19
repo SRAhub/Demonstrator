@@ -57,7 +57,7 @@ add_compile_options(-O3)
 
 message(STATUS "- Adding POSIX threading.")
 add_compile_options(-pthread)
-message(STATUS "  - Work-around compiler bug 42734: Trivial use of std::thread fails with 'pure virtual method called'.")
+message(STATUS "  - Working around compiler bug 42734: Trivial use of std::thread fails with 'pure virtual method called'.")
 add_definitions(-D__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8)
 
 message(STATUS "- Setting build type to 'Release'.")
