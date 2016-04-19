@@ -22,7 +22,7 @@ namespace demo {
       throw std::logic_error("Sensors: The maximal measurable value must be grater than or equal to the minimal one.");
     }
 
-    setMeasurementCorrections(arma::join_cols(arma::zeros<arma::Col<double>>(numberOfSensors_) + minimalMeasurableValue_, arma::zeros<arma::Col<double>>(numberOfSensors_) + maximalMeasurableValue_));
+    setMeasurementCorrections(arma::join_cols(arma::zeros<arma::Row<double>>(numberOfSensors_) + minimalMeasurableValue_, arma::zeros<arma::Row<double>>(numberOfSensors_) + maximalMeasurableValue_));
     setNumberOfSamplesPerMeasurment(1);
   }
 
