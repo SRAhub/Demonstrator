@@ -19,13 +19,13 @@ rm -Rf wiringPi
 
 ## Armadillo C++
 apt-get install -y libblas-dev liblapack-dev libopenblas-dev
-wget --quiet -O armadillo.tar.gz http://downloads.sourceforge.net/project/arma/armadillo-6.500.5.tar.gz
+wget -O armadillo.tar.gz http://downloads.sourceforge.net/project/arma/armadillo-6.500.5.tar.gz
 mkdir armadillo
 tar -xzf armadillo.tar.gz -C ./armadillo --strip-components=1
 cd armadillo
 cmake .
-make --quiet
-make --quiet install
+make
+make install
 ### Fixes issues with IWYU (suggesting for example <armadillo_bits/Base_bones.hpp> instead of <armadillo>)
 find /usr/include/armadillo_bits -name *.hpp -exec sed -i -e '1i\/\/ IWYU pragma\: private\, include \<armadillo\>' {} ';'
 cd ..
