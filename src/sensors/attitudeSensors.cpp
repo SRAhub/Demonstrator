@@ -53,7 +53,7 @@ namespace demo {
     return attitudes_;
   }
   
-  void AttitudeSensors::run() {
+  void AttitudeSensors::runAsynchronous() {
     // try to open /dev/ttyAMA0; this must be explicitly enabled! (search for "/dev/ttyAMA0 raspberry pi" on the web)
     fileDescriptor_ = ::open("/dev/ttyAMA0", O_RDWR | O_NOCTTY | O_NDELAY);
     if (fileDescriptor_ < 0) {
@@ -95,10 +95,10 @@ namespace demo {
     ::tcsetattr(fileDescriptor_, TCSANOW, &newSerial_);
 
     killContinuousMeasurementThread_ = false;
-    continuousMeasurementThread_ = std::thread(&AttitudeSensors::continuousMeasurement, this);
+    continuousMeasurementThread_ = std::thread(&AttitudeSensors::asynchronousMeasurement, this);
   }
 
-  void AttitudeSensors::continuousMeasurement() {
+  void AttitudeSensors::asynchronousMeasurement() {
     char buffer[64];
 
     int numberOfReceivedChars = 0;

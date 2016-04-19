@@ -1,5 +1,6 @@
 // C++ standard library
 #include <chrono>
+#include <iomanip>
 #include <thread>
 
 // WiringPi
@@ -13,6 +14,8 @@
 
 void showHelp();
 void runDefault(
+    demo::StewartPlatform& stewartPlatform);
+void runSensor(
     demo::StewartPlatform& stewartPlatform);
 void runEndEffectorPose(
     demo::StewartPlatform& stewartPlatform,
@@ -63,6 +66,7 @@ int main (const int argc, const char* argv[]) {
   demo::AttitudeSensors attitudeSensors(std::move(uart));
   attitudeSensors.setMinimalMeasurableValue(-arma::datum::pi); 
   attitudeSensors.setMaximalMeasurableValue(arma::datum::pi);
+  attitudeSensors.runAsynchronous();
   
   arma::Mat<double>::fixed<3, 6> baseJointsPosition;
   baseJointsPosition.load("baseJointsPosition.mat");
@@ -77,9 +81,11 @@ int main (const int argc, const char* argv[]) {
   
   demo::Network network(9001);
   
-  if (hasOption(argc, argv, "evasion")) {
+  if (hasOption(argc, argv, "sensor")) {
+    runSensor(stewartPlatform);
+  } else if (hasOption(argc, argv, "evasion")) {
     runEvasion(stewartPlatform, network);
-  } else if (argc > 6 & argv[1][0] != '-' & argv[2][0] != '-' & argv[3][0] != '-' & argv[4][0] != '-' & argv[5][0] != '-' & argv[6][0] != '-') {
+  } else if (argc > 6 && argv[1][0] != '-' && argv[2][0] != '-' && argv[3][0] != '-' && argv[4][0] != '-' && argv[5][0] != '-' && argv[6][0] != '-') {
     runEndEffectorPose(stewartPlatform, {std::stod(argv[1]), std::stod(argv[2]), std::stod(argv[3]), std::stod(argv[4]), std::stod(argv[5]), std::stod(argv[6])});
   } else {
     runDefault(stewartPlatform);
@@ -100,6 +106,9 @@ void showHelp() {
   std::cout << "\n";
   std::cout << "  program extension [options ...]\n";
   std::cout << "    Moves all actuators to `extension`\n";
+  std::cout << "\n";
+  std::cout << "  program sensor [options ...]\n";
+  std::cout << "    Moves all actuators to extension\n";
   std::cout << "\n";
   std::cout << "  Options:\n";
   std::cout << "         --verbose    Prints additional (debug) information\n";
@@ -177,6 +186,24 @@ void runDefault(
     endEffectorPose(5) = 0.0;
     stewartPlatform.setEndEffectorPose(endEffectorPose);
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
+  }
+}
+
+void runSensor(
+    demo::StewartPlatform& stewartPlatform) {
+  while(1) {
+    std::cout << "+--------------+--------------+--------------+--------------+--------------+--------------+\n"
+              << "|  x-axis [m]  |  y-axis  [m] |  z-axis [m]  |   roll [m]   |  pitch [m]   |   yaw [m]    |\n"
+              << "+--------------+--------------+--------------+--------------+--------------+--------------+" << std::endl;
+    for (unsigned int n = 0; n < 10; ++n) {
+      const arma::Col<double>::fixed<6>& endEffectorPose = stewartPlatform.getEndEffectorPose();
+      std::cout << "|";
+      for (std::size_t k = 0; k < endEffectorPose.n_elem; ++k) {
+         std::cout << " " << std::setw(12) << endEffectorPose(k) << " |";
+      }
+      std::cout << std::endl;
+      std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
   }
 }
 

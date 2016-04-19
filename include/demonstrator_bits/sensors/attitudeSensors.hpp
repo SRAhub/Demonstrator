@@ -34,7 +34,7 @@ namespace demo {
     AttitudeSensors(AttitudeSensors&) = delete;
     AttitudeSensors& operator=(AttitudeSensors&) = delete;
 
-    void run();
+    void runAsynchronous();
     
     void reset();
 
@@ -53,6 +53,7 @@ namespace demo {
     std::thread continuousMeasurementThread_;
 
     arma::Row<double> measureImplementation() override;
-    void continuousMeasurement();
+    
+    void asynchronousMeasurement();
   };
 }

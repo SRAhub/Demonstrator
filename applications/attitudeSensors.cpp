@@ -37,6 +37,7 @@ int main (const int argc, const char* argv[]) {
   demo::AttitudeSensors attitudeSensors(std::move(uart));
   attitudeSensors.setMinimalMeasurableValue(-arma::datum::pi); 
   attitudeSensors.setMaximalMeasurableValue(arma::datum::pi);
+  attitudeSensors.runAsynchronous();
   
   if (hasOption(argc, argv, "calibrate")) {
     runCalibration(attitudeSensors);

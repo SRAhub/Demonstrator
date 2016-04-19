@@ -23,6 +23,8 @@ namespace demo {
 
     Mouse3d(Mouse3d&) = delete;
     Mouse3d& operator=(Mouse3d&) = delete;
+    
+    void runAsynchronous();
 
     ~Mouse3d();
 
@@ -35,6 +37,7 @@ namespace demo {
     std::thread continuousMeasurementThread_;
 
     arma::Row<double> measureImplementation() override;
-    void continuousMeasurement();
+    
+    void asynchronousMeasurement();
   };
 }
