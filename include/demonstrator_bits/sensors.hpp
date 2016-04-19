@@ -10,9 +10,13 @@ namespace demo {
   class Sensors {
    public:
     const std::size_t numberOfSensors_;
+    const double minimalMeasurableValue_;
+    const double maximalMeasurableValue_;
 
     explicit Sensors(
-        const std::size_t numberOfSensors);
+        const std::size_t numberOfSensors,
+        const double minimalMeasurableValue,
+        const double maximalMeasurableValue);
 
     explicit Sensors(
         Sensors&& sensors);
@@ -25,14 +29,6 @@ namespace demo {
 
     arma::Row<double> measure();
 
-    void setMinimalMeasurableValue(
-        const double minimalMeasurableValue);
-    double getMinimalMeasurableValue() const;
-
-    void setMaximalMeasurableValue(
-        const double maximalMeasurableValue);
-    double getMaximalMeasurableValue() const;
-
     void setMeasurementCorrections(
         const arma::Mat<double>& measurementCorrections);
     arma::Mat<double> getMeasurementCorrections() const;
@@ -42,9 +38,6 @@ namespace demo {
     std::size_t getNumberOfSamplesPerMeasuement() const;
 
    protected:
-    double minimalMeasurableValue_;
-    double maximalMeasurableValue_;
-
     arma::Mat<double> measurementCorrections_;
     std::size_t numberOfSamplesPerMeasuement_;
 

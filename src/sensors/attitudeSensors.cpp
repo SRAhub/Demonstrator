@@ -20,21 +20,24 @@ namespace demo {
    * @brief Open and set up the serial port the sensor is connected to.
    */
   AttitudeSensors::AttitudeSensors(
-      Uart&& uart)
-      : Sensors(3),
+      Uart&& uart,
+      const double minimalAttitude,
+      const double maximalAttitude)
+      : Sensors(3, minimalAttitude, maximalAttitude),
         uart_(std::move(uart)) {
           
   }
 
   AttitudeSensors::AttitudeSensors(
       AttitudeSensors&& attitudeSensors)
-      : AttitudeSensors(std::move(attitudeSensors.uart_)) {
+      : AttitudeSensors(std::move(attitudeSensors.uart_), attitudeSensors.minimalMeasurableValue_, attitudeSensors.maximalMeasurableValue_) {
   }
 
   AttitudeSensors& AttitudeSensors::operator=(
       AttitudeSensors&& attitudeSensors) {
     uart_ = std::move(attitudeSensors.uart_);
 
+    Sensors::operator=(std::move(attitudeSensors));
     return *this;
   }
 

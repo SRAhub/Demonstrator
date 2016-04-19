@@ -11,15 +11,17 @@
 namespace demo {
   ExtensionSensors::ExtensionSensors(
       Spi&& spi,
-      const std::vector<unsigned int>& channels)
-      : Sensors(channels.size()),
+      const std::vector<unsigned int>& channels,
+      const double minimalExtension,
+      const double maximalExtension)
+      : Sensors(channels.size(), minimalExtension, maximalExtension),
         spi_(std::move(spi)),
         channels_(channels) {
   }
 
   ExtensionSensors::ExtensionSensors(
       ExtensionSensors&& extensionSensors)
-      : ExtensionSensors(std::move(extensionSensors.spi_), extensionSensors.channels_) {
+      : ExtensionSensors(std::move(extensionSensors.spi_), extensionSensors.channels_, extensionSensors.minimalMeasurableValue_, extensionSensors.maximalMeasurableValue_) {
   }
 
   ExtensionSensors& ExtensionSensors::operator=(
@@ -30,6 +32,7 @@ namespace demo {
 
     spi_ = std::move(extensionSensors.spi_);
 
+    Sensors::operator=(std::move(extensionSensors));
     return *this;
   }
 

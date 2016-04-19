@@ -10,8 +10,10 @@
 
 namespace demo {
   DistanceSensors::DistanceSensors(
-      std::vector<Pin>&& pins)
-      : Sensors(pins.size()),
+      std::vector<Pin>&& pins,
+      const double minimalDistance,
+      const double maximalDistance)
+      : Sensors(pins.size(), minimalDistance, maximalDistance),
         pins_(std::move(pins)) {
     for (std::size_t n = 0; n < numberOfSensors_; ++n) {
       pins_.at(n).set(Pin::Digital::Low);
@@ -21,13 +23,14 @@ namespace demo {
 
   DistanceSensors::DistanceSensors(
       DistanceSensors&& distanceSensors)
-      : DistanceSensors(std::move(distanceSensors.pins_)) {
+      : DistanceSensors(std::move(distanceSensors.pins_), distanceSensors.minimalMeasurableValue_, distanceSensors.maximalMeasurableValue_) {
   }
 
   DistanceSensors& DistanceSensors::operator=(
       DistanceSensors&& distanceSensors) {
     pins_ = std::move(distanceSensors.pins_);
-
+    
+    Sensors::operator=(std::move(distanceSensors));
     return *this;
   }
 

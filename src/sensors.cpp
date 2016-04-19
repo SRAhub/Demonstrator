@@ -6,34 +6,45 @@
 
 namespace demo {
   Sensors::Sensors(
-      const std::size_t numberOfSensors)
-      : numberOfSensors_(numberOfSensors) {
+      const std::size_t numberOfSensors,
+      const double minimalMeasurableValue,
+      const double maximalMeasurableValue)
+      : numberOfSensors_(numberOfSensors),
+        minimalMeasurableValue_(minimalMeasurableValue), 
+        maximalMeasurableValue_(maximalMeasurableValue) {
     if (numberOfSensors_ == 0) {
       throw std::domain_error("Sensors: The number of sensors must be greater than 0.");
+    } else if (!std::isfinite(minimalMeasurableValue_)) {
+      throw std::domain_error("Sensors: The minimal measurable value must be finite.");
+    } else if (!std::isfinite(maximalMeasurableValue_)) {
+      throw std::domain_error("Sensors: The maximal measurable value must be finite.");
+    } else if (maximalMeasurableValue_ < minimalMeasurableValue_) {
+      throw std::logic_error("Sensors: The maximal measurable value must be grater than or equal to the minimal one.");
     }
 
+    setMeasurementCorrections(arma::join_cols(arma::zeros<arma::Col<double>>(numberOfSensors_) + minimalMeasurableValue_, arma::zeros<arma::Col<double>>(numberOfSensors_) + maximalMeasurableValue_));
     setNumberOfSamplesPerMeasurment(1);
   }
 
   Sensors::Sensors(
       Sensors&& sensors)
-      : Sensors(sensors.numberOfSensors_) {
+      : Sensors(sensors.numberOfSensors_, sensors.minimalMeasurableValue_, sensors.maximalMeasurableValue_) {
   }
 
   Sensors& Sensors::operator=(
       Sensors&& sensors) {
     if (numberOfSensors_ != sensors.numberOfSensors_) {
       throw std::invalid_argument("Sensors.operator=: The number of sensors must be equal.");
+    } else if (std::abs(minimalMeasurableValue_ -  sensors.minimalMeasurableValue_) > 0) {
+      throw std::invalid_argument("Sensors.operator=: The minimal measurable values equal.");
+    } else if (std::abs(maximalMeasurableValue_ - sensors.maximalMeasurableValue_) > 0) {
+      throw std::invalid_argument("Sensors.operator=: The maximal measurable values equal.");
     }
 
     return *this;
   }
 
   arma::Row<double> Sensors::measure() {
-    if (maximalMeasurableValue_ < minimalMeasurableValue_) {
-      throw std::logic_error("Sensors.measure: The maximal measurable value must be grater than or equal to the minimal one.");
-    }
-
     arma::Mat<double> measurements(numberOfSamplesPerMeasuement_, numberOfSensors_);
     for (std::size_t n = 0; n < numberOfSamplesPerMeasuement_; ++n) {
       arma::Row<double> measurment = measureImplementation();
@@ -56,32 +67,6 @@ namespace demo {
     }
 
     return arma::median(measurements);
-  }
-
-  void Sensors::setMinimalMeasurableValue(
-      const double minimalMeasurableValue) {
-    if (!std::isfinite(minimalMeasurableValue)) {
-      throw std::domain_error("Sensors.setMinimalMeasurableValue: The minimal measurable value must be finite.");
-    }
-
-    minimalMeasurableValue_ = minimalMeasurableValue;
-  }
-
-  double Sensors::getMinimalMeasurableValue() const {
-    return minimalMeasurableValue_;
-  }
-
-  void Sensors::setMaximalMeasurableValue(
-      const double maximalMeasurableValue) {
-    if (!std::isfinite(maximalMeasurableValue)) {
-      throw std::domain_error("Sensors.setMaximalMeasurableValue: The maximal measurable value must be finite.");
-    }
-
-    maximalMeasurableValue_ = maximalMeasurableValue;
-  }
-
-  double Sensors::getMaximalMeasurableValue() const {
-    return maximalMeasurableValue_;
   }
 
   void Sensors::setMeasurementCorrections(

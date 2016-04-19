@@ -23,7 +23,9 @@ namespace demo {
   class AttitudeSensors : public Sensors {
    public:
     explicit AttitudeSensors(
-        Uart&& uart);
+        Uart&& uart,
+        const double minimalAttitude,
+        const double maximalAttitude);
 
     explicit AttitudeSensors(
         AttitudeSensors&& attitudeSensors);

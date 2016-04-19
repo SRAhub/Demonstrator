@@ -23,7 +23,9 @@ namespace demo {
    public:
     explicit ExtensionSensors(
         Spi&& spi,
-        const std::vector<unsigned int>& channels);
+        const std::vector<unsigned int>& channels,
+        const double minimalExtension,
+        const double maximalExtension);
 
     explicit ExtensionSensors(
         ExtensionSensors&& extensionSensors);

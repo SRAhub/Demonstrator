@@ -15,14 +15,16 @@
 #include <sys/ioctl.h>
 
 namespace demo {
-  Mouse3d::Mouse3d()
-      : Sensors(8) {
+  Mouse3d::Mouse3d(
+      const double minimalDisplacement,
+      const double maximalDisplacement)
+      : Sensors(8, minimalDisplacement, maximalDisplacement) {
         
   }
 
   Mouse3d::Mouse3d(
       Mouse3d&& mouse3d)
-      : Sensors(8) {
+      : Sensors(8, mouse3d.minimalMeasurableValue_, mouse3d.maximalMeasurableValue_) {
     fileDescriptor_ = mouse3d.fileDescriptor_;
     mouse3d.fileDescriptor_ = -1;
   }
@@ -31,7 +33,8 @@ namespace demo {
       Mouse3d&& mouse3d) {
     fileDescriptor_ = mouse3d.fileDescriptor_;
     mouse3d.fileDescriptor_ = -1;
-
+    
+    Sensors::operator=(std::move(mouse3d));
     return *this;
   }
 

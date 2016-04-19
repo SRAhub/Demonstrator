@@ -25,7 +25,9 @@ namespace demo {
   class DistanceSensors : public Sensors {
    public:
     explicit DistanceSensors(
-        std::vector<Pin>&& pins);
+        std::vector<Pin>&& pins,
+        const double minimalDistance,
+        const double maximalDistance);
 
     explicit DistanceSensors(
         DistanceSensors&& distanceSensors);

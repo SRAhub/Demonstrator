@@ -13,7 +13,9 @@
 namespace demo {
   class Mouse3d : public Sensors {
    public:
-    explicit Mouse3d();
+    explicit Mouse3d(
+        const double minimalDisplacement,
+        const double maximalDisplacement);
 
     explicit Mouse3d(
         Mouse3d&& mouse3d);
