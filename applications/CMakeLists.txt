@@ -74,89 +74,105 @@ message(STATUS "Configuring maintenance applications.")
 # All paths must start with "maintenance/"
 
 message(STATUS "- Distance sensors.")
-add_executable(distanceSensors
+add_executable(maintainDistanceSensors
   commandline.cpp
   maintenance/distanceSensors.cpp
 )
 
-target_link_libraries(distanceSensors ${WIRINGPI_LIBRARIES})
-target_link_libraries(distanceSensors ${ARMADILLO_LIBRARIES})
-target_link_libraries(distanceSensors ${MANTELLA_LIBRARIES})
-target_link_libraries(distanceSensors ${DEMONSTRATOR_LIBRARIES})
-set_target_properties(distanceSensors PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/maintenance")
+target_link_libraries(maintainDistanceSensors ${WIRINGPI_LIBRARIES})
+target_link_libraries(maintainDistanceSensors ${ARMADILLO_LIBRARIES})
+target_link_libraries(maintainDistanceSensors ${MANTELLA_LIBRARIES})
+target_link_libraries(maintainDistanceSensors ${DEMONSTRATOR_LIBRARIES})
+set_target_properties(maintainDistanceSensors PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/maintenance")
 
 
 message(STATUS "- Distance indicators.")
-add_executable(distanceIndicators
+add_executable(maintainDistanceIndicators
   commandline.cpp
   maintenance/distanceIndicators.cpp
 )
 
-target_link_libraries(distanceIndicators ${WIRINGPI_LIBRARIES})
-target_link_libraries(distanceIndicators ${ARMADILLO_LIBRARIES})
-target_link_libraries(distanceIndicators ${MANTELLA_LIBRARIES})
-target_link_libraries(distanceIndicators ${DEMONSTRATOR_LIBRARIES})
-set_target_properties(distanceIndicators PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/maintenance")
+target_link_libraries(maintainDistanceIndicators ${WIRINGPI_LIBRARIES})
+target_link_libraries(maintainDistanceIndicators ${ARMADILLO_LIBRARIES})
+target_link_libraries(maintainDistanceIndicators ${MANTELLA_LIBRARIES})
+target_link_libraries(maintainDistanceIndicators ${DEMONSTRATOR_LIBRARIES})
+set_target_properties(maintainDistanceIndicators PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/maintenance")
 
 message(STATUS "- Attitude sensors.")
-add_executable(attitudeSensors
+add_executable(maintainAttitudeSensors
   commandline.cpp
   maintenance/attitudeSensors.cpp
 )
 
-target_link_libraries(attitudeSensors ${WIRINGPI_LIBRARIES})
-target_link_libraries(attitudeSensors ${ARMADILLO_LIBRARIES})
-target_link_libraries(attitudeSensors ${MANTELLA_LIBRARIES})
-target_link_libraries(attitudeSensors ${DEMONSTRATOR_LIBRARIES})
-set_target_properties(attitudeSensors PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/maintenance")
+target_link_libraries(maintainAttitudeSensors ${WIRINGPI_LIBRARIES})
+target_link_libraries(maintainAttitudeSensors ${ARMADILLO_LIBRARIES})
+target_link_libraries(maintainAttitudeSensors ${MANTELLA_LIBRARIES})
+target_link_libraries(maintainAttitudeSensors ${DEMONSTRATOR_LIBRARIES})
+set_target_properties(maintainAttitudeSensors PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/maintenance")
 
 message(STATUS "- Extension sensors.")
-add_executable(extensionSensors
+add_executable(maintainExtensionSensors
   commandline.cpp
   maintenance/extensionSensors.cpp
 )
 
-target_link_libraries(extensionSensors ${WIRINGPI_LIBRARIES})
-target_link_libraries(extensionSensors ${ARMADILLO_LIBRARIES})
-target_link_libraries(extensionSensors ${MANTELLA_LIBRARIES})
-target_link_libraries(extensionSensors ${DEMONSTRATOR_LIBRARIES})
-set_target_properties(extensionSensors PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/maintenance")
+target_link_libraries(maintainExtensionSensors ${WIRINGPI_LIBRARIES})
+target_link_libraries(maintainExtensionSensors ${ARMADILLO_LIBRARIES})
+target_link_libraries(maintainExtensionSensors ${MANTELLA_LIBRARIES})
+target_link_libraries(maintainExtensionSensors ${DEMONSTRATOR_LIBRARIES})
+set_target_properties(maintainExtensionSensors PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/maintenance")
 
 message(STATUS "- Servo controllers.")
-add_executable(servoControllers
+add_executable(maintainServoControllers
   commandline.cpp
   maintenance/servoControllers.cpp
 )
 
-target_link_libraries(servoControllers ${WIRINGPI_LIBRARIES})
-target_link_libraries(servoControllers ${ARMADILLO_LIBRARIES})
-target_link_libraries(servoControllers ${MANTELLA_LIBRARIES})
-target_link_libraries(servoControllers ${DEMONSTRATOR_LIBRARIES})
-set_target_properties(servoControllers PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/maintenance")
+target_link_libraries(maintainServoControllers ${WIRINGPI_LIBRARIES})
+target_link_libraries(maintainServoControllers ${ARMADILLO_LIBRARIES})
+target_link_libraries(maintainServoControllers ${MANTELLA_LIBRARIES})
+target_link_libraries(maintainServoControllers ${DEMONSTRATOR_LIBRARIES})
+set_target_properties(maintainServoControllers PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/maintenance")
 
 message(STATUS "- Linear actuators.")
-add_executable(linearActuators
+add_executable(maintainLinearActuators
   commandline.cpp
   maintenance/linearActuators.cpp
 )
 
-target_link_libraries(linearActuators ${WIRINGPI_LIBRARIES})
-target_link_libraries(linearActuators ${ARMADILLO_LIBRARIES})
-target_link_libraries(linearActuators ${MANTELLA_LIBRARIES})
-target_link_libraries(linearActuators ${DEMONSTRATOR_LIBRARIES})
-set_target_properties(linearActuators PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/maintenance")
+target_link_libraries(maintainLinearActuators ${WIRINGPI_LIBRARIES})
+target_link_libraries(maintainLinearActuators ${ARMADILLO_LIBRARIES})
+target_link_libraries(maintainLinearActuators ${MANTELLA_LIBRARIES})
+target_link_libraries(maintainLinearActuators ${DEMONSTRATOR_LIBRARIES})
+set_target_properties(maintainLinearActuators PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/maintenance")
 
 message(STATUS "- Stewart platform.")
-add_executable(stewartPlatform
+add_executable(maintainStewartPlatform
   commandline.cpp
   maintenance/stewartPlatform.cpp
 )
 
-target_link_libraries(stewartPlatform ${WIRINGPI_LIBRARIES})
-target_link_libraries(stewartPlatform ${ARMADILLO_LIBRARIES})
-target_link_libraries(stewartPlatform ${MANTELLA_LIBRARIES})
-target_link_libraries(stewartPlatform ${DEMONSTRATOR_LIBRARIES})
-set_target_properties(stewartPlatform PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/maintenance")
+target_link_libraries(maintainStewartPlatform ${WIRINGPI_LIBRARIES})
+target_link_libraries(maintainStewartPlatform ${ARMADILLO_LIBRARIES})
+target_link_libraries(maintainStewartPlatform ${MANTELLA_LIBRARIES})
+target_link_libraries(maintainStewartPlatform ${DEMONSTRATOR_LIBRARIES})
+set_target_properties(maintainStewartPlatform PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/maintenance")
+
+message(STATUS "")
+message(STATUS "Configuring calibration applications.")
+# All paths must start with "calibration/"
+
+message(STATUS "- Extension sensor.")
+add_executable(calibrateExtensionSensor
+  commandline.cpp
+  calibration/extensionSensors.cpp
+)
+
+target_link_libraries(calibrateExtensionSensor ${WIRINGPI_LIBRARIES})
+target_link_libraries(calibrateExtensionSensor ${ARMADILLO_LIBRARIES})
+target_link_libraries(calibrateExtensionSensor ${MANTELLA_LIBRARIES})
+target_link_libraries(calibrateExtensionSensor ${DEMONSTRATOR_LIBRARIES})
+set_target_properties(calibrateExtensionSensor PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/calibration")
 
 message(STATUS "")
 message(STATUS "Noticable CMAKE variables:")
