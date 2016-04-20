@@ -71,7 +71,7 @@ namespace demo {
   }
 
   arma::Col<double>::fixed<6> StewartPlatform::getEndEffectorPose() {
-    const arma::Col<double>::fixed<3>& attitudes = attitudeSensors_.measure();
+    const arma::Row<double>::fixed<3>& attitudes = attitudeSensors_.measure();
     const arma::Row<double>::fixed<6>& extensions = linearActuators_.getExtensions();
 
     const arma::Mat<double>::fixed<3, 3>& endEffectorRotation = mant::rotationMatrix3D(attitudes(0), attitudes(1), attitudes(2));
@@ -95,6 +95,6 @@ namespace demo {
       throw std::runtime_error("StewartPlatform.getEndEffectorPose: ");
     }
 
-    return arma::join_cols(intersections.at(0), attitudes);
+    return arma::join_cols(intersections.at(0), attitudes.t());
   }
 }
