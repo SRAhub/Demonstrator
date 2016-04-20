@@ -58,7 +58,7 @@ int main (const int argc, const char* argv[]) {
   arma::Row<double>::fixed<6> actuatorsMaximalLength;
   actuatorsMaximalLength.load("actuatorsMaximalLength.mat");
   
-  demo::StewartPlatform(std::move(linearActuators), std:.move(attitudeSensors), baseJointsPosition, endEffectorJointsRelativePosition, actuatorsMinimalLength, actuatorsMaximalLength);
+  demo::StewartPlatform(std::move(linearActuators), std::move(attitudeSensors), baseJointsPosition, endEffectorJointsRelativePosition, actuatorsMinimalLength, actuatorsMaximalLength);
   
   if (hasOption(argc, argv, "sensor")) {
     runSensor();
