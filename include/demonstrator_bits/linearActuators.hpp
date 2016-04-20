@@ -43,8 +43,11 @@ namespace demo {
     LinearActuators(LinearActuators&) = delete;
     LinearActuators& operator=(LinearActuators&) = delete;
 
+    ~LinearActuators();
+    
     /**
-     * Let each actuator approach its new position. This method blocks until all actuators have reached their extension!
+     * Let each actuator approach its new position.
+     * **Attention:** This method won't block until all actuators have reached their extension!
      *
      * Both `extensions` and `speeds` need to be between in range [0, 1]. Both values refer to a percentage of their respective intervals: [minimalExtension, maximalExtension] and [minimalSpeeds, maximalSpeeds].
      */

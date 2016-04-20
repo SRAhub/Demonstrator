@@ -44,10 +44,22 @@ namespace demo {
 
     return *this;
   }
+  
+  LinearActuators::~LinearActuators() {
+    if (killReachExtensionThread_ == false) {
+      killReachExtensionThread_ = true;
+      reachExtensionThread_.join();
+    }
+  }
 
   void LinearActuators::setExtensions(
       const arma::Row<double>& extensions,
       const arma::Row<double>& speeds) {
+    if (killReachExtensionThread_ == false) {
+      killReachExtensionThread_ = true;
+      reachExtensionThread_.join();
+    }
+    
     killReachExtensionThread_ = false;
     reachExtensionThread_ = std::thread(&LinearActuators::reachExtension, this, extensions, speeds);
   }
