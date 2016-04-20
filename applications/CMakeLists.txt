@@ -158,6 +158,18 @@ target_link_libraries(stewartPlatform ${MANTELLA_LIBRARIES})
 target_link_libraries(stewartPlatform ${DEMONSTRATOR_LIBRARIES})
 set_target_properties(stewartPlatform PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/maintenance")
 
+message(STATUS "- Stewart platform.")
+add_executable(extensionSensorCalibration
+  commandline.cpp
+  calibration/extensionSensors.cpp
+)
+
+target_link_libraries(stewartPlatform ${WIRINGPI_LIBRARIES})
+target_link_libraries(stewartPlatform ${ARMADILLO_LIBRARIES})
+target_link_libraries(stewartPlatform ${MANTELLA_LIBRARIES})
+target_link_libraries(stewartPlatform ${DEMONSTRATOR_LIBRARIES})
+set_target_properties(stewartPlatform PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/calibration")
+
 message(STATUS "")
 message(STATUS "Noticable CMAKE variables:")
 message(STATUS "- CMAKE_PREFIX_PATH = ${CMAKE_PREFIX_PATH}")
