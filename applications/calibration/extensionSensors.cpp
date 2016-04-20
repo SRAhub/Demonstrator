@@ -52,13 +52,13 @@ int main (const int argc, const char* argv[]) {
 }
 
 void showHelp() {
-  std::cout << "Usage:\n";
-            << "  program [options ...]\n";
-            << "    Moves all actuators up by 10%, then expects the user to measure and enter the true extension to calculate adjustments.\n";
-            << "\n";
-            << "  Options:\n";
-            << "         --verbose    Prints additional (debug) information\n";
-            << "    -h | --help       Displays this help\n";
+  std::cout << "Usage:\n"
+            << "  program [options ...]\n"
+            << "    Moves all actuators up by 10%, then expects the user to measure and enter the true extension to calculate adjustments.\n"
+            << "\n"
+            << "  Options:\n"
+            << "         --verbose    Prints additional (debug) information\n"
+            << "    -h | --help       Displays this help\n"
             << std::flush;
 }
 
