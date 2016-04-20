@@ -55,12 +55,16 @@ namespace demo {
   void LinearActuators::setExtensions(
       const arma::Row<double>& extensions,
       const arma::Row<double>& speeds) {
+    std::cout << "LinearActuators::setExtensions" << std::endl;
     if (killReachExtensionThread_ == false) {
+      std::cout << "killReachExtensionThread_ = true;" << std::endl;
       killReachExtensionThread_ = true;
       reachExtensionThread_.join();
+      std::cout << "reachExtensionThread_.join();" << std::endl;
     }
     
     killReachExtensionThread_ = false;
+    std::cout << "std::thread " << extensions << speeds << std::endl;
     reachExtensionThread_ = std::thread(&LinearActuators::reachExtension, this, extensions, speeds);
   }
 
@@ -71,8 +75,11 @@ namespace demo {
   void LinearActuators::reachExtension(
       const arma::Row<double>& extensions,
       const arma::Row<double>& maximalSpeeds) {
+    std::cout << "LinearActuators::reachExtension" << std::endl;
+    std::cout << "reachExtension " << extensions << maximalSpeeds << std::endl;
     arma::Row<double> limitedExtensions = arma::clamp(extensions, minimalExtension_, maximalExtension_);
     arma::Row<double> currentExtension = extensionSensors_.measure();
+    std::cout << "reachExtension.currentExtension " << currentExtension << std::endl;
 
     bool hasReachedPosition = arma::all(arma::abs(limitedExtensions - currentExtension) <= maximalExtensionDeviation_);
 
