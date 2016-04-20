@@ -4,6 +4,9 @@
 #include <cmath>
 #include <stdexcept>
 
+// Mantella
+#include <mantella>
+
 namespace demo {
   Sensors::Sensors(
       const std::size_t numberOfSensors,
@@ -50,17 +53,14 @@ namespace demo {
       measurements.row(n) = arma::clamp(measureImplementation(), minimalMeasurableValue_, maximalMeasurableValue_);
     }
 
-    const double measurementIndex = std::min(std::max(arma::median(measurements), minimalMeasurableValue_), maximalMeasurableValue_) * (measurementCorrections_.n_elem - 1) / (maximalMeasurableValue_ - minimalMeasurableValue_);
+    const arma::Row<double>& measurementIndices = arma::median(measurements) * (measurementCorrections_.n_rows - 1) / (maximalMeasurableValue_ - minimalMeasurableValue_);
         
-    const std::size_t lowerMeasurementIndex = static_cast<std::size_t>(std::floor(measurementIndex));
-    const std::size_t upperMeasurementIndex = static_cast<std::size_t>(std::ceil(measurementIndex));
+    const arma::Row<arma::uword>& lowerMeasurementIndices = arma::conv_to<arma::Row<arma::uword>>::from(arma::floor(measurementIndices));
+    const arma::Row<arma::uword>& upperMeasurementIndices = arma::conv_to<arma::Row<arma::uword>>::from(arma::ceil(measurementIndices));
     
-    if (lowerMeasurementIndex == upperMeasurementIndex) {
-      return measurementCorrections_(lowerMeasurementIndex);
-    } else {
-      const std::size_t measurementIndexDifferenz = measurementIndex - lowerMeasurementIndex;
-      return (1 - measurementIndexDifferenz) * measurementCorrections_(lowerMeasurementIndex) +  measurementIndexDifferenz * measurementCorrections_(upperMeasurementIndex);
-    }
+    const arma::Row<double>& measurementIndicesDifferenz = measurementIndices - lowerMeasurementIndices;
+    return (1.0 - measurementIndicesDifferenz) * measurementCorrections_.submat(lowerMeasurementIndices, mant::range(0, numberOfSensors_ - 1)) +  measurementIndicesDifferenz * measurementCorrections_.submat(lowerMeasurementIndices, mant::range(0, numberOfSensors_ - 1));
+
   }
 
   void Sensors::setMeasurementCorrections(
