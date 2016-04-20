@@ -14,7 +14,8 @@
 #include "../robot.hpp"
 
 void showHelp();
-void runDefault();
+void runDefault(
+    demo::ExtensionSensors&);
 
 int main (const int argc, const char* argv[]) {
   if (hasOption(argc, argv, "-h") || hasOption(argc, argv, "--help")) {
@@ -22,18 +23,20 @@ int main (const int argc, const char* argv[]) {
     // Terminates the program after the help is shown.
     return 0;
   }
-  
+
   if (hasOption(argc, argv, "--verbose")) {
     ::demo::isVerbose = true;
   }
-  
+
   // Initialises WiringPi and uses the BCM pin layout.
   // For an overview on the pin layout, use the `gpio readall` command on a Raspberry Pi.
   ::wiringPiSetupGpio();
-  
-  runDefault();
-  
-  return 0;  
+
+  demo::ExtensionSensors extensionSensors(demo::Gpio::allocateSpi(), {0, 1, 2, 3, 4, 5}, 0.0, 1.0);
+
+  runDefault(extensionSensors);
+
+  return 0;
 }
 
 void showHelp() {
@@ -50,9 +53,9 @@ void showHelp() {
   std::cout << std::flush;
 }
 
-void runDefault() {
-  demo::ExtensionSensors extensionSensors(std::move(createExtensionSensors()));
-    
+void runDefault(
+    demo::ExtensionSensors& extensionSensors) {
+
   while(1) {
     std::cout << "+--------------+--------------+--------------+--------------+--------------+--------------+\n"
               << "| Sensor 1 [m] | Sensor 2 [m] | Sensor 3 [m] | Sensor 4 [m] | Sensor 5 [m] | Sensor 6 [m] |\n"

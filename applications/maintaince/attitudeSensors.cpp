@@ -14,7 +14,8 @@
 #include "../robot.hpp"
 
 void showHelp();
-void runDefault();
+void runDefault(
+    demo::AttitudeSensors&);
 
 int main (const int argc, const char* argv[]) {
   if (hasOption(argc, argv, "-h") || hasOption(argc, argv, "--help")) {
@@ -22,18 +23,21 @@ int main (const int argc, const char* argv[]) {
     // Terminates the program after the help is shown.
     return 0;
   }
-  
+
   if (hasOption(argc, argv, "--verbose")) {
     ::demo::isVerbose = true;
   }
-  
+
   // Initialises WiringPi and uses the BCM pin layout.
   // For an overview on the pin layout, use the `gpio readall` command on a Raspberry Pi.
   ::wiringPiSetupGpio();
-  
-  runDefault();
-  
-  return 0;  
+
+  demo::AttitudeSensors attitudeSensors(demo::Gpio::allocateUart(), -arma::datum::pi, arma::datum::pi);
+  attitudeSensors.runAsynchronous();
+
+  runDefault(attitudeSensors);
+
+  return 0;
 }
 
 void showHelp() {
@@ -50,10 +54,8 @@ void showHelp() {
   std::cout << std::flush;
 }
 
-void runDefault() {
-  demo::AttitudeSensors attitudeSensors(std::move(createAttitudeSensors()));
-  attitudeSensors.runAsynchronous();
-      
+void runDefault(
+    demo::AttitudeSensors& attitudeSensors) {
   while(1) {
     std::cout << "+-----------------+-----------------+-----------------+\n"
               << "| Roll [radians]  | Pitch [radians] |  Yaw [radians]  |\n"

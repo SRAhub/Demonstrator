@@ -16,7 +16,8 @@
 bool useDistanceIndicators = false;
 
 void showHelp();
-void runDefault();
+void runDefault(
+    demo::DistanceSensors&, demo::DistanceIndicators&);
 
 int main (const int argc, const char* argv[]) {
   if (hasOption(argc, argv, "-h") || hasOption(argc, argv, "--help")) {
@@ -24,22 +25,41 @@ int main (const int argc, const char* argv[]) {
     // Terminates the program after the help is shown.
     return 0;
   }
-  
+
   if (hasOption(argc, argv, "--indicators")) {
     ::useDistanceIndicators = true;
   }
-  
+
   if (hasOption(argc, argv, "--verbose")) {
     ::demo::isVerbose = true;
   }
-  
+
   // Initialises WiringPi and uses the BCM pin layout.
   // For an overview on the pin layout, use the `gpio readall` command on a Raspberry Pi.
   ::wiringPiSetupGpio();
-  
-  runDefault();
-  
-  return 0;  
+
+
+  std::vector<demo::Pin> pins;
+  pins.push_back(demo::Gpio::allocatePin(17));
+  pins.push_back(demo::Gpio::allocatePin(27));
+  pins.push_back(demo::Gpio::allocatePin(22));
+  pins.push_back(demo::Gpio::allocatePin(10));
+  pins.push_back(demo::Gpio::allocatePin(25));
+  pins.push_back(demo::Gpio::allocatePin(11));
+  demo::DistanceSensors distanceSensors(std::move(pins), 0.03, 0.35);
+
+  std::vector<demo::Pin> dataPins;
+  dataPins.push_back(demo::Gpio::allocatePin(12));
+  dataPins.push_back(demo::Gpio::allocatePin(5));
+  dataPins.push_back(demo::Gpio::allocatePin(6));
+  dataPins.push_back(demo::Gpio::allocatePin(13));
+  dataPins.push_back(demo::Gpio::allocatePin(19));
+  dataPins.push_back(demo::Gpio::allocatePin(26));
+  demo::DistanceIndicators distanceIndicators(demo::Gpio::allocatePin(21), std::move(dataPins), 0.05, 0.08, 0.20);
+
+  runDefault(distanceSensors, distanceIndicators);
+
+  return 0;
 }
 
 void showHelp() {
@@ -60,10 +80,9 @@ void showHelp() {
   std::cout << std::flush;
 }
 
-void runDefault() {
-  demo::DistanceSensors distanceSensors(std::move(createDistanceSensors()));
-  demo::DistanceIndicators distanceIndicators(std::move(createDistanceIndicators()));
-  
+void runDefault(
+    demo::DistanceSensors& distanceSensors, demo::DistanceIndicators& distanceIndicators) {
+
   while(1) {
     std::cout << "+--------------+--------------+--------------+--------------+--------------+--------------+\n"
               << "| Sensor 1 [m] | Sensor 2 [m] | Sensor 3 [m] | Sensor 4 [m] | Sensor 5 [m] | Sensor 6 [m] |\n"
