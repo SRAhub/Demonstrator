@@ -2,6 +2,9 @@
 apt-get update
 
 # Dependencies
+## Git
+apt-get install -y git
+
 ## CMake
 apt-get install -y cmake
 
@@ -36,24 +39,21 @@ cd ..
 rm -Rf Mantella
 
 # Testing
-sudo apt-get install -y iwyu
-sudo add-apt-repository 'deb http://llvm.org/apt/trusty/ llvm-toolchain-trusty-3.6 main'
-wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key|sudo apt-key add -
-sudo apt-get update -qq
+apt-get install -y iwyu
+add-apt-repository 'deb http://llvm.org/apt/trusty/ llvm-toolchain-trusty-3.6 main'
+wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key | sudo apt-key add -
+apt-get update -qq
 if [ -f /usr/local/clang-3.5.0/bin/clang-format ]; then
-  sudo mv /usr/local/clang-3.5.0/bin/clang-format /usr/local/clang-3.5.0/bin/clang-format-3.5
+  mv /usr/local/clang-3.5.0/bin/clang-format /usr/local/clang-3.5.0/bin/clang-format-3.5
 fi
-sudo apt-get install -y clang-format-3.6
-sudo update-alternatives --install /usr/bin/clang-format clang-format /usr/bin/clang-format-3.6 100
-sudo update-alternatives --set clang-format /usr/bin/clang-format-3.6
+apt-get install -y clang-format-3.6
+update-alternatives --install /usr/bin/clang-format clang-format /usr/bin/clang-format-3.6 100
+update-alternatives --set clang-format /usr/bin/clang-format-3.6
 
 # Debugging
-sudo apt-get install -y gdb
-sudo apt-get install -y valgrind
+apt-get install -y gdb
 
 # Useful development tools
-sudo apt-get install -y htop
-sudo apt-get install -y git
-sudo apt-get install -y vim
-sudo apt-get install -y gdb
-sudo apt-get install -y dos2unix
+apt-get install -y htop
+apt-get install -y vim
+apt-get install -y dos2unix
