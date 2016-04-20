@@ -90,35 +90,33 @@ arma::Cube<double> measure(
     demo::LinearActuators& linearActuators) {
   linearActuators.getExtensionSensors().setNumberOfSamplesPerMeasurment(1);
   const std::array<double, 8> extensions {.1, .2, .3, .4, .5, .6, .7, .8};
-  arma::Cube<double> result;
+  arma::Cube<double> result(2, extensions.size(), linearActuators.numberOfActuators_);
 
   std::cout << "Starting measurement\n";
   for (int i = 0; i < extensions.size(); i++) {
-    std::cout << "Extending to " << extensions.at(i) << "%\n";
+    std::cout << "Extending to " << extensions.at(i) << "\n";
     runAll(linearActuators, extensions.at(i));
     std::cout << "Reached target extension.\n";
     for (std::size_t device = 0; device < linearActuators.numberOfActuators_; device++) {
       std::cout << "Enter measured distance for linear actuator #"
                 << device
-                << " (in percent): ";
+                << ": ";
       std::cin >> result(0, i, device);
-      std::cout << std::endl;
     }
 
     if (i < extensions.size() - 1) {
       runAll(linearActuators, extensions.at(i + 1));
-      std::cout << "Retracting to " << extensions.at(i) << "%\n";
+      std::cout << "Retracting to " << extensions.at(i) << "\n";
       runAll(linearActuators, extensions.at(i));
       std::cout << "Reached target extension.\n";
       for (std::size_t device = 0; device < linearActuators.numberOfActuators_; device++) {
         std::cout << "Enter measured distance for linear actuator #"
                   << device
-                  << " (in percent): ";
+                  << ": ";
         std::cin >> result(1, i, device);
-        std::cout << std::endl;
       }
     } else {
-      std::cout << "Won't extend further than " << extensions.at(i) << "%. Copying first value.\n";
+      std::cout << "Won't extend further than " << extensions.at(i) << ". Copying first value.\n";
       for (std::size_t device = 0; device < linearActuators.numberOfActuators_; device++) {
         result(1, i, device) = result(0, i, device);
       }
