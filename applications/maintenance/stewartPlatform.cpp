@@ -53,13 +53,13 @@ int main (const int argc, const char* argv[]) {
   demo::AttitudeSensors attitudeSensors(demo::Gpio::allocateUart(), -arma::datum::pi, arma::datum::pi);
   
   arma::Mat<double>::fixed<3, 6> baseJointsPosition;
-  baseJointsPosition.load("baseJointsPosition.mat");
+  baseJointsPosition.load("baseJointsPosition.config");
   arma::Mat<double>::fixed<3, 6> endEffectorJointsRelativePosition;
-  endEffectorJointsRelativePosition.load("endEffectorJointsRelativePosition.mat");
+  endEffectorJointsRelativePosition.load("endEffectorJointsRelativePosition.config");
   arma::Row<double>::fixed<6> actuatorsMinimalLength;
-  actuatorsMinimalLength.load("actuatorsMinimalLength.mat");
+  actuatorsMinimalLength.load("actuatorsMinimalLength.config");
   arma::Row<double>::fixed<6> actuatorsMaximalLength;
-  actuatorsMaximalLength.load("actuatorsMaximalLength.mat");
+  actuatorsMaximalLength.load("actuatorsMaximalLength.config");
   
   demo::StewartPlatform stewartPlatform(std::move(linearActuators), std::move(attitudeSensors), baseJointsPosition, endEffectorJointsRelativePosition, actuatorsMinimalLength, actuatorsMaximalLength);
   
