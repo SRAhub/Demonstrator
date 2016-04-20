@@ -55,9 +55,6 @@ endif()
 message(STATUS "- Enabling C++14 features.")
 add_compile_options(-std=c++14)
 
-message(STATUS "- Adding SSE3, SSE4, AVX, ... support.")
-add_compile_options(-march=native)
-
 message(STATUS "- Using level 3 code optimisation.")
 add_compile_options(-O3)
 
