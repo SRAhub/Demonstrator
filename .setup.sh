@@ -22,7 +22,7 @@ mkdir armadillo
 tar -xzf armadillo.tar.gz -C ./armadillo --strip-components=1
 cd armadillo
 cmake .
-make
+make -j 4
 make install
 ### Fixes issues with IWYU (suggesting for example <armadillo_bits/Base_bones.hpp> instead of <armadillo>)
 find /usr/include/armadillo_bits -name *.hpp -exec sed -i -e '1i\/\/ IWYU pragma\: private\, include \<armadillo\>' {} ';'
@@ -33,7 +33,7 @@ rm -Rf armadillo armadillo.tar.gz
 git clone --depth 1 --branch master https://github.com/SebastianNiemann/Mantella.git
 cd Mantella
 cmake .
-make
+make -j 4
 make install
 cd ..
 rm -Rf Mantella
