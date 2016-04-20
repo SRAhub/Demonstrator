@@ -15,6 +15,8 @@ void showHelp();
 void runDefault(
     demo::ServoControllers& servoControllers,
     const std::size_t n);
+void runStop(
+    demo::ServoControllers& servoControllers);
 
 int main (const int argc, const char* argv[]) {
   if (argc < 2) {
@@ -46,7 +48,11 @@ int main (const int argc, const char* argv[]) {
   
   demo::ServoControllers servoControllers(std::move(directionPins), demo::Gpio::allocateI2c(), {0, 1, 2, 3, 4, 5}, 1.0);
   
-  runDefault(servoControllers, std::stoi(argv[1]));
+  if (hasOption(argc, argv, "stop")) {
+    runStop(servoControllers);
+  } else {
+    runDefault(servoControllers, std::stoi(argv[1]));
+  }
   
   return 0;  
 }
@@ -99,4 +105,9 @@ void runDefault(
     std::this_thread::sleep_for(std::chrono::milliseconds(500));
     servoControllers.stop();
   }
+}
+
+void runStop(
+    demo::ServoControllers& servoControllers) {
+  servoControllers.stop();
 }
