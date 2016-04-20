@@ -53,7 +53,7 @@ namespace demo {
       measurements.row(n) = arma::clamp(measureImplementation(), minimalMeasurableValue_, maximalMeasurableValue_);
     }
 
-    const arma::Row<double>& measurementIndices = arma::median(measurements) * (measurementCorrections_.n_rows - 1) / (maximalMeasurableValue_ - minimalMeasurableValue_);
+    const arma::Row<double>& measurementIndices = (arma::median(measurements) - minimalMeasurableValue_) * (measurementCorrections_.n_rows - 1) / (maximalMeasurableValue_ - minimalMeasurableValue_);
         
     const arma::Row<arma::uword>& lowerMeasurementIndices = arma::conv_to<arma::Row<arma::uword>>::from(arma::floor(measurementIndices));
     const arma::Row<arma::uword>& upperMeasurementIndices = arma::conv_to<arma::Row<arma::uword>>::from(arma::ceil(measurementIndices));
@@ -61,7 +61,7 @@ namespace demo {
     
     arma::Row<double> measuredValues(numberOfSensors_);
     for (std::size_t n = 0; n < numberOfSensors_; ++n) {
-      measuredValues(n) = (1.0 - measurementIndicesDifferenz(n)) * measurementCorrections_(lowerMeasurementIndices(n), n) +  measurementIndicesDifferenz(n) * measurementCorrections_(lowerMeasurementIndices(n), n);
+      measuredValues(n) = (1.0 - measurementIndicesDifferenz(n)) * measurementCorrections_(lowerMeasurementIndices(n), n) +  measurementIndicesDifferenz(n) * measurementCorrections_(upperMeasurementIndices(n), n);
     }
     
     return measuredValues;
