@@ -53,9 +53,9 @@ int main (const int argc, const char* argv[]) {
   demo::DistanceSensors distanceSensors(std::move(pins), 0.03, 0.35);
   
   if (hasOption(argc, argv, "sensor")) {
-    runSensor(distanceIndicators);
+    runSensor(distanceIndicators, distanceSensors);
   } else {
-    runDefault(distanceIndicators, distanceSensors);
+    runDefault(distanceIndicators);
   }
   
   return 0;  
