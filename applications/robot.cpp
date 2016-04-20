@@ -8,10 +8,7 @@ demo::Network&& createNetwork() {
 }
 
 demo::AttitudeSensors&& createAttitudeSensors() {
-  demo::AttitudeSensors attitudeSensors(demo::Gpio::allocateUart(), -arma::datum::pi, arma::datum::pi);
-  attitudeSensors.runAsynchronous();
-  
-  return std::move(attitudeSensors);
+  return std::move(demo::AttitudeSensors(demo::Gpio::allocateUart(), -arma::datum::pi, arma::datum::pi));
 }
 
 demo::DistanceSensors&& createDistanceSensors() {

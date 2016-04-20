@@ -52,6 +52,7 @@ void showHelp() {
 
 void runDefault() {
   demo::AttitudeSensors attitudeSensors(std::move(createAttitudeSensors()));
+  attitudeSensors.runAsynchronous();
       
   while(1) {
     std::cout << "+-----------------+-----------------+-----------------+\n"

@@ -42,12 +42,14 @@ namespace demo {
   }
 
   AttitudeSensors::~AttitudeSensors() {
-    killContinuousMeasurementThread_ = true;
-    continuousMeasurementThread_.join();
-
+    if (killContinuousMeasurementThread_ == false) {
+      killContinuousMeasurementThread_ = true;
+      continuousMeasurementThread_.join();
+    }
+    
     // reset port to previous state
-    ::tcsetattr(fileDescriptor_, TCSANOW, &oldSerial_);
     if (fileDescriptor_ != -1) {
+      ::tcsetattr(fileDescriptor_, TCSANOW, &oldSerial_);
       ::close(fileDescriptor_);
     }
   }
@@ -102,20 +104,23 @@ namespace demo {
   }
 
   void AttitudeSensors::asynchronousMeasurement() {
-    char buffer[64];
+    while (!killContinuousMeasurementThread_) {
+      char buffer[64];
 
-    int numberOfReceivedChars = 0;
-    while (numberOfReceivedChars <= 1) {
-      numberOfReceivedChars = ::read(fileDescriptor_, buffer, 63);
+      int numberOfReceivedChars = 0;
+      while (numberOfReceivedChars <= 1) {
+        numberOfReceivedChars = ::read(fileDescriptor_, buffer, 63);
+      }
+      buffer[numberOfReceivedChars] = '\0';
+
+      std::string text = buffer;
+      std::cout << text << std::endl;
+      text = text.substr(text.find_first_of("=") + 1);
+      attitudes_(0) = std::stod(text.substr(0, text.find_first_of(",")));
+      attitudes_(1) = std::stod(text.substr(text.find_first_of(",") + 1, text.find_last_of(",")));
+      attitudes_(2) = std::stod(text.substr(text.find_last_of(",") + 1));
+      attitudes_ *= arma::datum::pi / 180.0;
     }
-    buffer[numberOfReceivedChars] = '\0';
-
-    std::string text = buffer;
-    text = text.substr(text.find_first_of("=") + 1);
-    attitudes_(0) = std::stod(text.substr(0, text.find_first_of(",")));
-    attitudes_(1) = std::stod(text.substr(text.find_first_of(",") + 1, text.find_last_of(",")));
-    attitudes_(2) = std::stod(text.substr(text.find_last_of(",") + 1));
-    attitudes_ *= arma::datum::pi / 180.0;
   }
 
   /**
