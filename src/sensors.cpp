@@ -47,26 +47,20 @@ namespace demo {
   arma::Row<double> Sensors::measure() {
     arma::Mat<double> measurements(numberOfSamplesPerMeasuement_, numberOfSensors_);
     for (std::size_t n = 0; n < numberOfSamplesPerMeasuement_; ++n) {
-      arma::Row<double> measurment = measureImplementation();
-      
-      for (auto& measurmentEntry : measurment) {
-        const double measurementIndex = std::min(std::max(measurmentEntry, minimalMeasurableValue_), maximalMeasurableValue_) / measurementCorrections_.n_elem;
-        
-        const std::size_t lowerMeasurementIndex = static_cast<std::size_t>(std::floor(measurementIndex));
-        const std::size_t upperMeasurementIndex = static_cast<std::size_t>(std::ceil(measurementIndex));
-        
-        if (lowerMeasurementIndex == upperMeasurementIndex) {
-          measurmentEntry = measurementCorrections_(lowerMeasurementIndex);
-        } else {
-          const std::size_t measurementIndexDifferenz = lowerMeasurementIndex - measurementIndex;
-          measurmentEntry =  (1 - measurementIndexDifferenz) * measurementCorrections_(lowerMeasurementIndex) +  measurementIndexDifferenz * measurementCorrections_(upperMeasurementIndex);
-        }
-      }
-      
-      measurements.row(n) = measurment;
+      measurements.row(n) = arma::clamp(measureImplementation(), minimalMeasurableValue_, maximalMeasurableValue_);
     }
 
-    return arma::median(measurements);
+    const double measurementIndex = std::min(std::max(arma::median(measurements), minimalMeasurableValue_), maximalMeasurableValue_) * (measurementCorrections_.n_elem - 1) / (maximalMeasurableValue_ - minimalMeasurableValue_);
+        
+    const std::size_t lowerMeasurementIndex = static_cast<std::size_t>(std::floor(measurementIndex));
+    const std::size_t upperMeasurementIndex = static_cast<std::size_t>(std::ceil(measurementIndex));
+    
+    if (lowerMeasurementIndex == upperMeasurementIndex) {
+      return measurementCorrections_(lowerMeasurementIndex);
+    } else {
+      const std::size_t measurementIndexDifferenz = measurementIndex - lowerMeasurementIndex;
+      return (1 - measurementIndexDifferenz) * measurementCorrections_(lowerMeasurementIndex) +  measurementIndexDifferenz * measurementCorrections_(upperMeasurementIndex);
+    }
   }
 
   void Sensors::setMeasurementCorrections(
