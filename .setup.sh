@@ -2,11 +2,6 @@
 apt-get update
 
 # Dependencies
-## Clang
-apt-get install -y clang
-update-alternatives --set cc /usr/bin/clang
-update-alternatives --set c++ /usr/bin/clang++
-
 ## CMake
 apt-get install -y cmake
 
@@ -59,6 +54,6 @@ sudo apt-get install -y valgrind
 # Useful development tools
 sudo apt-get install -y htop
 sudo apt-get install -y git
-sudo apt-get install -y ccache
+sudo apt-get install -y vim
 sudo apt-get install -y gdb
 sudo apt-get install -y dos2unix
