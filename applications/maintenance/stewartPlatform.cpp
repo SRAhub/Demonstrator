@@ -13,9 +13,12 @@
 #include "../commandline.hpp"
 
 void showHelp();
-void runDefault();
-void runSensor();
+void runDefault(
+    demo::StewartPlatform& stewartPlatform);
+void runSensor(
+    demo::StewartPlatform& stewartPlatform);
 void runEndEffectorPose(
+    demo::StewartPlatform& stewartPlatform,
     const arma::Col<double>::fixed<6>& endEffectorPose);
 
 int main (const int argc, const char* argv[]) {
@@ -58,14 +61,14 @@ int main (const int argc, const char* argv[]) {
   arma::Row<double>::fixed<6> actuatorsMaximalLength;
   actuatorsMaximalLength.load("actuatorsMaximalLength.mat");
   
-  demo::StewartPlatform(std::move(linearActuators), std::move(attitudeSensors), baseJointsPosition, endEffectorJointsRelativePosition, actuatorsMinimalLength, actuatorsMaximalLength);
+  demo::StewartPlatform stewartPlatform(std::move(linearActuators), std::move(attitudeSensors), baseJointsPosition, endEffectorJointsRelativePosition, actuatorsMinimalLength, actuatorsMaximalLength);
   
   if (hasOption(argc, argv, "sensor")) {
-    runSensor();
+    runSensor(stewartPlatform);
   } if (argc > 6 && argv[1][0] != '-' && argv[2][0] != '-' && argv[3][0] != '-' && argv[4][0] != '-' && argv[5][0] != '-' && argv[6][0] != '-') {
-    runEndEffectorPose({std::stod(argv[1]), std::stod(argv[2]), std::stod(argv[3]), std::stod(argv[4]), std::stod(argv[5]), std::stod(argv[6])});
+    runEndEffectorPose(stewartPlatform, {std::stod(argv[1]), std::stod(argv[2]), std::stod(argv[3]), std::stod(argv[4]), std::stod(argv[5]), std::stod(argv[6])});
   } else {
-    runDefault();
+    runDefault(stewartPlatform);
   }
   
   return 0;  
@@ -93,8 +96,8 @@ void showHelp() {
   std::cout << std::flush;
 }
 
-void runDefault() {
-  demo::StewartPlatform stewartPlatform(std::move(createStewartPlatform()));
+void runDefault(
+    demo::StewartPlatform& stewartPlatform) {
   arma::Col<double>::fixed<6> endEffectorPose = stewartPlatform.getEndEffectorPose();
   
   while(1) {
@@ -166,8 +169,8 @@ void runDefault() {
   }
 }
 
-void runSensor() {
-  demo::StewartPlatform stewartPlatform(std::move(createStewartPlatform()));
+void runSensor(
+    demo::StewartPlatform& stewartPlatform) {
   while(1) {
     std::cout << "+--------------+--------------+--------------+--------------+--------------+--------------+\n"
               << "|  x-axis [m]  |  y-axis  [m] |  z-axis [m]  |   roll [m]   |  pitch [m]   |   yaw [m]    |\n"
@@ -185,7 +188,7 @@ void runSensor() {
 }
 
 void runEndEffectorPose(
+    demo::StewartPlatform& stewartPlatform,
     const arma::Col<double>::fixed<6>& endEffectorPose) {
-  demo::StewartPlatform stewartPlatform(std::move(createStewartPlatform()));
   stewartPlatform.setEndEffectorPose(endEffectorPose);
 }
