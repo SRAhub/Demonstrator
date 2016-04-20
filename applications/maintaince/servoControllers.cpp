@@ -14,6 +14,7 @@
 
 void showHelp();
 void runDefault(
+    demo::ServoControllers& servoControllers,
     const std::size_t n);
 
 int main (const int argc, const char* argv[]) {
@@ -36,7 +37,17 @@ int main (const int argc, const char* argv[]) {
   // For an overview on the pin layout, use the `gpio readall` command on a Raspberry Pi.
   ::wiringPiSetupGpio();
   
-  runDefault(std::stoi(argv[1]));
+  std::vector<demo::Pin> directionPins;
+  directionPins.push_back(demo::Gpio::allocatePin(22));
+  directionPins.push_back(demo::Gpio::allocatePin(5));
+  directionPins.push_back(demo::Gpio::allocatePin(6));
+  directionPins.push_back(demo::Gpio::allocatePin(13));
+  directionPins.push_back(demo::Gpio::allocatePin(19));
+  directionPins.push_back(demo::Gpio::allocatePin(26));
+  
+  demo::ServoControllers servoControllers(std::move(directionPins), demo::Gpio::allocateI2c(), {0, 1, 2, 3, 4, 5}, 1.0);
+  
+  runDefault(servoControllers, std::stoi(argv[1]));
   
   return 0;  
 }
@@ -55,9 +66,8 @@ void showHelp() {
 }
 
 void runDefault(
+    demo::ServoControllers& servoControllers,
     const std::size_t n) {
-  demo::ServoControllers servoControllers(std::move(createServoControllers()));
-    
   std::vector<bool> forwards(servoControllers.numberOfControllers_, false);
   arma::Row<double> speeds(servoControllers.numberOfControllers_, arma::fill::zeros);
   speeds(n) = 1.0;

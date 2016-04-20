@@ -76,7 +76,6 @@ message(STATUS "Configuring maintaince applications.")
 message(STATUS "- Distance sensors.")
 add_executable(distanceSensors
   commandline.cpp
-  robot.cpp
   maintaince/distanceSensors.cpp
 )
 
@@ -90,7 +89,6 @@ set_target_properties(distanceSensors PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMA
 message(STATUS "- Distance indicators.")
 add_executable(distanceIndicators
   commandline.cpp
-  robot.cpp
   maintaince/distanceIndicators.cpp
 )
 
@@ -103,7 +101,6 @@ set_target_properties(distanceIndicators PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${
 message(STATUS "- Attitude sensors.")
 add_executable(attitudeSensors
   commandline.cpp
-  robot.cpp
   maintaince/attitudeSensors.cpp
 )
 
@@ -116,7 +113,6 @@ set_target_properties(attitudeSensors PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMA
 message(STATUS "- Extension sensors.")
 add_executable(extensionSensors
   commandline.cpp
-  robot.cpp
   maintaince/extensionSensors.cpp
 )
 
@@ -129,7 +125,6 @@ set_target_properties(extensionSensors PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CM
 message(STATUS "- Servo controllers.")
 add_executable(servoControllers
   commandline.cpp
-  robot.cpp
   maintaince/servoControllers.cpp
 )
 
@@ -142,7 +137,6 @@ set_target_properties(servoControllers PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CM
 message(STATUS "- Linear actuators.")
 add_executable(linearActuators
   commandline.cpp
-  robot.cpp
   maintaince/linearActuators.cpp
 )
 
@@ -155,7 +149,6 @@ set_target_properties(linearActuators PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMA
 message(STATUS "- Stewart platform.")
 add_executable(stewartPlatform
   commandline.cpp
-  robot.cpp
   maintaince/stewartPlatform.cpp
 )
 

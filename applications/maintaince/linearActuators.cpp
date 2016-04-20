@@ -13,10 +13,13 @@
 #include "../robot.hpp"
 
 void showHelp();
-void runDefault();
+void runDefault(
+    demo::LinearActuators& linearActuators);
 void runAll(
+    demo::LinearActuators& linearActuators,
     const double extension);
 void runSingle(
+    demo::LinearActuators& linearActuators,
     const std::size_t n,
     const double extension);
 arma::Cube<double> measure();
@@ -36,12 +39,26 @@ int main (const int argc, const char* argv[]) {
   // For an overview on the pin layout, use the `gpio readall` command on a Raspberry Pi.
   ::wiringPiSetupGpio();
 
+  demo::ExtensionSensors extensionSensors(demo::Gpio::allocateSpi(), {0, 1, 2, 3, 4, 5}, 0.0, 1.0);
+  
+  std::vector<demo::Pin> directionPins;
+  directionPins.push_back(demo::Gpio::allocatePin(22));
+  directionPins.push_back(demo::Gpio::allocatePin(5));
+  directionPins.push_back(demo::Gpio::allocatePin(6));
+  directionPins.push_back(demo::Gpio::allocatePin(13));
+  directionPins.push_back(demo::Gpio::allocatePin(19));
+  directionPins.push_back(demo::Gpio::allocatePin(26));
+  demo::ServoControllers servoControllers(std::move(directionPins), demo::Gpio::allocateI2c(), {0, 1, 2, 3, 4, 5}, 1.0);
+  
+  demo::LinearActuators linearActuators(std::move(servoControllers), std::move(extensionSensors), 0.1, 0.8);
+  linearActuators.setMaximalExtensionDeviation(0.05);
+  
   if (argc > 2 && argv[1][0] != '-' && argv[2][0] != '-') {
-    runSingle(std::stoi(argv[1]), std::stod(argv[2]));
+    runSingle(linearActuators, std::stoi(argv[1]), std::stod(argv[2]));
   } else if (argc > 1 && argv[1][0] != '-') {
-    runAll(std::stod(argv[1]));
+    runAll(linearActuators, std::stod(argv[1]));
   } else {
-    runDefault();
+    runDefault(linearActuators);
   }
 
   return 0;
@@ -64,9 +81,8 @@ void showHelp() {
   std::cout << std::flush;
 }
 
-void runDefault() {
-  demo::LinearActuators linearActuators(std::move(createLinearActuators()));
-  
+void runDefault(
+    demo::LinearActuators& linearActuators) {
   arma::Row<double> extensions = linearActuators.getExtensions();
   const arma::Row<double> maximalSpeeds(linearActuators.numberOfActuators_, arma::fill::ones);
 
@@ -90,17 +106,15 @@ void runDefault() {
 }
 
 void runAll(
+    demo::LinearActuators& linearActuators,
     double extension) {
-  demo::LinearActuators linearActuators(std::move(createLinearActuators()));
-    
   linearActuators.setExtensions(arma::zeros<arma::Row<double>>(linearActuators.numberOfActuators_) + extension, arma::ones<arma::Row<double>>(linearActuators.numberOfActuators_));
 }
 
 void runSingle(
+    demo::LinearActuators& linearActuators,
     const std::size_t n,
     const double extension) {
-  demo::LinearActuators linearActuators(std::move(createLinearActuators()));
-  
   arma::Row<double> extensions = linearActuators.getExtensions();
   extensions(n) = extension;
   arma::Row<double> maximalSpeeds(linearActuators.numberOfActuators_, arma::fill::zeros);

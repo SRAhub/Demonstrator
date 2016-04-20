@@ -34,6 +34,33 @@ int main (const int argc, const char* argv[]) {
   // For an overview on the pin layout, use the `gpio readall` command on a Raspberry Pi.
   ::wiringPiSetupGpio();
   
+  demo::ExtensionSensors extensionSensors(demo::Gpio::allocateSpi(), {0, 1, 2, 3, 4, 5}, 0.0, 1.0);
+  
+  std::vector<demo::Pin> directionPins;
+  directionPins.push_back(demo::Gpio::allocatePin(22));
+  directionPins.push_back(demo::Gpio::allocatePin(5));
+  directionPins.push_back(demo::Gpio::allocatePin(6));
+  directionPins.push_back(demo::Gpio::allocatePin(13));
+  directionPins.push_back(demo::Gpio::allocatePin(19));
+  directionPins.push_back(demo::Gpio::allocatePin(26));
+  demo::ServoControllers servoControllers(std::move(directionPins), demo::Gpio::allocateI2c(), {0, 1, 2, 3, 4, 5}, 1.0);
+  
+  demo::LinearActuators linearActuators(std::move(servoControllers), std::move(extensionSensors), 0.1, 0.8);
+  linearActuators.setMaximalExtensionDeviation(0.05);
+  
+  demo::AttitudeSensors attitudeSensors(demo::Gpio::allocateUart(), -arma::datum::pi, arma::datum::pi);
+  
+  arma::Mat<double>::fixed<3, 6> baseJointsPosition;
+  baseJointsPosition.load("baseJointsPosition.mat");
+  arma::Mat<double>::fixed<3, 6> endEffectorJointsRelativePosition;
+  endEffectorJointsRelativePosition.load("endEffectorJointsRelativePosition.mat");
+  arma::Row<double>::fixed<6> actuatorsMinimalLength;
+  actuatorsMinimalLength.load("actuatorsMinimalLength.mat");
+  arma::Row<double>::fixed<6> actuatorsMaximalLength;
+  actuatorsMaximalLength.load("actuatorsMaximalLength.mat");
+  
+  demo::StewartPlatform(std::move(linearActuators), std:.move(attitudeSensors), baseJointsPosition, endEffectorJointsRelativePosition, actuatorsMinimalLength, actuatorsMaximalLength);
+  
   if (hasOption(argc, argv, "sensor")) {
     runSensor();
   } if (argc > 6 && argv[1][0] != '-' && argv[2][0] != '-' && argv[3][0] != '-' && argv[4][0] != '-' && argv[5][0] != '-' && argv[6][0] != '-') {
