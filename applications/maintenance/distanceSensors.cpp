@@ -11,7 +11,6 @@
 
 // Application
 #include "../commandline.hpp"
-#include "../robot.hpp"
 
 bool useDistanceIndicators = false;
 

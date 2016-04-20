@@ -11,7 +11,6 @@
 
 // Application
 #include "../commandline.hpp"
-#include "../robot.hpp"
 
 void showHelp();
 void runDefault();
