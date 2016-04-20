@@ -71,14 +71,15 @@ namespace demo {
   void LinearActuators::reachExtension(
       const arma::Row<double>& extensions,
       const arma::Row<double>& maximalSpeeds) {
-    arma::Row<double> currentExtension = arma::clamp(extensionSensors_.measure(), minimalExtension_, maximalExtension_);
+    arma::Row<double> limitedExtensions = arma::clamp(extensions, minimalExtension_, maximalExtension_);
+    arma::Row<double> currentExtension = extensionSensors_.measure();
 
-    bool hasReachedPosition = arma::all(arma::abs(extensions - currentExtension) <= maximalExtensionDeviation_);
+    bool hasReachedPosition = arma::all(arma::abs(limitedExtensions - currentExtension) <= maximalExtensionDeviation_);
 
-    std::vector<bool> forwards = {false, false, false, false, false, false};
+    std::vector<bool> forwards(numberOfActuators_, false);
     arma::Row<double> speeds = maximalSpeeds;
     while (!hasReachedPosition && !killReachExtensionThread_) {
-      const arma::Row<double>& deviations = currentExtension - extensions;
+      const arma::Row<double>& deviations = currentExtension - limitedExtensions;
       for (std::size_t n = 0; n < numberOfActuators_; ++n) {
         if (std::abs(deviations(n)) <= maximalExtensionDeviation_) {
           speeds(n) = 0.0;
@@ -97,7 +98,7 @@ namespace demo {
       std::this_thread::sleep_for(std::chrono::milliseconds(10));
       currentExtension = extensionSensors_.measure();
 
-      hasReachedPosition = arma::all(arma::abs(extensions - currentExtension) <= maximalExtensionDeviation_);
+      hasReachedPosition = arma::all(arma::abs(limitedExtensions - currentExtension) <= maximalExtensionDeviation_);
     }
 
     servoControllers_.stop();
