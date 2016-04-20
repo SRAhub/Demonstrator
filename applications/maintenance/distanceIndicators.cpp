@@ -16,7 +16,7 @@ void showHelp();
 void runDefault(
     demo::DistanceIndicators& distanceIndicators);
 void runSensor(
-    demo::DistanceIndicators& distanceIndicators
+    demo::DistanceIndicators& distanceIndicators,
     demo::DistanceSensors& distanceSensors);
 
 int main (const int argc, const char* argv[]) {
