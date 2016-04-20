@@ -57,10 +57,14 @@ namespace demo {
         
     const arma::Row<arma::uword>& lowerMeasurementIndices = arma::conv_to<arma::Row<arma::uword>>::from(arma::floor(measurementIndices));
     const arma::Row<arma::uword>& upperMeasurementIndices = arma::conv_to<arma::Row<arma::uword>>::from(arma::ceil(measurementIndices));
-    
     const arma::Row<double>& measurementIndicesDifferenz = measurementIndices - lowerMeasurementIndices;
-    return (1.0 - measurementIndicesDifferenz) * measurementCorrections_.submat(lowerMeasurementIndices, mant::range(0, numberOfSensors_ - 1)) +  measurementIndicesDifferenz * measurementCorrections_.submat(lowerMeasurementIndices, mant::range(0, numberOfSensors_ - 1));
-
+    
+    arma::Row<double> measuredValues(numberOfSensors_);
+    for (std::size_t n = 0; n < numberOfSensors_; ++n) {
+      measuredValues(n) = (1.0 - measurementIndicesDifferenz(n)) * measurementCorrections_(lowerMeasurementIndices(n), n) +  measurementIndicesDifferenz(n) * measurementCorrections_(lowerMeasurementIndices(n), n);
+    }
+    
+    return measuredValues;
   }
 
   void Sensors::setMeasurementCorrections(
