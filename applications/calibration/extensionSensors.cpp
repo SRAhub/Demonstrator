@@ -13,8 +13,10 @@
 #include "../robot.hpp"
 
 void showHelp();
-void runCalibration();
-arma::Cube<double> measure();
+void runCalibration(
+    demo::LinearActuators&);
+arma::Cube<double> measure(
+    demo::LinearActuators&);
 
 int main (const int argc, const char* argv[]) {
   if (hasOption(argc, argv, "-h") || hasOption(argc, argv, "--help")) {
@@ -31,7 +33,21 @@ int main (const int argc, const char* argv[]) {
   // For an overview on the pin layout, use the `gpio readall` command on a Raspberry Pi.
   ::wiringPiSetupGpio();
 
-  runCalibration();
+  demo::ExtensionSensors extensionSensors(demo::Gpio::allocateSpi(), {0, 1, 2, 3, 4, 5}, 0.0, 1.0);
+
+  std::vector<demo::Pin> directionPins;
+  directionPins.push_back(demo::Gpio::allocatePin(22));
+  directionPins.push_back(demo::Gpio::allocatePin(5));
+  directionPins.push_back(demo::Gpio::allocatePin(6));
+  directionPins.push_back(demo::Gpio::allocatePin(13));
+  directionPins.push_back(demo::Gpio::allocatePin(19));
+  directionPins.push_back(demo::Gpio::allocatePin(26));
+  demo::ServoControllers servoControllers(std::move(directionPins), demo::Gpio::allocateI2c(), {0, 1, 2, 3, 4, 5}, 1.0);
+
+  demo::LinearActuators linearActuators(std::move(servoControllers), std::move(extensionSensors), 0.1, 0.8);
+  linearActuators.setMaximalExtensionDeviation(0.05);
+
+  runCalibration(linearActuators);
 
   return 0;
 }
@@ -42,8 +58,9 @@ void runAll(
   linearActuators.setExtensions(arma::zeros<arma::Row<double>>(linearActuators.numberOfActuators_) + extension, arma::ones<arma::Row<double>>(linearActuators.numberOfActuators_));
 }
 
-void runCalibration() {
-  auto measurements = measure();
+void runCalibration(
+    demo::LinearActuators& linearActuators) {
+  auto measurements = measure(linearActuators);
   // TODO: process measured values
   if (measurements.save("extension_sensor_adjustments.mat", arma::raw_ascii))
     std::cout << "Saved in `extension_sensor_adjustments.mat`; "
@@ -59,8 +76,8 @@ void runCalibration() {
  *
  * The first and last extension levels are only approached from one direction because they are the limits for sane operation. Therefore the user is only asked to measure these distances once. The measured value is placed in both indices in the result.
  */
-arma::Cube<double> measure() {
-  auto linearActuators = createLinearActuators();
+arma::Cube<double> measure(
+    demo::LinearActuators& linearActuators) {
   linearActuators.getExtensionSensors().setNumberOfSamplesPerMeasurment(1);
   const std::array<double, 8> extensions {.1, .2, .3, .4, .5, .6, .7, .8};
   arma::Cube<double> result;
