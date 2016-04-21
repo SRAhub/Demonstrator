@@ -91,6 +91,7 @@ void runDefault(
 
       extensions(n) -= 0.15;
       linearActuators.setExtensions(extensions, maximalSpeeds);
+      linearActuators.waitTillExtensionIsReached(std::chrono::seconds(5));
       std::this_thread::sleep_for(std::chrono::seconds(1));
     }
 
@@ -99,6 +100,7 @@ void runDefault(
 
       extensions(n) += 0.15;
       linearActuators.setExtensions(extensions, maximalSpeeds);
+      linearActuators.waitTillExtensionIsReached(std::chrono::seconds(5));
       std::this_thread::sleep_for(std::chrono::seconds(1));
     }
   }
