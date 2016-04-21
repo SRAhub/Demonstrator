@@ -21,6 +21,9 @@
 // Demonstrator
 //
 // IWYU pragma: begin_exports
+// Mantella (preview)
+#include "demonstrator_bits/mantella.hpp"
+
 // Configuration
 #include "demonstrator_bits/config.hpp"
 

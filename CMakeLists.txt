@@ -86,6 +86,9 @@ configure_file(${PROJECT_SOURCE_DIR}/include/demonstrator_bits/config.hpp.cmake 
 
 # All paths must start with "src/"
 add_library(demonstrator SHARED
+  # Mantella (preview)
+  src/mantella.cpp
+
   # Configuration
   src/config.cpp
 

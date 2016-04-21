@@ -60,7 +60,7 @@ namespace demo {
     bool waitTillExtensionIsReached(
         const std::chrono::microseconds timeout);
     
-    void setMaximalExtensionDeviation(
+    void setAcceptableExtensionDeviation(
         const double maximalExtensionDeviation);
     double getMaximalExtensionDeviation() const;
 

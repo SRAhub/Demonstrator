@@ -22,6 +22,8 @@ namespace demo {
     if (servoControllers_.numberOfControllers_ != extensionSensors_.numberOfSensors_) {
       throw std::logic_error("LinearActuators: The number of controllers must be equal to the number of sensors.");
     }
+    
+    setAcceptableExtensionDeviation(0.0);
   }
 
   LinearActuators::LinearActuators(
@@ -120,10 +122,10 @@ namespace demo {
     return true;
   }
 
-  void LinearActuators::setMaximalExtensionDeviation(
+  void LinearActuators::setAcceptableExtensionDeviation(
       const double maximalExtensionDeviation) {
     if (!std::isfinite(maximalExtensionDeviation)) {
-      throw std::domain_error("LinearActuators.setMaximalExtensionDeviation: The maximal extension deviation must be finite.");
+      throw std::domain_error("LinearActuators.setAcceptableExtensionDeviation: The maximal extension deviation must be finite.");
     }
 
     maximalExtensionDeviation_ = maximalExtensionDeviation;

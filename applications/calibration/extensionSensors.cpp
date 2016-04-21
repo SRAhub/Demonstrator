@@ -44,7 +44,7 @@ int main (const int argc, const char* argv[]) {
   demo::ServoControllers servoControllers(std::move(directionPins), demo::Gpio::allocateI2c(), {0, 1, 2, 3, 4, 5}, 1.0);
 
   demo::LinearActuators linearActuators(std::move(servoControllers), std::move(extensionSensors), 0.1, 0.8);
-  linearActuators.setMaximalExtensionDeviation(0.05);
+  linearActuators.setAcceptableExtensionDeviation(0.01);
 
   runCalibration(linearActuators);
 

@@ -48,7 +48,7 @@ int main (const int argc, const char* argv[]) {
   demo::ServoControllers servoControllers(std::move(directionPins), demo::Gpio::allocateI2c(), {0, 1, 2, 3, 4, 5}, 1.0);
   
   demo::LinearActuators linearActuators(std::move(servoControllers), std::move(extensionSensors), 0.1, 0.8);
-  linearActuators.setMaximalExtensionDeviation(0.05);
+  linearActuators.setAcceptableExtensionDeviation(0.01);
   
   demo::AttitudeSensors attitudeSensors(demo::Gpio::allocateUart(), -arma::datum::pi, arma::datum::pi);
   
@@ -190,14 +190,14 @@ void runDefault(
 void runSensor(
     demo::StewartPlatform& stewartPlatform) {
   while(1) {
-    std::cout << "+--------------+--------------+--------------+--------------+--------------+--------------+\n"
-              << "|  x-axis [m]  |  y-axis  [m] |  z-axis [m]  |   roll [m]   |  pitch [m]   |   yaw [m]    |\n"
-              << "+--------------+--------------+--------------+--------------+--------------+--------------+" << std::endl;
+    std::cout << "+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+\n"
+              << "|   X-axis [m]    |   Y-axis  [m]   |   Z-axis [m]    | Roll [radians]  | Pitch [radians] |  Yaw [radians]  |\n"
+              << "+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+" << std::endl;
     for (unsigned int n = 0; n < 10; ++n) {
       const arma::Col<double>::fixed<6>& endEffectorPose = stewartPlatform.getEndEffectorPose();
       std::cout << "|";
       for (std::size_t k = 0; k < endEffectorPose.n_elem; ++k) {
-         std::cout << " " << std::setw(12) << endEffectorPose(k) << " |";
+         std::cout << " " << std::setw(15) << endEffectorPose(k) << " |";
       }
       std::cout << std::endl;
       std::this_thread::sleep_for(std::chrono::milliseconds(100));
