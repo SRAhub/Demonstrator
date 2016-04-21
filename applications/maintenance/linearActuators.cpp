@@ -93,9 +93,7 @@ void runDefault(
       linearActuators.setExtensions(extensions, maximalSpeeds);
       linearActuators.waitTillExtensionIsReached(std::chrono::seconds(5));
       std::this_thread::sleep_for(std::chrono::seconds(1));
-    }
-
-    for (std::size_t n = 0; n < linearActuators.numberOfActuators_; ++n) {
+      
       std::cout << "Moving actuator " << n << " up by 15%." << std::endl;
 
       extensions(n) += 0.15;
