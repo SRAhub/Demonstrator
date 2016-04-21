@@ -66,7 +66,7 @@ void runAll(
     demo::LinearActuators& linearActuators,
     double extension) {
   linearActuators.setExtensions(arma::zeros<arma::Row<double>>(linearActuators.numberOfActuators_) + extension, arma::ones<arma::Row<double>>(linearActuators.numberOfActuators_));
-  linearActuators.waitTillExtensionIsReached(std::chrono::microseconds({3 * 1000 * 1000}));
+  linearActuators.waitTillExtensionIsReached(std::chrono::microseconds(3 * 1000 * 1000));
 }
 
 void runCalibration(
