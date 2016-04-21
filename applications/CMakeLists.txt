@@ -83,7 +83,6 @@ target_link_libraries(maintainDistanceSensors ${WIRINGPI_LIBRARIES})
 target_link_libraries(maintainDistanceSensors ${ARMADILLO_LIBRARIES})
 target_link_libraries(maintainDistanceSensors ${MANTELLA_LIBRARIES})
 target_link_libraries(maintainDistanceSensors ${DEMONSTRATOR_LIBRARIES})
-set_target_properties(maintainDistanceSensors PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/maintenance")
 
 
 message(STATUS "- Distance indicators.")
@@ -96,7 +95,6 @@ target_link_libraries(maintainDistanceIndicators ${WIRINGPI_LIBRARIES})
 target_link_libraries(maintainDistanceIndicators ${ARMADILLO_LIBRARIES})
 target_link_libraries(maintainDistanceIndicators ${MANTELLA_LIBRARIES})
 target_link_libraries(maintainDistanceIndicators ${DEMONSTRATOR_LIBRARIES})
-set_target_properties(maintainDistanceIndicators PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/maintenance")
 
 message(STATUS "- Attitude sensors.")
 add_executable(maintainAttitudeSensors
@@ -108,7 +106,6 @@ target_link_libraries(maintainAttitudeSensors ${WIRINGPI_LIBRARIES})
 target_link_libraries(maintainAttitudeSensors ${ARMADILLO_LIBRARIES})
 target_link_libraries(maintainAttitudeSensors ${MANTELLA_LIBRARIES})
 target_link_libraries(maintainAttitudeSensors ${DEMONSTRATOR_LIBRARIES})
-set_target_properties(maintainAttitudeSensors PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/maintenance")
 
 message(STATUS "- Extension sensors.")
 add_executable(maintainExtensionSensors
@@ -120,7 +117,6 @@ target_link_libraries(maintainExtensionSensors ${WIRINGPI_LIBRARIES})
 target_link_libraries(maintainExtensionSensors ${ARMADILLO_LIBRARIES})
 target_link_libraries(maintainExtensionSensors ${MANTELLA_LIBRARIES})
 target_link_libraries(maintainExtensionSensors ${DEMONSTRATOR_LIBRARIES})
-set_target_properties(maintainExtensionSensors PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/maintenance")
 
 message(STATUS "- Servo controllers.")
 add_executable(maintainServoControllers
@@ -132,7 +128,6 @@ target_link_libraries(maintainServoControllers ${WIRINGPI_LIBRARIES})
 target_link_libraries(maintainServoControllers ${ARMADILLO_LIBRARIES})
 target_link_libraries(maintainServoControllers ${MANTELLA_LIBRARIES})
 target_link_libraries(maintainServoControllers ${DEMONSTRATOR_LIBRARIES})
-set_target_properties(maintainServoControllers PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/maintenance")
 
 message(STATUS "- Linear actuators.")
 add_executable(maintainLinearActuators
@@ -144,7 +139,6 @@ target_link_libraries(maintainLinearActuators ${WIRINGPI_LIBRARIES})
 target_link_libraries(maintainLinearActuators ${ARMADILLO_LIBRARIES})
 target_link_libraries(maintainLinearActuators ${MANTELLA_LIBRARIES})
 target_link_libraries(maintainLinearActuators ${DEMONSTRATOR_LIBRARIES})
-set_target_properties(maintainLinearActuators PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/maintenance")
 
 message(STATUS "- Stewart platform.")
 add_executable(maintainStewartPlatform
@@ -156,7 +150,6 @@ target_link_libraries(maintainStewartPlatform ${WIRINGPI_LIBRARIES})
 target_link_libraries(maintainStewartPlatform ${ARMADILLO_LIBRARIES})
 target_link_libraries(maintainStewartPlatform ${MANTELLA_LIBRARIES})
 target_link_libraries(maintainStewartPlatform ${DEMONSTRATOR_LIBRARIES})
-set_target_properties(maintainStewartPlatform PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/maintenance")
 
 message(STATUS "")
 message(STATUS "Configuring calibration applications.")
@@ -172,7 +165,6 @@ target_link_libraries(calibrateExtensionSensor ${WIRINGPI_LIBRARIES})
 target_link_libraries(calibrateExtensionSensor ${ARMADILLO_LIBRARIES})
 target_link_libraries(calibrateExtensionSensor ${MANTELLA_LIBRARIES})
 target_link_libraries(calibrateExtensionSensor ${DEMONSTRATOR_LIBRARIES})
-set_target_properties(calibrateExtensionSensor PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/calibration")
 
 message(STATUS "")
 message(STATUS "Noticable CMAKE variables:")
