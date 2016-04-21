@@ -83,18 +83,21 @@ void runCalibration(
     for (std::size_t k = 0; k < linearActuators.numberOfActuators_; ++k) {
       std::cout << "Enter measured extension of sensor " << k << ": ";
       std::cin >> expectedMeasuredExtensions(k, n);
-      std::cout << std::endl;
     }
 
-    for (std::size_t k = 0; k < actualMeasuredExtensions.n_slices; ++k) {
-      actualMeasuredExtensions.tube(k, n) = linearActuators.getExtensions();
+    for (std::size_t k = 0; k < actualMeasuredExtensions.n_rows; ++k) {
+      const arma::Row<double> measueredExtensions = linearActuators.getExtensions();
+      
+      for (std::size_t l = 0; l < linearActuators.numberOfActuators_; ++l) {
+        actualMeasuredExtensions.subcube(k, l, n, k, l, n) = measueredExtensions(l);
+      }
     }
   }
   std::cout << "Done." << std::endl;
   linearActuators.setExtensions(arma::zeros<arma::Row<double>>(linearActuators.numberOfActuators_) + 0.5, arma::ones<arma::Row<double>>(linearActuators.numberOfActuators_));
   linearActuators.waitTillExtensionIsReached(std::chrono::seconds(10));
   
-  for (std::size_t n = 0; n < actualMeasuredExtensions.n_slices; ++n) {
+  for (std::size_t n = 0; n < linearActuators.numberOfActuators_; ++n) {
     static_cast<arma::Mat<double>>(actualMeasuredExtensions.slice(n)).save("actualMeasuredExtensions_sensor" + std::to_string(n) + ".mat", arma::raw_ascii);
   }
   for (std::size_t n = 0; n < expectedMeasuredExtensions.n_cols; ++n) {
