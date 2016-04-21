@@ -111,9 +111,9 @@ void runCalibration(
   
   for (std::size_t n = 0; n < calibration.n_rows; ++n) {
     if (n == 0) {
-      calibration.row(n) = calibration.row(n) - (calibration.row(n + 1) - calibration.row(n)) / (expectedMeasuredExtensions.col(n + 1) - expectedMeasuredExtensions.col(n)) % (expectedMeasuredExtensions.col(n) + extensions.at(n));
+      calibration.row(n) = calibration.row(n) - (calibration.row(n + 1) - calibration.row(n)) / (expectedMeasuredExtensions.col(n + 1) - expectedMeasuredExtensions.col(n)).t() % (expectedMeasuredExtensions.col(n).t() + extensions.at(n));
     } else {
-      calibration.row(n) = calibration.row(n) - (calibration.row(n) - calibration.row(n - 1)) / (expectedMeasuredExtensions.col(n) - expectedMeasuredExtensions.col(n - 1)) % (expectedMeasuredExtensions.col(n) + extensions.at(n));
+      calibration.row(n) = calibration.row(n) - (calibration.row(n) - calibration.row(n - 1)) / (expectedMeasuredExtensions.col(n) - expectedMeasuredExtensions.col(n - 1)).t() % (expectedMeasuredExtensions.col(n).t() + extensions.at(n));
     }
   }
   
