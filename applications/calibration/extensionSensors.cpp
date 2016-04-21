@@ -100,13 +100,22 @@ void runCalibration(
   for (std::size_t n = 0; n < linearActuators.numberOfActuators_; ++n) {
     static_cast<arma::Mat<double>>(actualMeasuredExtensions.slice(n)).save("actualMeasuredExtensions_sensor" + std::to_string(n) + ".mat", arma::raw_ascii);
   }
-  for (std::size_t n = 0; n < expectedMeasuredExtensions.n_cols; ++n) {
-    static_cast<arma::Row<double>>(expectedMeasuredExtensions.col(n).t()).save("expectedMeasuredExtensions_sensor" + std::to_string(n) + ".mat", arma::raw_ascii);
+  for (std::size_t n = 0; n < expectedMeasuredExtensions.n_rows; ++n) {
+    static_cast<arma::Row<double>>(expectedMeasuredExtensions.row(n)).save("expectedMeasuredExtensions_sensor" + std::to_string(n) + ".mat", arma::raw_ascii);
   }
   
   arma::Mat<double> calibration(extensions.size(), linearActuators.numberOfActuators_);
   for (std::size_t n = 0; n < calibration.n_cols; ++n) {
     calibration.col(n) = arma::median(actualMeasuredExtensions.slice(n)).t();
   }
+  
+  for (std::size_t n = 0; n < calibration.n_rows; ++n) {
+    if (n == 0) {
+      calibration.row(n) = calibration.row(n) - (calibration.row(n + 1) - calibration.row(n)) / (expectedMeasuredExtensions.row(n + 1) - expectedMeasuredExtensions.row(n)) * (expectedMeasuredExtensions.row(n) + extensions.at(n));
+    } else {
+      calibration.row(n) = calibration.row(n) - (calibration.row(n) - calibration.row(n - 1)) / (expectedMeasuredExtensions.row(n) - expectedMeasuredExtensions.row(n - 1)) * (expectedMeasuredExtensions.row(n) + extensions.at(n));
+    }
+  }
+  
   calibration.save("extensionSensors.calibration", arma::raw_ascii);
 }
