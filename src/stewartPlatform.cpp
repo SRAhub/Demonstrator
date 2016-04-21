@@ -101,4 +101,9 @@ namespace demo {
       return arma::join_cols(intersections.at(1), attitudes.t());
     }
   }
+
+  bool StewartPlatform::waitTillEndEffectorPoseIsReached(
+      const std::chrono::microseconds timeout) {
+    return linearActuators_.waitTillExtensionIsReached(timeout);
+  }
 }

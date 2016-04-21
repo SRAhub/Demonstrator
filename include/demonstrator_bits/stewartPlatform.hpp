@@ -32,6 +32,9 @@ namespace demo {
 
     arma::Col<double>::fixed<6> getEndEffectorPose();
 
+    bool waitTillEndEffectorPoseIsReached(
+        const std::chrono::microseconds timeout);
+
    protected:
     LinearActuators linearActuators_;
     AttitudeSensors attitudeSensors_;
