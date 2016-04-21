@@ -95,6 +95,10 @@ namespace demo {
       throw std::runtime_error("StewartPlatform.getEndEffectorPose: ");
     }
 
-    return arma::join_cols(intersections.at(0), attitudes.t());
+    if (intersections.at(0)(2) > 0) {
+      return arma::join_cols(intersections.at(0), attitudes.t());
+    } else {
+      return arma::join_cols(intersections.at(1), attitudes.t());
+    }
   }
 }
