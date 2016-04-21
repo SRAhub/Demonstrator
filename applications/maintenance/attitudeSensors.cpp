@@ -32,7 +32,6 @@ int main (const int argc, const char* argv[]) {
   ::wiringPiSetupGpio();
 
   demo::AttitudeSensors attitudeSensors(demo::Gpio::allocateUart(), -arma::datum::pi, arma::datum::pi);
-  attitudeSensors.runAsynchronous();
 
   runDefault(attitudeSensors);
 
@@ -55,6 +54,8 @@ void showHelp() {
 
 void runDefault(
     demo::AttitudeSensors& attitudeSensors) {
+  attitudeSensors.runAsynchronous();
+  
   while(1) {
     std::cout << "+-----------------+-----------------+-----------------+\n"
               << "| Roll [radians]  | Pitch [radians] |  Yaw [radians]  |\n"
