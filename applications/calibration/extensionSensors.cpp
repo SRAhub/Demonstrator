@@ -14,7 +14,7 @@
 void showHelp();
 void runCalibration(
     demo::LinearActuators&);
-arma::Cube<double> measure(
+arma::Mat<double> measure(
     demo::LinearActuators&);
 
 int main (const int argc, const char* argv[]) {
@@ -66,31 +66,30 @@ void runAll(
     demo::LinearActuators& linearActuators,
     double extension) {
   linearActuators.setExtensions(arma::zeros<arma::Row<double>>(linearActuators.numberOfActuators_) + extension, arma::ones<arma::Row<double>>(linearActuators.numberOfActuators_));
+  linearActuators.waitTillExtensionIsReached(std::chrono::microseconds({3 * 1000 * 1000}));
 }
 
 void runCalibration(
     demo::LinearActuators& linearActuators) {
   auto measurements = measure(linearActuators);
   // TODO: process measured values
-  if (measurements.save("extension_sensor_adjustments.mat", arma::raw_ascii))
-    std::cout << "Saved in `extension_sensor_adjustments.mat`; "
+  if (measurements.save("extensionSensors.calibration", arma::raw_ascii))
+    std::cout << "Saved in `extensionSensors.calibration`; "
               << "each row represents one sensor.\n";
   else
-    std::cout << "Saving of file `extension_sensor_adjustments.mat` failed.\n";
+    std::cout << "Saving of file `extensionSensors.calibration` failed.\n";
 }
 
 /**
  * Approach extension intervals from 10% to 80% inclusive, in 10% steps. To measure the behaviour of the motor when working both with and against the weight of the robot, all extension levels are reached twice, both by extending and retracting the linear actuators.
  *
- * Return a Cube<double>, where the slices represent a linear actuator, the columns an extension level, and the rows the measured values. The first index of a row contains samples obtained after extending the linear actuator, the second index samples obtained after retracting.
- *
- * The first and last extension levels are only approached from one direction because they are the limits for sane operation. Therefore the user is only asked to measure these distances once. The measured value is placed in both indices in the result.
+ * Return a Mat<double> with values filled according to `model/README.md`.
  */
-arma::Cube<double> measure(
+arma::Mat<double> measure(
     demo::LinearActuators& linearActuators) {
   linearActuators.getExtensionSensors().setNumberOfSamplesPerMeasurment(1);
   const std::array<double, 8> extensions {.1, .2, .3, .4, .5, .6, .7, .8};
-  arma::Cube<double> result(2, extensions.size(), linearActuators.numberOfActuators_);
+  arma::Mat<double> result(linearActuators.numberOfActuators_, extensions.size());
 
   std::cout << "Starting measurement\n";
   for (int i = 0; i < extensions.size(); i++) {
@@ -101,7 +100,7 @@ arma::Cube<double> measure(
       std::cout << "Enter measured distance for linear actuator #"
                 << device
                 << ": ";
-      std::cin >> result(0, i, device);
+      std::cin >> result(device, i);
     }
 
     if (i < extensions.size() - 1) {
@@ -113,13 +112,12 @@ arma::Cube<double> measure(
         std::cout << "Enter measured distance for linear actuator #"
                   << device
                   << ": ";
-        std::cin >> result(1, i, device);
+        double value;
+        std::cin >> value;
+        result(device, i) = (value + result(device, i)) / 2;
       }
     } else {
-      std::cout << "Won't extend further than " << extensions.at(i) << ". Copying first value.\n";
-      for (std::size_t device = 0; device < linearActuators.numberOfActuators_; device++) {
-        result(1, i, device) = result(0, i, device);
-      }
+      std::cout << "Won't extend further than " << extensions.at(i) << std::endl;
     }
   }
 
