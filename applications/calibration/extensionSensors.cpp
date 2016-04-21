@@ -88,8 +88,8 @@ void runCalibration(
     for (std::size_t k = 0; k < actualMeasuredExtensions.n_rows; ++k) {
       const arma::Row<double> measueredExtensions = linearActuators.getExtensions();
       
-      for (std::size_t l = 0; l < linearActuators.numberOfActuators_; ++l) {
-        actualMeasuredExtensions.subcube(k, l, n, k, l, n) = measueredExtensions(l);
+      for (std::size_t l = 0; l < measueredExtensions.n_elem; ++l) {
+        actualMeasuredExtensions.subcube(k, n, l, k, n, l) = measueredExtensions(l);
       }
     }
   }
