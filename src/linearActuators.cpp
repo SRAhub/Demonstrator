@@ -134,12 +134,4 @@ namespace demo {
   double LinearActuators::getMaximalExtensionDeviation() const {
     return maximalExtensionDeviation_;
   }
-
-  ServoControllers& LinearActuators::getServoControllers() {
-    return servoControllers_;
-  }
-
-  ExtensionSensors& LinearActuators::getExtensionSensors() {
-    return extensionSensors_;
-  }
 }

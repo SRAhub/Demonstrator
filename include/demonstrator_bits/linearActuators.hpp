@@ -64,9 +64,6 @@ namespace demo {
         const double maximalExtensionDeviation);
     double getMaximalExtensionDeviation() const;
 
-    ServoControllers& getServoControllers();
-    ExtensionSensors& getExtensionSensors();
-
    protected:
     ServoControllers servoControllers_;
     ExtensionSensors extensionSensors_;

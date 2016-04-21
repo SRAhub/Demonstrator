@@ -33,6 +33,7 @@ int main (const int argc, const char* argv[]) {
   ::wiringPiSetupGpio();
 
   demo::ExtensionSensors extensionSensors(demo::Gpio::allocateSpi(), {0, 1, 2, 3, 4, 5}, 0.0, 1.0);
+  extensionSensors.setNumberOfSamplesPerMeasurment(1);
 
   std::vector<demo::Pin> directionPins;
   directionPins.push_back(demo::Gpio::allocatePin(22));
@@ -62,67 +63,47 @@ void showHelp() {
             << std::flush;
 }
 
-void runAll(
-    demo::LinearActuators& linearActuators,
-    double extension) {
-  linearActuators.setExtensions(arma::zeros<arma::Row<double>>(linearActuators.numberOfActuators_) + extension, arma::ones<arma::Row<double>>(linearActuators.numberOfActuators_));
-  linearActuators.waitTillExtensionIsReached(std::chrono::microseconds(3 * 1000 * 1000));
-}
-
-void runCalibration(
-    demo::LinearActuators& linearActuators) {
-  auto measurements = measure(linearActuators);
-  // TODO: process measured values
-  if (measurements.save("extensionSensors.calibration", arma::raw_ascii))
-    std::cout << "Saved in `extensionSensors.calibration`; "
-              << "each row represents one sensor.\n";
-  else
-    std::cout << "Saving of file `extensionSensors.calibration` failed.\n";
-}
-
 /**
- * Approach extension intervals from 10% to 80% inclusive, in 10% steps. To measure the behaviour of the motor when working both with and against the weight of the robot, all extension levels are reached twice, both by extending and retracting the linear actuators.
+ * Approach extension intervals from , in 10% steps. To measure the behaviour of the motor when working both with and against the weight of the robot, all extension levels are reached twice, both by extending and retracting the linear actuators.
  *
  * Return a Mat<double> with values filled according to `model/README.md`.
  */
-arma::Mat<double> measure(
+void runCalibration(
     demo::LinearActuators& linearActuators) {
-  linearActuators.getExtensionSensors().setNumberOfSamplesPerMeasurment(1);
-  const std::array<double, 8> extensions {.1, .2, .3, .4, .5, .6, .7, .8};
-  arma::Mat<double> result(linearActuators.numberOfActuators_, extensions.size());
+  const std::array<double, 8> extensions = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8};
+  arma::Cube<double> actualMeasuredExtensions(20, extensions.size(), linearActuators.numberOfActuators_);
+  arma::Mat<double> expectedMeasuredExtensions(linearActuators.numberOfActuators_, extensions.size());
+  
+  std::cout << "Starting extension sensor calibration." << std::endl;
+  for (std::size_t n = 0; n < extensions.size(); ++n) {
+    std::cout << "Extending to " << extensions.at(n) << "m." << std::endl;
+    linearActuators.setExtensions(arma::zeros<arma::Row<double>>(linearActuators.numberOfActuators_) + extensions.at(n), arma::ones<arma::Row<double>>(linearActuators.numberOfActuators_));
+    linearActuators.waitTillExtensionIsReached(std::chrono::seconds(10));
 
-  std::cout << "Starting measurement\n";
-  for (int i = 0; i < extensions.size(); i++) {
-    std::cout << "Extending to " << extensions.at(i) << "\n";
-    runAll(linearActuators, extensions.at(i));
-    std::cout << "Reached target extension.\n";
-    for (std::size_t device = 0; device < linearActuators.numberOfActuators_; device++) {
-      std::cout << "Enter measured distance for linear actuator #"
-                << device
-                << ": ";
-      std::cin >> result(device, i);
+    for (std::size_t k = 0; k < linearActuators.numberOfActuators_; ++k) {
+      std::cout << "Enter measured extension of sensor " << k << ": ";
+      std::cin >> expectedMeasuredExtensions(k, n);
+      std::cout << std::endl;
     }
 
-    if (i < extensions.size() - 1) {
-      runAll(linearActuators, extensions.at(i + 1));
-      std::cout << "Retracting to " << extensions.at(i) << "\n";
-      runAll(linearActuators, extensions.at(i));
-      std::cout << "Reached target extension.\n";
-      for (std::size_t device = 0; device < linearActuators.numberOfActuators_; device++) {
-        std::cout << "Enter measured distance for linear actuator #"
-                  << device
-                  << ": ";
-        double value;
-        std::cin >> value;
-        result(device, i) = (value + result(device, i)) / 2;
-      }
-    } else {
-      std::cout << "Won't extend further than " << extensions.at(i) << std::endl;
+    for (std::size_t k = 0; k < actualMeasuredExtensions.n_slices; ++k) {
+      actualMeasuredExtensions.tube(k, n) = linearActuators.getExtensions();
     }
   }
-
-  std::cout << "Done.\n";
-  runAll(linearActuators, extensions.at(1));
-
-  return result;
+  std::cout << "Done." << std::endl;
+  linearActuators.setExtensions(arma::zeros<arma::Row<double>>(linearActuators.numberOfActuators_) + 0.5, arma::ones<arma::Row<double>>(linearActuators.numberOfActuators_));
+  linearActuators.waitTillExtensionIsReached(std::chrono::seconds(10));
+  
+  for (std::size_t n = 0; n < actualMeasuredExtensions.n_slices; ++n) {
+    static_cast<arma::Mat<double>>(actualMeasuredExtensions.slice(n)).save("actualMeasuredExtensions_sensor" + std::to_string(n) + ".mat", arma::raw_ascii);
+  }
+  for (std::size_t n = 0; n < expectedMeasuredExtensions.n_cols; ++n) {
+    static_cast<arma::Row<double>>(expectedMeasuredExtensions.col(n).t()).save("expectedMeasuredExtensions_sensor" + std::to_string(n) + ".mat", arma::raw_ascii);
+  }
+  
+  arma::Mat<double> calibration(extensions.size(), linearActuators.numberOfActuators_);
+  for (std::size_t n = 0; n < calibration.n_cols; ++n) {
+    calibration.col(n) = arma::median(actualMeasuredExtensions.slice(n)).t();
+  }
+  calibration.save("extensionSensors.calibration", arma::raw_ascii);
 }
