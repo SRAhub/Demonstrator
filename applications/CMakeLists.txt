@@ -155,16 +155,27 @@ message(STATUS "")
 message(STATUS "Configuring calibration applications.")
 # All paths must start with "calibration/"
 
-message(STATUS "- Extension sensor.")
-add_executable(calibrateExtensionSensor
+message(STATUS "- Extension sensors.")
+add_executable(calibrateExtensionSensors
   commandline.cpp
   calibration/extensionSensors.cpp
 )
 
-target_link_libraries(calibrateExtensionSensor ${WIRINGPI_LIBRARIES})
-target_link_libraries(calibrateExtensionSensor ${ARMADILLO_LIBRARIES})
-target_link_libraries(calibrateExtensionSensor ${MANTELLA_LIBRARIES})
-target_link_libraries(calibrateExtensionSensor ${DEMONSTRATOR_LIBRARIES})
+target_link_libraries(calibrateExtensionSensors ${WIRINGPI_LIBRARIES})
+target_link_libraries(calibrateExtensionSensors ${ARMADILLO_LIBRARIES})
+target_link_libraries(calibrateExtensionSensors ${MANTELLA_LIBRARIES})
+target_link_libraries(calibrateExtensionSensors ${DEMONSTRATOR_LIBRARIES})
+
+message(STATUS "- Attitude sensors.")
+add_executable(calibrateAttitudeSensors
+  commandline.cpp
+  calibration/attitudeSensors.cpp
+)
+
+target_link_libraries(calibrateAttitudeSensors ${WIRINGPI_LIBRARIES})
+target_link_libraries(calibrateAttitudeSensors ${ARMADILLO_LIBRARIES})
+target_link_libraries(calibrateAttitudeSensors ${MANTELLA_LIBRARIES})
+target_link_libraries(calibrateAttitudeSensors ${DEMONSTRATOR_LIBRARIES})
 
 message(STATUS "")
 message(STATUS "Noticable CMAKE variables:")
