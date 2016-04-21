@@ -51,7 +51,6 @@ int main (const int argc, const char* argv[]) {
   linearActuators.setMaximalExtensionDeviation(0.05);
   
   demo::AttitudeSensors attitudeSensors(demo::Gpio::allocateUart(), -arma::datum::pi, arma::datum::pi);
-  attitudeSensors.runAsynchronous();
   
   arma::Mat<double>::fixed<3, 6> baseJointsPosition;
   baseJointsPosition.load("baseJointsPosition.config");

@@ -30,6 +30,8 @@ namespace demo {
     } else if (attitudeSensors_.numberOfSensors_ != 3) {
       throw std::invalid_argument("StewartPlatform: The Stewart platform must have 3 attitudes sensors.");
     }
+    
+    attitudeSensors_.runAsynchronous();
   }
 
   StewartPlatform::StewartPlatform(
@@ -46,6 +48,8 @@ namespace demo {
     actuatorsMinimalLength_ = stewartPlatform.actuatorsMinimalLength_;
     actuatorsMaximalLength_ = stewartPlatform.actuatorsMaximalLength_;
 
+    attitudeSensors_.runAsynchronous();
+    
     return *this;
   }
 
