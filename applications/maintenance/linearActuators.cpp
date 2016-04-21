@@ -91,14 +91,14 @@ void runDefault(
 
       extensions(n) -= 0.15;
       linearActuators.setExtensions(extensions, maximalSpeeds);
-      linearActuators.waitTillExtensionIsReached(std::chrono::seconds(5));
+      linearActuators.waitTillExtensionIsReached(std::chrono::seconds(10));
       std::this_thread::sleep_for(std::chrono::seconds(1));
       
       std::cout << "Moving actuator " << n << " up by 15%." << std::endl;
 
       extensions(n) += 0.15;
       linearActuators.setExtensions(extensions, maximalSpeeds);
-      linearActuators.waitTillExtensionIsReached(std::chrono::seconds(5));
+      linearActuators.waitTillExtensionIsReached(std::chrono::seconds(10));
       std::this_thread::sleep_for(std::chrono::seconds(1));
     }
   }
@@ -108,7 +108,7 @@ void runAll(
     demo::LinearActuators& linearActuators,
     double extension) {
   linearActuators.setExtensions(arma::zeros<arma::Row<double>>(linearActuators.numberOfActuators_) + extension, arma::ones<arma::Row<double>>(linearActuators.numberOfActuators_));
-  linearActuators.waitTillExtensionIsReached(std::chrono::seconds(5));
+  linearActuators.waitTillExtensionIsReached(std::chrono::seconds(10));
 }
 
 void runSingle(
@@ -121,5 +121,5 @@ void runSingle(
   maximalSpeeds(n) = 1.0;
 
   linearActuators.setExtensions(extensions, maximalSpeeds);
-  linearActuators.waitTillExtensionIsReached(std::chrono::seconds(5));
+  linearActuators.waitTillExtensionIsReached(std::chrono::seconds(10));
 }
