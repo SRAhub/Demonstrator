@@ -57,6 +57,9 @@ namespace demo {
 
     arma::Row<double> getExtensions();
 
+    bool waitTillExtensionIsReached(
+        const std::chrono::microseconds timeout);
+    
     void setMaximalExtensionDeviation(
         const double maximalExtensionDeviation);
     double getMaximalExtensionDeviation() const;

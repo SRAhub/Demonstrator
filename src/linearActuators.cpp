@@ -102,6 +102,22 @@ namespace demo {
     }
 
     servoControllers_.stop();
+    killReachExtensionThread_ = true;
+  }
+
+  bool LinearActuators::waitTillExtensionIsReached(
+      const std::chrono::microseconds timeout) {
+    auto start = std::chrono::steady_clock::now();
+    while (killReachExtensionThread_ == false) {
+      std::this_thread::sleep_for(std::chrono::nanoseconds(500));
+      
+      auto end = std::chrono::steady_clock::now();
+      if (end - start >= timeout) {
+        return false;
+      }
+    }
+    
+    return true;
   }
 
   void LinearActuators::setMaximalExtensionDeviation(

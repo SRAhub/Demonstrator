@@ -108,6 +108,7 @@ void runAll(
     demo::LinearActuators& linearActuators,
     double extension) {
   linearActuators.setExtensions(arma::zeros<arma::Row<double>>(linearActuators.numberOfActuators_) + extension, arma::ones<arma::Row<double>>(linearActuators.numberOfActuators_));
+  linearActuators.waitTillExtensionIsReached(std::chrono::seconds(5));
 }
 
 void runSingle(
@@ -120,4 +121,5 @@ void runSingle(
   maximalSpeeds(n) = 1.0;
 
   linearActuators.setExtensions(extensions, maximalSpeeds);
+  linearActuators.waitTillExtensionIsReached(std::chrono::seconds(5));
 }
