@@ -109,11 +109,12 @@ void runCalibration(
     calibration.col(n) = arma::median(actualMeasuredExtensions.slice(n)).t();
   }
   
-  for (std::size_t n = 0; n < calibration.n_rows; ++n) {
+  arma::Mat<double> shiftedCalibration(extensions.size(), linearActuators.numberOfActuators_);
+  for (std::size_t n = 0; n < shiftedCalibration.n_rows; ++n) {
     if (n == 0) {
-      calibration.row(n) = calibration.row(n) - (calibration.row(n + 1) - calibration.row(n)) / (expectedMeasuredExtensions.col(n + 1) - expectedMeasuredExtensions.col(n)).t() % (expectedMeasuredExtensions.col(n).t() + extensions.at(n));
+      shiftedCalibration.row(n) = calibration.row(n) + (calibration.row(n + 1) - calibration.row(n)) / (expectedMeasuredExtensions.col(n + 1) - expectedMeasuredExtensions.col(n)).t() % (extensions.at(n) - expectedMeasuredExtensions.col(n).t());
     } else {
-      calibration.row(n) = calibration.row(n) - (calibration.row(n) - calibration.row(n - 1)) / (expectedMeasuredExtensions.col(n) - expectedMeasuredExtensions.col(n - 1)).t() % (expectedMeasuredExtensions.col(n).t() + extensions.at(n));
+      shiftedCalibration.row(n) = calibration.row(n - 1) + (calibration.row(n) - calibration.row(n - 1)) / (expectedMeasuredExtensions.col(n) - expectedMeasuredExtensions.col(n - 1)).t() % (extensions.at(n) - expectedMeasuredExtensions.col(n - 1).t());
     }
   }
   
