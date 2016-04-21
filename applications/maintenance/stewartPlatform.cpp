@@ -105,67 +105,85 @@ void runDefault(
     std::cout << "Moving the Stewart platform along the x-axis by 3cm." << std::endl;
     endEffectorPose(0) -= 0.03;
     stewartPlatform.setEndEffectorPose(endEffectorPose);
+    stewartPlatform.waitTillExtensionIsReached(std::chrono::seconds(5));
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
     endEffectorPose(0) += 0.03;
     stewartPlatform.setEndEffectorPose(endEffectorPose);
+    stewartPlatform.waitTillExtensionIsReached(std::chrono::seconds(5));
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
     endEffectorPose(0) = 0.0;
     stewartPlatform.setEndEffectorPose(endEffectorPose);
+    stewartPlatform.waitTillExtensionIsReached(std::chrono::seconds(5));
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
     
     std::cout << "Moving the Stewart platform along the y-axis by 3cm." << std::endl;
     endEffectorPose(1) -= 0.03;
     stewartPlatform.setEndEffectorPose(endEffectorPose);
+    stewartPlatform.waitTillExtensionIsReached(std::chrono::seconds(5));
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
     endEffectorPose(1) += 0.03;
     stewartPlatform.setEndEffectorPose(endEffectorPose);
+    stewartPlatform.waitTillExtensionIsReached(std::chrono::seconds(5));
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
     endEffectorPose(1) = 0.0;
     stewartPlatform.setEndEffectorPose(endEffectorPose);
+    stewartPlatform.waitTillExtensionIsReached(std::chrono::seconds(5));
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
     
     std::cout << "Moving the Stewart platform along the z-axis by 3cm." << std::endl;
     endEffectorPose(2) -= 0.03;
     stewartPlatform.setEndEffectorPose(endEffectorPose);
+    stewartPlatform.waitTillExtensionIsReached(std::chrono::seconds(5));
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
     endEffectorPose(2) += 0.03;
     stewartPlatform.setEndEffectorPose(endEffectorPose);
+    stewartPlatform.waitTillExtensionIsReached(std::chrono::seconds(5));
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
     endEffectorPose(2) = 0.0;
     stewartPlatform.setEndEffectorPose(endEffectorPose);
+    stewartPlatform.waitTillExtensionIsReached(std::chrono::seconds(5));
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
     
     std::cout << "Tilting the Stewart platform along the roll-axis by 15 degree." << std::endl;
     endEffectorPose(3) += 0.26;
     stewartPlatform.setEndEffectorPose(endEffectorPose);
+    stewartPlatform.waitTillExtensionIsReached(std::chrono::seconds(5));
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
     endEffectorPose(3) -= 0.26;
     stewartPlatform.setEndEffectorPose(endEffectorPose);
+    stewartPlatform.waitTillExtensionIsReached(std::chrono::seconds(5));
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
     endEffectorPose(3) = 0.0;
     stewartPlatform.setEndEffectorPose(endEffectorPose);
+    stewartPlatform.waitTillExtensionIsReached(std::chrono::seconds(5));
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
     
     std::cout << "Tilting the Stewart platform along the pitch-axis by 15 degree." << std::endl;
     endEffectorPose(4) += 0.26;
     stewartPlatform.setEndEffectorPose(endEffectorPose);
+    stewartPlatform.waitTillExtensionIsReached(std::chrono::seconds(5));
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
     endEffectorPose(4) -= 0.26;
     stewartPlatform.setEndEffectorPose(endEffectorPose);
+    stewartPlatform.waitTillExtensionIsReached(std::chrono::seconds(5));
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
     endEffectorPose(4) = 0.0;
     stewartPlatform.setEndEffectorPose(endEffectorPose);
+    stewartPlatform.waitTillExtensionIsReached(std::chrono::seconds(5));
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
     
     std::cout << "Rotating the Stewart platform along the yaw-axis by 15 degree." << std::endl;
     endEffectorPose(5) += 0.26;
     stewartPlatform.setEndEffectorPose(endEffectorPose);
+    stewartPlatform.waitTillExtensionIsReached(std::chrono::seconds(5));
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
     endEffectorPose(5) -= 0.26;
     stewartPlatform.setEndEffectorPose(endEffectorPose);
+    stewartPlatform.waitTillExtensionIsReached(std::chrono::seconds(5));
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
     endEffectorPose(5) = 0.0;
     stewartPlatform.setEndEffectorPose(endEffectorPose);
+    stewartPlatform.waitTillExtensionIsReached(std::chrono::seconds(5));
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
   }
 }

@@ -42,7 +42,7 @@ namespace demo {
   }
 
   AttitudeSensors::~AttitudeSensors() {
-    if (killContinuousMeasurementThread_ == false) {
+    if (continuousMeasurementThread_.joinable()) {
       killContinuousMeasurementThread_ = true;
       continuousMeasurementThread_.join();
     }

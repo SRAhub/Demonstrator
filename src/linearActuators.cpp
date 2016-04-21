@@ -46,7 +46,7 @@ namespace demo {
   }
   
   LinearActuators::~LinearActuators() {
-    if (killReachExtensionThread_ == false) {
+    if (reachExtensionThread_.joinable()) {
       killReachExtensionThread_ = true;
       reachExtensionThread_.join();
     }
@@ -55,7 +55,7 @@ namespace demo {
   void LinearActuators::setExtensions(
       const arma::Row<double>& extensions,
       const arma::Row<double>& speeds) {
-    if (killReachExtensionThread_ == false) {
+    if (reachExtensionThread_.joinable()) {
       killReachExtensionThread_ = true;
       reachExtensionThread_.join();
     }

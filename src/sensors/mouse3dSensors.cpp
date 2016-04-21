@@ -39,8 +39,10 @@ namespace demo {
   }
 
   Mouse3dSensors::~Mouse3dSensors() {
-    killContinuousMeasurementThread_ = true;
-    continuousMeasurementThread_.join();
+    if (continuousMeasurementThread_.joinable()) {
+      killContinuousMeasurementThread_ = true;
+      continuousMeasurementThread_.join();
+    }
 
     if (fileDescriptor_ != -1) {
       ::close(fileDescriptor_);
