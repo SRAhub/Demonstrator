@@ -36,7 +36,10 @@ int main (const int argc, const char* argv[]) {
   
   arma::Mat<double> extensionSensorsCorrection;
   if (extensionSensorsCorrection.load("extensionSensors.correction")) {
+    std::cout << "Using the extension sensor correction." << std::endl;
     extensionSensors.setMeasurementCorrections(extensionSensorsCorrection);
+  } else {
+    std::cout << "Could not find extension sensor correction file. Displaying uncorrected measurements." << std::endl;
   }
 
   runDefault(extensionSensors);
