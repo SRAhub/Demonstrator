@@ -30,8 +30,14 @@ int main (const int argc, const char* argv[]) {
   // Initialises WiringPi and uses the BCM pin layout.
   // For an overview on the pin layout, use the `gpio readall` command on a Raspberry Pi.
   ::wiringPiSetupGpio();
-
+  
   demo::ExtensionSensors extensionSensors(demo::Gpio::allocateSpi(), {0, 1, 2, 3, 4, 5}, 0.0, 1.0);
+  extensionSensors.setNumberOfSamplesPerMeasurment(3);
+  
+  arma::Mat<double> extensionSensorsCorrection;
+  if (extensionSensorsCorrection.load("extensionSensors.correction")) {
+    extensionSensors.setMeasurementCorrections(extensionSensorsCorrection);
+  }
 
   runDefault(extensionSensors);
 

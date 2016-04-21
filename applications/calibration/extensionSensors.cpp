@@ -118,5 +118,5 @@ void runCalibration(
     }
   }
   
-  calibration.save("extensionSensors.calibration", arma::raw_ascii);
+  calibration.save("extensionSensors.correction", arma::raw_ascii);
 }
