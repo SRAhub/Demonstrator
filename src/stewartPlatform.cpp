@@ -92,7 +92,7 @@ namespace demo {
     const double circleRadius = std::sqrt(std::pow(extensions(0), 2.0) - std::pow(distanceBetweenSpheres * relativeDistanceToIntersection, 2.0));
     const arma::Col<double>::fixed<3>& circleNormal = (baseJointsShiftedPosition.col(0) - baseJointsShiftedPosition.col(1)) / distanceBetweenSpheres;
 
-    ::demo::pre_mant::machinePrecision = 1e-6;
+    ::demo::pre_mant::machinePrecision = 1e-5;
     const std::vector<arma::Col<double>::fixed<3>>& intersections = demo::pre_mant::circleSphereIntersections(circleCenter, circleRadius, circleNormal, baseJointsShiftedPosition.col(2), extensions(2));
 
     if (intersections.size() < 1) {

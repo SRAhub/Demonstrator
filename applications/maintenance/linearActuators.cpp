@@ -58,7 +58,7 @@ int main (const int argc, const char* argv[]) {
   demo::ServoControllers servoControllers(std::move(directionPins), demo::Gpio::allocateI2c(), {0, 1, 2, 3, 4, 5}, 1.0);
   
   demo::LinearActuators linearActuators(std::move(servoControllers), std::move(extensionSensors), 0.178, 0.248);
-  linearActuators.setAcceptableExtensionDeviation(0.005);
+  linearActuators.setAcceptableExtensionDeviation(0.0005);
   
   if (argc > 2 && isNumber(argv[1]) && isNumber(argv[2])) {
     runSingle(linearActuators, std::stoi(argv[1]), std::stod(argv[2]));

@@ -45,7 +45,7 @@ int main (const int argc, const char* argv[]) {
   demo::ServoControllers servoControllers(std::move(directionPins), demo::Gpio::allocateI2c(), {0, 1, 2, 3, 4, 5}, 1.0);
 
   demo::LinearActuators linearActuators(std::move(servoControllers), std::move(extensionSensors), 0.178, 0.248);
-  linearActuators.setAcceptableExtensionDeviation(0.005);
+  linearActuators.setAcceptableExtensionDeviation(0.0005);
 
   runCalibration(linearActuators);
 
@@ -86,10 +86,10 @@ void runCalibration(
     }
 
     for (std::size_t k = 0; k < actualMeasuredExtensions.n_rows; ++k) {
-      const arma::Row<double> measueredExtensions = linearActuators.getExtensions();
+      const arma::Row<double>& measuredExtensions = linearActuators.getExtensions();
       
-      for (std::size_t l = 0; l < measueredExtensions.n_elem; ++l) {
-        actualMeasuredExtensions.subcube(k, n, l, k, n, l) = measueredExtensions(l);
+      for (std::size_t l = 0; l < measuredExtensions.n_elem; ++l) {
+        actualMeasuredExtensions.subcube(k, n, l, k, n, l) = measuredExtensions(l);
       }
     }
   }
@@ -103,20 +103,4 @@ void runCalibration(
   for (std::size_t n = 0; n < expectedMeasuredExtensions.n_rows; ++n) {
     static_cast<arma::Row<double>>(expectedMeasuredExtensions.row(n)).save("expectedMeasuredExtensions_sensor" + std::to_string(n) + ".mat", arma::raw_ascii);
   }
-  
-  arma::Mat<double> actualExtensions(extensions.size(), linearActuators.numberOfActuators_);
-  for (std::size_t n = 0; n < actualExtensions.n_cols; ++n) {
-    actualExtensions.col(n) = arma::median(actualMeasuredExtensions.slice(n)).t();
-  }
-  
-  arma::Mat<double> correction(extensions.size(), linearActuators.numberOfActuators_);
-  for (std::size_t n = 0; n < correction.n_rows; ++n) {
-    if (n == 0) {
-      correction.row(n) = expectedMeasuredExtensions.col(n).t() + (expectedMeasuredExtensions.col(n + 1) - expectedMeasuredExtensions.col(n)).t() / (actualExtensions.row(n + 1) - actualExtensions.row(n)) % (extensions.at(n) - actualExtensions.row(n));
-    } else {
-      correction.row(n) = expectedMeasuredExtensions.col(n - 1).t() + (expectedMeasuredExtensions.col(n) - expectedMeasuredExtensions.col(n - 1)).t() / (actualExtensions.row(n) - actualExtensions.row(n - 1)) % (extensions.at(n) - actualExtensions.row(n - 1));
-    }
-  }
-  
-  correction.save("extensionSensors.correction", arma::raw_ascii);
 }
