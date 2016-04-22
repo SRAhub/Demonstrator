@@ -49,7 +49,6 @@ namespace demo {
     baseJointsPosition_ = stewartPlatform.baseJointsPosition_;
     endEffectorJointsRelativePosition_ = stewartPlatform.endEffectorJointsRelativePosition_;
     actuatorsMinimalLength_ = stewartPlatform.actuatorsMinimalLength_;
-    actuatorsMaximalLength_ = stewartPlatform.actuatorsMaximalLength_;
 
     attitudeSensors_.runAsynchronous();
     
@@ -68,7 +67,6 @@ namespace demo {
       extensions(n) = arma::norm(baseJointsPosition_.col(n) - endeEffectorRotation * endEffectorJointsRelativePosition_.col(n) + endEffectorPose.head(3));
     }
     extensions -= actuatorsMinimalLength_;
-    extensions /= actuatorsMaximalLength_ - actuatorsMinimalLength_;
 
     // TODO intermediate extensions
 
