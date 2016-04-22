@@ -1,5 +1,8 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 
+*.mat text eol=lf
+*.config text eol=lf
+*.calibration text eol=lf
 .code-checks.sh text eol=lf
 .system-setup.sh text eol=lf
