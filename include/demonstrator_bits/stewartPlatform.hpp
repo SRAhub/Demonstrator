@@ -12,12 +12,16 @@ namespace demo {
    public:
     const arma::Mat<double>::fixed<3, 6> baseJointsPosition_;
     const arma::Mat<double>::fixed<3, 6> endEffectorJointsRelativePosition_;
+    const arma::Col<double>::fixed<6> minimalEndEffectorPose;
+    const arma::Col<double>::fixed<6> maximalEndEffectorPose;
     
     explicit StewartPlatform(
         LinearActuators&& linearActuators,
         AttitudeSensors&& attitudeSensors,
         const arma::Mat<double>::fixed<3, 6>& baseJointsPosition,
-        const arma::Mat<double>::fixed<3, 6>& endEffectorJointsRelativePosition);
+        const arma::Mat<double>::fixed<3, 6>& endEffectorJointsRelativePosition,
+        const arma::Col<double>::fixed<6>& minimalEndEffectorPose,
+        const arma::Col<double>::fixed<6>& maximalEndEffectorPose);
 
     explicit StewartPlatform(
         StewartPlatform&& stewartPlatform);
