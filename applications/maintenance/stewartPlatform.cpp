@@ -169,4 +169,5 @@ void runEndEffectorPose(
     demo::StewartPlatform& stewartPlatform,
     const arma::Col<double>::fixed<6>& endEffectorPose) {
   stewartPlatform.setEndEffectorPose(endEffectorPose);
+  stewartPlatform.waitTillEndEffectorPoseIsReached(std::chrono::seconds(10));
 }
