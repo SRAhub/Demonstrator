@@ -122,8 +122,12 @@ void runCalibration(
       std::this_thread::sleep_for(std::chrono::milliseconds(100));
       
       for (std::size_t l = 0; l < actualMeasuredAttitudes.n_rows; ++l) {
-        const arma::Col<double>::fixed<6>& measuredEndEffectorPose = stewartPlatform.getEndEffectorPose();
-        actualMeasuredAttitudes.subcube(l, k, n, l, k, n) = measuredEndEffectorPose(3 + n);
+        try {
+          const arma::Col<double>::fixed<6>& measuredEndEffectorPose = stewartPlatform.getEndEffectorPose();
+          actualMeasuredAttitudes.subcube(l, k, n, l, k, n) = measuredEndEffectorPose(3 + n);
+        } catch (...) {
+          actualMeasuredAttitudes.subcube(l, k, n, l, k, n) = arma::datum::nan;
+        }
       }
     }
   }
