@@ -55,15 +55,28 @@ void runSendInteractive() {
             << std::endl;
   while (true) {
     std::string command;
-    std::cin >> command;
+    std::getline(std::cin, command);
     if (command == "exit") {
       return;
+    }
+
+    try {
+      std::string host = command.substr(0, command.find(':'));
+      int port = command.substr(command.find(':') + 1, command.find(' '));
+      std::string message command.substr(command.find(' ') + 1);
+
+      network.send(host, port, message);
+      std::cout << "Sent.\n";
+    } catch(const std::out_of_range& e) { // thrown by `string::substr()`
+      std::cout << "Invalid format.\n";
     }
   }
 }
 
 void runReceive(Network& network, bool& killThread) {
+  std::cout << "  **Now listening on port**" << std::endl;
   while (!killThread) {
     std::cout << "  **Reveiced: `" << network.receive() << "` **" << std::endl;
   }
+  std::cout << "  **Stop listening on port**" << std::endl;
 }
