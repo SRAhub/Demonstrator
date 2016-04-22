@@ -37,6 +37,14 @@ int main (const int argc, const char* argv[]) {
   ::wiringPiSetupGpio();
   
   demo::ExtensionSensors extensionSensors(demo::Gpio::allocateSpi(), {0, 1, 2, 3, 4, 5}, 0.0, 1.0);
+  extensionSensors.setNumberOfSamplesPerMeasurment(3);
+  arma::Mat<double> extensionSensorsCorrection;
+  if (extensionSensorsCorrection.load("extensionSensors.correction")) {
+    std::cout << "Using the extension sensor correction." << std::endl;
+    extensionSensors.setMeasurementCorrections(extensionSensorsCorrection);
+  } else {
+    std::cout << "Could not find extension sensor correction file. Displaying uncorrected measurements." << std::endl;
+  }
   
   std::vector<demo::Pin> directionPins;
   directionPins.push_back(demo::Gpio::allocatePin(22));

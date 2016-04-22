@@ -33,7 +33,6 @@ int main (const int argc, const char* argv[]) {
   
   demo::ExtensionSensors extensionSensors(demo::Gpio::allocateSpi(), {0, 1, 2, 3, 4, 5}, 0.0, 1.0);
   extensionSensors.setNumberOfSamplesPerMeasurment(3);
-  
   arma::Mat<double> extensionSensorsCorrection;
   if (extensionSensorsCorrection.load("extensionSensors.correction")) {
     std::cout << "Using the extension sensor correction." << std::endl;
