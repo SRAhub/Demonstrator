@@ -90,8 +90,7 @@ void showHelp() {
 
 void runCalibration(
     demo::StewartPlatform& stewartPlatform) {
-  
-  
+
 }
 
 void runReset(
