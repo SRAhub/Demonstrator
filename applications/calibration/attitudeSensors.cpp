@@ -54,7 +54,7 @@ int main (const int argc, const char* argv[]) {
   demo::ServoControllers servoControllers(std::move(directionPins), demo::Gpio::allocateI2c(), {0, 1, 2, 3, 4, 5}, 1.0);
   
   demo::LinearActuators linearActuators(std::move(servoControllers), std::move(extensionSensors), 0.178, 0.248);
-  linearActuators.setAcceptableExtensionDeviation(0.005);
+  linearActuators.setAcceptableExtensionDeviation(0.0005);
   
   demo::AttitudeSensors attitudeSensors(demo::Gpio::allocateUart(), -arma::datum::pi, arma::datum::pi);
 
@@ -100,10 +100,10 @@ void runCalibration(
   stewartPlatform.waitTillEndEffectorPoseIsReached(std::chrono::seconds(10));
 
   std::cout << "Starting attitude sensor calibration ...";
-  const arma::Mat<double>::fixed<15, 3>& expectedMeasuredAttitudes = {
-    -0.610865, -0.523599, -0.436332, -0.349066, -0.261799, -0.174533, -0.0872665, 0.0, 0.0872665, 0.174533, 0.261799, 0.349066, 0.436332, 0.523599, 0.610865,
-    -0.610865, -0.523599, -0.436332, -0.349066, -0.261799, -0.174533, -0.0872665, 0.0, 0.0872665, 0.174533, 0.261799, 0.349066, 0.436332, 0.523599, 0.610865,
-    -0.610865, -0.523599, -0.436332, -0.349066, -0.261799, -0.174533, -0.0872665, 0.0, 0.0872665, 0.174533, 0.261799, 0.349066, 0.436332, 0.523599, 0.610865
+  const arma::Mat<double>::fixed<7, 3>& expectedMeasuredAttitudes = {
+    -0.261799, -0.174533, -0.0872665, 0.0, 0.0872665, 0.174533, 0.261799,
+    -0.261799, -0.174533, -0.0872665, 0.0, 0.0872665, 0.174533, 0.261799,
+    -0.261799, -0.174533, -0.0872665, 0.0, 0.0872665, 0.174533, 0.261799
   };
   arma::Cube<double> actualMeasuredAttitudes(numberOfSamplesPerMeasurement, expectedMeasuredAttitudes.n_rows, expectedMeasuredAttitudes.n_cols);
   
