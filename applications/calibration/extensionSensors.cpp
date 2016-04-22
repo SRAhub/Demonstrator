@@ -70,7 +70,7 @@ void showHelp() {
  */
 void runCalibration(
     demo::LinearActuators& linearActuators) {
-  const std::array<double, 7> extensions = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7};
+  const std::array<double, 8> extensions = {0.178, 0.188, 0.198, 0.208, 0.218, 0.228, 0.238, 0.248};
   arma::Cube<double> actualMeasuredExtensions(20, extensions.size(), linearActuators.numberOfActuators_);
   arma::Mat<double> expectedMeasuredExtensions(linearActuators.numberOfActuators_, extensions.size());
   
