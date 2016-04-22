@@ -19,11 +19,15 @@ namespace demo {
       LinearActuators&& linearActuators,
       AttitudeSensors&& attitudeSensors,
       const arma::Mat<double>::fixed<3, 6>& baseJointsPosition,
-      const arma::Mat<double>::fixed<3, 6>& endEffectorJointsRelativePosition)
+      const arma::Mat<double>::fixed<3, 6>& endEffectorJointsRelativePosition,
+      const arma::Col<double>::fixed<6>& minimalEndEffectorPose,
+      const arma::Col<double>::fixed<6>& maximalEndEffectorPose)
       : linearActuators_(std::move(linearActuators)),
         attitudeSensors_(std::move(attitudeSensors)),
         baseJointsPosition_(baseJointsPosition),
-        endEffectorJointsRelativePosition_(endEffectorJointsRelativePosition) {
+        endEffectorJointsRelativePosition_(endEffectorJointsRelativePosition),
+        minimalEndEffectorPose_(minimalEndEffectorPose),
+        maximalEndEffectorPose_(maximalEndEffectorPose) {
     if (linearActuators_.numberOfActuators_ != 6) {
       throw std::invalid_argument("StewartPlatform: A Stewart platform must have 6 actuators.");
     } else if (attitudeSensors_.numberOfSensors_ != 3) {
@@ -35,7 +39,7 @@ namespace demo {
 
   StewartPlatform::StewartPlatform(
       StewartPlatform&& stewartPlatform)
-      : StewartPlatform(std::move(stewartPlatform.linearActuators_), std::move(stewartPlatform.attitudeSensors_), stewartPlatform.baseJointsPosition_, stewartPlatform.endEffectorJointsRelativePosition_) {
+      : StewartPlatform(std::move(stewartPlatform.linearActuators_), std::move(stewartPlatform.attitudeSensors_), stewartPlatform.baseJointsPosition_, stewartPlatform.endEffectorJointsRelativePosition_, stewartPlatform.minimalEndEffectorPose_, stewartPlatform.maximalEndEffectorPose_) {
   }
 
   StewartPlatform& StewartPlatform::operator=(
@@ -44,6 +48,10 @@ namespace demo {
       throw std::invalid_argument("StewartPlatform.operator=: The base joints positions must be equal.");
     } else if (arma::any(arma::vectorise(arma::abs(endEffectorJointsRelativePosition_ - stewartPlatform.endEffectorJointsRelativePosition_) > 0))) {
       throw std::invalid_argument("StewartPlatform.operator=: The relative end-effector joints positions must be equal.");
+    } else if (arma::any(arma::abs(minimalEndEffectorPose_ - stewartPlatform.minimalEndEffectorPose_) > 0)) {
+      throw std::invalid_argument("StewartPlatform.operator=: The minimal end-effector poses must be equal.");
+    } else if (arma::any(arma::abs(maximalEndEffectorPose_ - stewartPlatform.maximalEndEffectorPose_) > 0)) {
+      throw std::invalid_argument("StewartPlatform.operator=: The maximal end-effector poses must be equal.");
     }
 
     linearActuators_ = std::move(stewartPlatform.linearActuators_);
@@ -59,14 +67,14 @@ namespace demo {
     if (!endEffectorPose.is_finite()) {
       throw std::domain_error("StewartPlatform.setEndEffectorPose: All end-effector poses must be finite.");
     }
+    
+    const arma::Col<double>::fixed<6>& limitedEndEffectorPose = arma::min(arma::max(endEffectorPose, minimalEndEffectorPose_), maximalEndEffectorPose_);
 
     arma::Row<double>::fixed<6> extensions;
-    const arma::Mat<double>::fixed<3, 3>& endeEffectorRotation = mant::rotationMatrix3D(endEffectorPose(3), endEffectorPose(4), endEffectorPose(5));
+    const arma::Mat<double>::fixed<3, 3>& endeEffectorRotation = mant::rotationMatrix3D(limitedEndEffectorPose(3), limitedEndEffectorPose(4), limitedEndEffectorPose(5));
     for (std::size_t n = 0; n < linearActuators_.numberOfActuators_; ++n) {
-      extensions(n) = arma::norm(baseJointsPosition_.col(n) - (endeEffectorRotation * endEffectorJointsRelativePosition_.col(n) + endEffectorPose.head(3)));
+      extensions(n) = arma::norm(baseJointsPosition_.col(n) - (endeEffectorRotation * endEffectorJointsRelativePosition_.col(n) + limitedEndEffectorPose.head(3)));
     }
-
-    // TODO intermediate extensions
 
     if (arma::all(extensions >= linearActuators_.minimalAllowedExtension_) && arma::all(extensions <= linearActuators_.maximalAllowedExtension_)) {
       linearActuators_.setExtensions(extensions, extensions / arma::max(extensions));
