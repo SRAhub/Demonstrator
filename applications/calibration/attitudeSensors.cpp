@@ -115,7 +115,7 @@ void runCalibration(
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
     
     for (std::size_t k = 0; k < expectedMeasuredAttitudes.n_rows; ++k) {
-      std::cout << "- Approaching " << expectedMeasuredAttitudes(n, k); << "radians" << std::endl;
+      std::cout << "- Approaching " << expectedMeasuredAttitudes(n, k) << "radians" << std::endl;
       endEffectorPose(3 + n) = expectedMeasuredAttitudes(n, k);
       stewartPlatform.setEndEffectorPose(endEffectorPose);
       stewartPlatform.waitTillEndEffectorPoseIsReached(std::chrono::seconds(10));
