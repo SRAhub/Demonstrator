@@ -151,6 +151,17 @@ target_link_libraries(maintainStewartPlatform ${ARMADILLO_LIBRARIES})
 target_link_libraries(maintainStewartPlatform ${MANTELLA_LIBRARIES})
 target_link_libraries(maintainStewartPlatform ${DEMONSTRATOR_LIBRARIES})
 
+message(STATUS "- maintainMouse3dSensors.")
+add_executable(maintainMouse3dSensors
+  commandline.cpp
+  maintenance/mouse3dSensors.cpp
+)
+
+target_link_libraries(maintainMouse3dSensors ${WIRINGPI_LIBRARIES})
+target_link_libraries(maintainMouse3dSensors ${ARMADILLO_LIBRARIES})
+target_link_libraries(maintainMouse3dSensors ${MANTELLA_LIBRARIES})
+target_link_libraries(maintainMouse3dSensors ${DEMONSTRATOR_LIBRARIES})
+
 message(STATUS "")
 message(STATUS "Configuring calibration applications.")
 # All paths must start with "calibration/"
