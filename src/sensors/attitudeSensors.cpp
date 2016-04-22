@@ -117,11 +117,15 @@ namespace demo {
 
       std::string text = buffer;
       text = text.substr(text.find_first_of("=") + 1);
-      attitudes_(0) = std::stod(text.substr(0, text.find_first_of(",")));
-      attitudes_(1) = std::stod(text.substr(text.find_first_of(",") + 1, text.find_last_of(",")));
-      attitudes_(2) = std::stod(text.substr(text.find_last_of(",") + 1));
-      attitudes_ *= arma::datum::pi / 180.0;
       
+      try {
+        attitudes_(0) = std::stod(text.substr(0, text.find_first_of(",")));
+        attitudes_(1) = std::stod(text.substr(text.find_first_of(",") + 1, text.find_last_of(",")));
+        attitudes_(2) = std::stod(text.substr(text.find_last_of(",") + 1));
+        attitudes_ *= arma::datum::pi / 180.0;
+      } catch (...) {
+        continue;
+      }
     }
   }
 
