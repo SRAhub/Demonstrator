@@ -83,6 +83,7 @@ target_link_libraries(maintainDistanceSensors ${WIRINGPI_LIBRARIES})
 target_link_libraries(maintainDistanceSensors ${ARMADILLO_LIBRARIES})
 target_link_libraries(maintainDistanceSensors ${MANTELLA_LIBRARIES})
 target_link_libraries(maintainDistanceSensors ${DEMONSTRATOR_LIBRARIES})
+target_link_libraries(maintainDistanceSensors pthread)
 
 
 message(STATUS "- Distance indicators.")
@@ -95,6 +96,7 @@ target_link_libraries(maintainDistanceIndicators ${WIRINGPI_LIBRARIES})
 target_link_libraries(maintainDistanceIndicators ${ARMADILLO_LIBRARIES})
 target_link_libraries(maintainDistanceIndicators ${MANTELLA_LIBRARIES})
 target_link_libraries(maintainDistanceIndicators ${DEMONSTRATOR_LIBRARIES})
+target_link_libraries(maintainDistanceIndicators pthread)
 
 message(STATUS "- Attitude sensors.")
 add_executable(maintainAttitudeSensors
@@ -106,6 +108,7 @@ target_link_libraries(maintainAttitudeSensors ${WIRINGPI_LIBRARIES})
 target_link_libraries(maintainAttitudeSensors ${ARMADILLO_LIBRARIES})
 target_link_libraries(maintainAttitudeSensors ${MANTELLA_LIBRARIES})
 target_link_libraries(maintainAttitudeSensors ${DEMONSTRATOR_LIBRARIES})
+target_link_libraries(maintainAttitudeSensors pthread)
 
 message(STATUS "- Extension sensors.")
 add_executable(maintainExtensionSensors
@@ -117,6 +120,7 @@ target_link_libraries(maintainExtensionSensors ${WIRINGPI_LIBRARIES})
 target_link_libraries(maintainExtensionSensors ${ARMADILLO_LIBRARIES})
 target_link_libraries(maintainExtensionSensors ${MANTELLA_LIBRARIES})
 target_link_libraries(maintainExtensionSensors ${DEMONSTRATOR_LIBRARIES})
+target_link_libraries(maintainExtensionSensors pthread)
 
 message(STATUS "- Servo controllers.")
 add_executable(maintainServoControllers
@@ -128,6 +132,7 @@ target_link_libraries(maintainServoControllers ${WIRINGPI_LIBRARIES})
 target_link_libraries(maintainServoControllers ${ARMADILLO_LIBRARIES})
 target_link_libraries(maintainServoControllers ${MANTELLA_LIBRARIES})
 target_link_libraries(maintainServoControllers ${DEMONSTRATOR_LIBRARIES})
+target_link_libraries(maintainServoControllers pthread)
 
 message(STATUS "- Linear actuators.")
 add_executable(maintainLinearActuators
@@ -139,6 +144,7 @@ target_link_libraries(maintainLinearActuators ${WIRINGPI_LIBRARIES})
 target_link_libraries(maintainLinearActuators ${ARMADILLO_LIBRARIES})
 target_link_libraries(maintainLinearActuators ${MANTELLA_LIBRARIES})
 target_link_libraries(maintainLinearActuators ${DEMONSTRATOR_LIBRARIES})
+target_link_libraries(maintainLinearActuators pthread)
 
 message(STATUS "- Stewart platform.")
 add_executable(maintainStewartPlatform
@@ -150,6 +156,7 @@ target_link_libraries(maintainStewartPlatform ${WIRINGPI_LIBRARIES})
 target_link_libraries(maintainStewartPlatform ${ARMADILLO_LIBRARIES})
 target_link_libraries(maintainStewartPlatform ${MANTELLA_LIBRARIES})
 target_link_libraries(maintainStewartPlatform ${DEMONSTRATOR_LIBRARIES})
+target_link_libraries(maintainStewartPlatform pthread)
 
 message(STATUS "- maintainMouse3dSensors.")
 add_executable(maintainMouse3dSensors
@@ -161,6 +168,7 @@ target_link_libraries(maintainMouse3dSensors ${WIRINGPI_LIBRARIES})
 target_link_libraries(maintainMouse3dSensors ${ARMADILLO_LIBRARIES})
 target_link_libraries(maintainMouse3dSensors ${MANTELLA_LIBRARIES})
 target_link_libraries(maintainMouse3dSensors ${DEMONSTRATOR_LIBRARIES})
+target_link_libraries(maintainMouse3dSensors pthread)
 
 message(STATUS "- maintainNetwork.")
 add_executable(maintainNetwork
@@ -172,6 +180,7 @@ target_link_libraries(maintainNetwork ${WIRINGPI_LIBRARIES})
 target_link_libraries(maintainNetwork ${ARMADILLO_LIBRARIES})
 target_link_libraries(maintainNetwork ${MANTELLA_LIBRARIES})
 target_link_libraries(maintainNetwork ${DEMONSTRATOR_LIBRARIES})
+target_link_libraries(maintainNetwork pthread)
 
 message(STATUS "")
 message(STATUS "Configuring calibration applications.")
@@ -187,6 +196,7 @@ target_link_libraries(calibrateExtensionSensors ${WIRINGPI_LIBRARIES})
 target_link_libraries(calibrateExtensionSensors ${ARMADILLO_LIBRARIES})
 target_link_libraries(calibrateExtensionSensors ${MANTELLA_LIBRARIES})
 target_link_libraries(calibrateExtensionSensors ${DEMONSTRATOR_LIBRARIES})
+target_link_libraries(calibrateExtensionSensors pthread)
 
 message(STATUS "- Attitude sensors.")
 add_executable(calibrateAttitudeSensors
@@ -198,6 +208,33 @@ target_link_libraries(calibrateAttitudeSensors ${WIRINGPI_LIBRARIES})
 target_link_libraries(calibrateAttitudeSensors ${ARMADILLO_LIBRARIES})
 target_link_libraries(calibrateAttitudeSensors ${MANTELLA_LIBRARIES})
 target_link_libraries(calibrateAttitudeSensors ${DEMONSTRATOR_LIBRARIES})
+target_link_libraries(calibrateAttitudeSensors pthread)
+
+message(STATUS "")
+message(STATUS "Configuring demonstation applications.")
+# All paths must start with "demonstration/"
+
+message(STATUS "- Sensors.")
+add_executable(sensorDemonstration
+  demonstration/sensors.cpp
+)
+
+target_link_libraries(sensorDemonstration ${WIRINGPI_LIBRARIES})
+target_link_libraries(sensorDemonstration ${ARMADILLO_LIBRARIES})
+target_link_libraries(sensorDemonstration ${MANTELLA_LIBRARIES})
+target_link_libraries(sensorDemonstration ${DEMONSTRATOR_LIBRARIES})
+target_link_libraries(sensorDemonstration pthread)
+
+message(STATUS "- Motors.")
+add_executable(motorDemonstration
+  demonstration/motors.cpp
+)
+
+target_link_libraries(motorDemonstration ${WIRINGPI_LIBRARIES})
+target_link_libraries(motorDemonstration ${ARMADILLO_LIBRARIES})
+target_link_libraries(motorDemonstration ${MANTELLA_LIBRARIES})
+target_link_libraries(motorDemonstration ${DEMONSTRATOR_LIBRARIES})
+target_link_libraries(motorDemonstration pthread)
 
 message(STATUS "")
 message(STATUS "Noticable CMAKE variables:")
