@@ -97,7 +97,7 @@ void runCalibration(
 void runReset(
     demo::AttitudeSensors& attitudeSensors,
     demo::LinearActuators& linearActuators) {
-  linearActuators.setExtension(arma::zeros<arma::Row<double>>(linearActuators.numberOfActuators_) + linearActuators.minimalAllowedExtension_, arma::ones<arma::Row<double>>(linearActuators.numberOfActuators_));
+  linearActuators.setExtensions(arma::zeros<arma::Row<double>>(linearActuators.numberOfActuators_) + linearActuators.minimalAllowedExtension_, arma::ones<arma::Row<double>>(linearActuators.numberOfActuators_));
       
   attitudeSensors.runAsynchronous();
   attitudeSensors.reset();
