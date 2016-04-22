@@ -110,15 +110,17 @@ void runDefault(
   
   while(1) {
     for (unsigned int n = 0; n < 2; ++n) {
-      std::cout << "Moving the Stewart platform along axis " <<  (n + 1) << " by 3cm." << std::endl;
+      std::cout << "Moving the Stewart platform along axis " <<  (n + 1) << " down by 3cm." << std::endl;
       endEffectorPose(n) -= 0.03;
       stewartPlatform.setEndEffectorPose(endEffectorPose);
       stewartPlatform.waitTillEndEffectorPoseIsReached(std::chrono::seconds(10));
       std::this_thread::sleep_for(std::chrono::milliseconds(100));
+      std::cout << "Moving the Stewart platform along axis " <<  (n + 1) << " up by 6cm." << std::endl;
       endEffectorPose(n) += 0.06;
       stewartPlatform.setEndEffectorPose(endEffectorPose);
       stewartPlatform.waitTillEndEffectorPoseIsReached(std::chrono::seconds(10));
       std::this_thread::sleep_for(std::chrono::milliseconds(100));
+      std::cout << "Moving the Stewart platform along axis " <<  (n + 1) << " to 0cm." << std::endl;
       endEffectorPose(n) = 0.0;
       stewartPlatform.setEndEffectorPose(endEffectorPose);
       stewartPlatform.waitTillEndEffectorPoseIsReached(std::chrono::seconds(10));
@@ -126,15 +128,17 @@ void runDefault(
     }
     
     for (unsigned int n = 3; n < 5; ++n) {
-      std::cout << "Moving the Stewart platform along axis " <<  (n + 1) << " by 15 degree." << std::endl;
+      std::cout << "Moving the Stewart platform along axis " <<  (n + 1) << " up by 15 degree." << std::endl;
       endEffectorPose(n) -= 0.26;
       stewartPlatform.setEndEffectorPose(endEffectorPose);
       stewartPlatform.waitTillEndEffectorPoseIsReached(std::chrono::seconds(10));
       std::this_thread::sleep_for(std::chrono::milliseconds(100));
+      std::cout << "Moving the Stewart platform along axis " <<  (n + 1) << " down by 30 degree." << std::endl;
       endEffectorPose(n) += 0.52;
       stewartPlatform.setEndEffectorPose(endEffectorPose);
       stewartPlatform.waitTillEndEffectorPoseIsReached(std::chrono::seconds(10));
       std::this_thread::sleep_for(std::chrono::milliseconds(100));
+      std::cout << "Moving the Stewart platform along axis " <<  (n + 1) << " to 0 degree." << std::endl;
       endEffectorPose(n) = 0.0;
       stewartPlatform.setEndEffectorPose(endEffectorPose);
       stewartPlatform.waitTillEndEffectorPoseIsReached(std::chrono::seconds(10));
