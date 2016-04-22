@@ -129,6 +129,8 @@ namespace demo {
    * @brief Set the current position to (0, 0, 0).
    */
   void AttitudeSensors::reset() {
-    ::write(fileDescriptor_, "#r", 2);
+    if (::write(fileDescriptor_, "#r", 2) == -1) {
+      throw std::runtime_error("AttitudeSensors: Could not reset sensor");
+    }
   }
 }
