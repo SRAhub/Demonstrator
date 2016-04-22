@@ -13,9 +13,9 @@
 
 void showHelp();
 void runCalibration(
-    demo::LinearActuators&);
+    demo::LinearActuators& linearActuators);
 arma::Mat<double> measure(
-    demo::LinearActuators&);
+    demo::LinearActuators& linearActuators);
 
 int main (const int argc, const char* argv[]) {
   if (hasOption(argc, argv, "-h") || hasOption(argc, argv, "--help")) {
@@ -94,7 +94,7 @@ void runCalibration(
     }
   }
   std::cout << "Done." << std::endl;
-  linearActuators.setExtensions(arma::zeros<arma::Row<double>>(linearActuators.numberOfActuators_) + 0.1, arma::ones<arma::Row<double>>(linearActuators.numberOfActuators_));
+  linearActuators.setExtensions(arma::zeros<arma::Row<double>>(linearActuators.numberOfActuators_) + extensions.at(0), arma::ones<arma::Row<double>>(linearActuators.numberOfActuators_));
   linearActuators.waitTillExtensionIsReached(std::chrono::seconds(10));
   
   for (std::size_t n = 0; n < linearActuators.numberOfActuators_; ++n) {
