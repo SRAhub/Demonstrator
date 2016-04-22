@@ -57,6 +57,8 @@ int main (const int argc, const char* argv[]) {
   linearActuators.setAcceptableExtensionDeviation(0.0005);
   
   demo::AttitudeSensors attitudeSensors(demo::Gpio::allocateUart(), -arma::datum::pi, arma::datum::pi);
+  attitudeSensors.runAsynchronous();
+  attitudeSensors.reset();
 
   if (hasOption(argc, argv, "reset")) {
     runReset(attitudeSensors, linearActuators);
@@ -146,8 +148,5 @@ void runCalibration(
 void runReset(
     demo::AttitudeSensors& attitudeSensors,
     demo::LinearActuators& linearActuators) {
-  linearActuators.setExtensions(arma::zeros<arma::Row<double>>(linearActuators.numberOfActuators_) + linearActuators.minimalAllowedExtension_, arma::ones<arma::Row<double>>(linearActuators.numberOfActuators_));
-      
-  attitudeSensors.runAsynchronous();
-  attitudeSensors.reset();
+  // Do nothing, the sensor was already reset at this point.
 }
