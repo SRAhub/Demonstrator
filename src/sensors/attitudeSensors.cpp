@@ -31,6 +31,8 @@ namespace demo {
   AttitudeSensors::AttitudeSensors(
       AttitudeSensors&& attitudeSensors)
       : AttitudeSensors(std::move(attitudeSensors.uart_), attitudeSensors.minimalMeasurableValue_, attitudeSensors.maximalMeasurableValue_) {
+    setMeasurementCorrections(attitudeSensors.measurementCorrections_);
+    setNumberOfSamplesPerMeasurment(attitudeSensors.numberOfSamplesPerMeasuement_);
   }
 
   AttitudeSensors& AttitudeSensors::operator=(

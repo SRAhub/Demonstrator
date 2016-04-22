@@ -24,6 +24,8 @@ namespace demo {
   DistanceSensors::DistanceSensors(
       DistanceSensors&& distanceSensors)
       : DistanceSensors(std::move(distanceSensors.pins_), distanceSensors.minimalMeasurableValue_, distanceSensors.maximalMeasurableValue_) {
+    setMeasurementCorrections(distanceSensors.measurementCorrections_);
+    setNumberOfSamplesPerMeasurment(distanceSensors.numberOfSamplesPerMeasuement_);
   }
 
   DistanceSensors& DistanceSensors::operator=(

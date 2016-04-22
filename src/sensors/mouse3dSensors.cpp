@@ -25,6 +25,9 @@ namespace demo {
   Mouse3dSensors::Mouse3dSensors(
       Mouse3dSensors&& mouse3d)
       : Sensors(8, mouse3d.minimalMeasurableValue_, mouse3d.maximalMeasurableValue_) {
+    setMeasurementCorrections(mouse3d.measurementCorrections_);
+    setNumberOfSamplesPerMeasurment(mouse3d.numberOfSamplesPerMeasuement_);
+    
     fileDescriptor_ = mouse3d.fileDescriptor_;
     mouse3d.fileDescriptor_ = -1;
   }

@@ -22,6 +22,8 @@ namespace demo {
   ExtensionSensors::ExtensionSensors(
       ExtensionSensors&& extensionSensors)
       : ExtensionSensors(std::move(extensionSensors.spi_), extensionSensors.channels_, extensionSensors.minimalMeasurableValue_, extensionSensors.maximalMeasurableValue_) {
+    setMeasurementCorrections(extensionSensors.measurementCorrections_);
+    setNumberOfSamplesPerMeasurment(extensionSensors.numberOfSamplesPerMeasuement_);
   }
 
   ExtensionSensors& ExtensionSensors::operator=(
