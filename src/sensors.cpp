@@ -32,6 +32,8 @@ namespace demo {
   Sensors::Sensors(
       Sensors&& sensors)
       : Sensors(sensors.numberOfSensors_, sensors.minimalMeasurableValue_, sensors.maximalMeasurableValue_) {
+    setMeasurementCorrections(sensors.measurementCorrections_);
+    setNumberOfSamplesPerMeasurment(sensors.numberOfSamplesPerMeasuement_);
   }
 
   Sensors& Sensors::operator=(
@@ -43,6 +45,9 @@ namespace demo {
     } else if (std::abs(maximalMeasurableValue_ - sensors.maximalMeasurableValue_) > 0) {
       throw std::invalid_argument("Sensors.operator=: The maximal measurable values must be equal.");
     }
+    
+    setMeasurementCorrections(sensors.measurementCorrections_);
+    setNumberOfSamplesPerMeasurment(sensors.numberOfSamplesPerMeasuement_);
 
     return *this;
   }
