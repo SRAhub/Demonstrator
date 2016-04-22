@@ -61,14 +61,14 @@ namespace demo {
         const std::chrono::microseconds timeout);
     
     void setAcceptableExtensionDeviation(
-        const double maximalExtensionDeviation);
+        const double acceptableExtensionDeviation);
     double getMaximalExtensionDeviation() const;
 
    protected:
     ServoControllers servoControllers_;
     ExtensionSensors extensionSensors_;
 
-    double maximalExtensionDeviation_;
+    double acceptableExtensionDeviation_;
 
     std::atomic<bool> killReachExtensionThread_;
     std::thread reachExtensionThread_;

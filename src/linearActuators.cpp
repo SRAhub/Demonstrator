@@ -29,6 +29,7 @@ namespace demo {
   LinearActuators::LinearActuators(
       LinearActuators&& linearActuators)
       : LinearActuators(std::move(linearActuators.servoControllers_), std::move(linearActuators.extensionSensors_), linearActuators.minimalExtension_, linearActuators.maximalExtension_) {
+    setAcceptableExtensionDeviation(linearActuators.acceptableExtensionDeviation_);
   }
 
   LinearActuators& LinearActuators::operator=(
@@ -43,6 +44,8 @@ namespace demo {
         
     servoControllers_ = std::move(linearActuators.servoControllers_);
     extensionSensors_ = std::move(linearActuators.extensionSensors_);
+    
+    setAcceptableExtensionDeviation(linearActuators.acceptableExtensionDeviation_);
 
     return *this;
   }
@@ -76,14 +79,14 @@ namespace demo {
     arma::Row<double> limitedExtensions = arma::clamp(extensions, minimalExtension_, maximalExtension_);
     arma::Row<double> currentExtension = extensionSensors_.measure();
 
-    bool hasReachedPosition = arma::all(arma::abs(limitedExtensions - currentExtension) <= maximalExtensionDeviation_);
+    bool hasReachedPosition = arma::all(arma::abs(limitedExtensions - currentExtension) <= acceptableExtensionDeviation_);
 
     std::vector<bool> forwards(numberOfActuators_, false);
     arma::Row<double> speeds = maximalSpeeds;
     while (!hasReachedPosition && !killReachExtensionThread_) {
       const arma::Row<double>& deviations = currentExtension - limitedExtensions;
       for (std::size_t n = 0; n < numberOfActuators_; ++n) {
-        if (std::abs(deviations(n)) <= maximalExtensionDeviation_) {
+        if (std::abs(deviations(n)) <= acceptableExtensionDeviation_) {
           speeds(n) = 0.0;
         } else {
           speeds(n) = maximalSpeeds(n);
@@ -100,7 +103,7 @@ namespace demo {
       std::this_thread::sleep_for(std::chrono::milliseconds(10));
       currentExtension = extensionSensors_.measure();
 
-      hasReachedPosition = arma::all(arma::abs(limitedExtensions - currentExtension) <= maximalExtensionDeviation_);
+      hasReachedPosition = arma::all(arma::abs(limitedExtensions - currentExtension) <= acceptableExtensionDeviation_);
     }
 
     servoControllers_.stop();
@@ -123,15 +126,15 @@ namespace demo {
   }
 
   void LinearActuators::setAcceptableExtensionDeviation(
-      const double maximalExtensionDeviation) {
-    if (!std::isfinite(maximalExtensionDeviation)) {
+      const double acceptableExtensionDeviation) {
+    if (!std::isfinite(acceptableExtensionDeviation)) {
       throw std::domain_error("LinearActuators.setAcceptableExtensionDeviation: The maximal extension deviation must be finite.");
     }
 
-    maximalExtensionDeviation_ = maximalExtensionDeviation;
+    acceptableExtensionDeviation_ = acceptableExtensionDeviation;
   }
 
   double LinearActuators::getMaximalExtensionDeviation() const {
-    return maximalExtensionDeviation_;
+    return acceptableExtensionDeviation_;
   }
 }
