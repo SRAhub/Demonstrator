@@ -5,6 +5,6 @@
 
 *.mat text eol=lf
 *.config text eol=lf
-*.calibration text eol=lf
+*.correction text eol=lf
 .code-checks.sh text eol=lf
 .system-setup.sh text eol=lf
