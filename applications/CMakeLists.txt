@@ -162,6 +162,17 @@ target_link_libraries(maintainMouse3dSensors ${ARMADILLO_LIBRARIES})
 target_link_libraries(maintainMouse3dSensors ${MANTELLA_LIBRARIES})
 target_link_libraries(maintainMouse3dSensors ${DEMONSTRATOR_LIBRARIES})
 
+message(STATUS "- maintainNetwork.")
+add_executable(maintainNetwork
+  commandline.cpp
+  maintenance/network.cpp
+)
+
+target_link_libraries(maintainNetwork ${WIRINGPI_LIBRARIES})
+target_link_libraries(maintainNetwork ${ARMADILLO_LIBRARIES})
+target_link_libraries(maintainNetwork ${MANTELLA_LIBRARIES})
+target_link_libraries(maintainNetwork ${DEMONSTRATOR_LIBRARIES})
+
 message(STATUS "")
 message(STATUS "Configuring calibration applications.")
 # All paths must start with "calibration/"
