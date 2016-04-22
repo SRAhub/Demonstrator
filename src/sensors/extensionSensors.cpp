@@ -75,6 +75,6 @@ namespace demo {
       extensions(n) = static_cast<double>(adcout) / 1023.0;
     }
 
-    return extensions;
+    return minimalMeasurableValue_ + extensions * (maximalMeasurableValue_ - minimalMeasurableValue_);
   }
 }

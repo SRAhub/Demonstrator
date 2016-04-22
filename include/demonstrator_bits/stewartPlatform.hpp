@@ -10,13 +10,14 @@
 namespace demo {
   class StewartPlatform {
    public:
+    const arma::Mat<double>::fixed<3, 6> baseJointsPosition_;
+    const arma::Mat<double>::fixed<3, 6> endEffectorJointsRelativePosition_;
+    
     explicit StewartPlatform(
         LinearActuators&& linearActuators,
         AttitudeSensors&& attitudeSensors,
-        arma::Mat<double>::fixed<3, 6> baseJointsPosition,
-        arma::Mat<double>::fixed<3, 6> endEffectorJointsRelativePosition,
-        arma::Row<double>::fixed<6> actuatorsMinimalLength,
-        arma::Row<double>::fixed<6> actuatorsMaximalLength);
+        const arma::Mat<double>::fixed<3, 6>& baseJointsPosition,
+        const arma::Mat<double>::fixed<3, 6>& endEffectorJointsRelativePosition);
 
     explicit StewartPlatform(
         StewartPlatform&& stewartPlatform);
@@ -38,10 +39,5 @@ namespace demo {
    protected:
     LinearActuators linearActuators_;
     AttitudeSensors attitudeSensors_;
-
-    arma::Mat<double>::fixed<3, 6> baseJointsPosition_;
-    arma::Mat<double>::fixed<3, 6> endEffectorJointsRelativePosition_;
-    arma::Row<double>::fixed<6> actuatorsMinimalLength_;
-    arma::Row<double>::fixed<6> actuatorsMaximalLength_;
   };
 }

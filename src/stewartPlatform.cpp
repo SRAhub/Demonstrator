@@ -18,16 +18,12 @@ namespace demo {
   StewartPlatform::StewartPlatform(
       LinearActuators&& linearActuators,
       AttitudeSensors&& attitudeSensors,
-      arma::Mat<double>::fixed<3, 6> baseJointsPosition,
-      arma::Mat<double>::fixed<3, 6> endEffectorJointsRelativePosition,
-      arma::Row<double>::fixed<6> actuatorsMinimalLength,
-      arma::Row<double>::fixed<6> actuatorsMaximalLength)
+      const arma::Mat<double>::fixed<3, 6>& baseJointsPosition,
+      const arma::Mat<double>::fixed<3, 6>& endEffectorJointsRelativePosition)
       : linearActuators_(std::move(linearActuators)),
         attitudeSensors_(std::move(attitudeSensors)),
         baseJointsPosition_(baseJointsPosition),
-        endEffectorJointsRelativePosition_(endEffectorJointsRelativePosition),
-        actuatorsMinimalLength_(actuatorsMinimalLength),
-        actuatorsMaximalLength_(actuatorsMaximalLength) {
+        endEffectorJointsRelativePosition_(endEffectorJointsRelativePosition) {
     if (linearActuators_.numberOfActuators_ != 6) {
       throw std::invalid_argument("StewartPlatform: A Stewart platform must have 6 actuators.");
     } else if (attitudeSensors_.numberOfSensors_ != 3) {
@@ -39,17 +35,20 @@ namespace demo {
 
   StewartPlatform::StewartPlatform(
       StewartPlatform&& stewartPlatform)
-      : StewartPlatform(std::move(stewartPlatform.linearActuators_), std::move(stewartPlatform.attitudeSensors_), stewartPlatform.baseJointsPosition_, stewartPlatform.endEffectorJointsRelativePosition_, stewartPlatform.actuatorsMinimalLength_, stewartPlatform.actuatorsMaximalLength_) {
+      : StewartPlatform(std::move(stewartPlatform.linearActuators_), std::move(stewartPlatform.attitudeSensors_), stewartPlatform.baseJointsPosition_, stewartPlatform.endEffectorJointsRelativePosition_) {
   }
 
   StewartPlatform& StewartPlatform::operator=(
       StewartPlatform&& stewartPlatform) {
+    if (arma::any(arma::vectorise(arma::abs(baseJointsPosition_ - stewartPlatform.baseJointsPosition_) > 0))) {
+      throw std::invalid_argument("StewartPlatform.operator=: The base joints positions must be equal.");
+    } else if (arma::any(arma::vectorise(arma::abs(endEffectorJointsRelativePosition_ - stewartPlatform.endEffectorJointsRelativePosition_) > 0))) {
+      throw std::invalid_argument("StewartPlatform.operator=: The relative end-effector joints positions must be equal.");
+    }
+
     linearActuators_ = std::move(stewartPlatform.linearActuators_);
     attitudeSensors_ = std::move(stewartPlatform.attitudeSensors_);
-    baseJointsPosition_ = stewartPlatform.baseJointsPosition_;
-    endEffectorJointsRelativePosition_ = stewartPlatform.endEffectorJointsRelativePosition_;
-    actuatorsMinimalLength_ = stewartPlatform.actuatorsMinimalLength_;
-
+    
     attitudeSensors_.runAsynchronous();
     
     return *this;
@@ -66,11 +65,10 @@ namespace demo {
     for (std::size_t n = 0; n < linearActuators_.numberOfActuators_; ++n) {
       extensions(n) = arma::norm(baseJointsPosition_.col(n) - endeEffectorRotation * endEffectorJointsRelativePosition_.col(n) + endEffectorPose.head(3));
     }
-    extensions -= actuatorsMinimalLength_;
 
     // TODO intermediate extensions
 
-    if (arma::all(extensions >= linearActuators_.minimalExtension_) && arma::all(extensions <= linearActuators_.maximalExtension_)) {
+    if (arma::all(extensions >= linearActuators_.minimalAllowedExtension_) && arma::all(extensions <= linearActuators_.maximalAllowedExtension_)) {
       linearActuators_.setExtensions(extensions, extensions / arma::max(extensions));
     }
   }
