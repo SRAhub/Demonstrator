@@ -123,6 +123,7 @@ add_library(demonstrator SHARED
 target_link_libraries(demonstrator ${WIRINGPI_LIBRARIES})
 target_link_libraries(demonstrator ${ARMADILLO_LIBRARIES})
 target_link_libraries(demonstrator ${MANTELLA_LIBRARIES})
+target_link_libraries(demonstrator pthread)
 
 # -----------
 # INSTALLTION
