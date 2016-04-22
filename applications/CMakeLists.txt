@@ -236,6 +236,17 @@ target_link_libraries(motorDemonstration ${MANTELLA_LIBRARIES})
 target_link_libraries(motorDemonstration ${DEMONSTRATOR_LIBRARIES})
 target_link_libraries(motorDemonstration pthread)
 
+message(STATUS "- Mouse.")
+add_executable(demonstrateMouse
+  demonstration/motors.cpp
+)
+
+target_link_libraries(demonstrateMouse ${WIRINGPI_LIBRARIES})
+target_link_libraries(demonstrateMouse ${ARMADILLO_LIBRARIES})
+target_link_libraries(demonstrateMouse ${MANTELLA_LIBRARIES})
+target_link_libraries(demonstrateMouse ${DEMONSTRATOR_LIBRARIES})
+target_link_libraries(demonstrateMouse pthread)
+
 message(STATUS "")
 message(STATUS "Noticable CMAKE variables:")
 message(STATUS "- CMAKE_PREFIX_PATH = ${CMAKE_PREFIX_PATH}")

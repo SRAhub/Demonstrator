@@ -60,7 +60,7 @@ int main(int argc, char **argv) {
       }
       network.send("192.168.0.16", 31415, response);
 
-    } else if (message == "move") {
+    } else if (message == "set") {
       arma::Col<double>::fixed<6> pose;
       for (size_t n = 0; n < 6; n++) {
         pose.at(n) = std::stod(message.substr(0, message.find(" ")));
