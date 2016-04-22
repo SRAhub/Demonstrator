@@ -85,12 +85,54 @@ void showHelp() {
   std::cout << "  Options:\n";
   std::cout << "         --verbose    Prints additional (debug) information\n";
   std::cout << "    -h | --help       Displays this help\n";
-  std::cout << std::flush;
+  std::cout << std::flush; 
 }
 
 void runCalibration(
     demo::StewartPlatform& stewartPlatform) {
+  std::size_t numberOfSamplesPerMeasurement;
+  std::cout << "Number of samples per measurement: ";
+  std::cin >> numberOfSamplesPerMeasurement;
 
+  std::cout << "Approaching the initial position (0.0, 0.0, 0.25, 0.0, 0.0, 0.0)." << std::endl;
+  const arma::Col<double> initialEndEffectorPose = {0.0, 0.0, 0.25, 0.0, 0.0, 0.0};
+  stewartPlatform.setEndEffectorPose(initialEndEffectorPose);
+  stewartPlatform.waitTillEndEffectorPoseIsReached(std::chrono::seconds(10));
+
+  std::cout << "Starting attitude sensor calibration ...";
+  const arma::Mat<double>::fixed<15, 3>& expectedMeasuredAttitudes = {
+    -0.610865, -0.523599, -0.436332, -0.349066, -0.261799, -0.174533, -0.0872665, 0.0, 0.0872665, 0.174533, 0.261799, 0.349066, 0.436332, 0.523599, 0.610865,
+    -0.610865, -0.523599, -0.436332, -0.349066, -0.261799, -0.174533, -0.0872665, 0.0, 0.0872665, 0.174533, 0.261799, 0.349066, 0.436332, 0.523599, 0.610865,
+    -0.610865, -0.523599, -0.436332, -0.349066, -0.261799, -0.174533, -0.0872665, 0.0, 0.0872665, 0.174533, 0.261799, 0.349066, 0.436332, 0.523599, 0.610865
+  };
+  arma::Cube<double> actualMeasuredAttitudes(numberOfSamplesPerMeasurement, expectedMeasuredAttitudes.n_rows, expectedMeasuredAttitudes.n_cols);
+  
+  for (std::size_t n = 0; n < expectedMeasuredAttitudes.n_cols; ++n) {
+    arma::Col<double> endEffectorPose = initialEndEffectorPose;
+    stewartPlatform.setEndEffectorPose(initialEndEffectorPose);
+    stewartPlatform.waitTillEndEffectorPoseIsReached(std::chrono::seconds(10));
+    
+    for (std::size_t k = 0; k < expectedMeasuredAttitudes.n_rows; ++k) {
+      endEffectorPose(3 + n) = expectedMeasuredAttitudes(n, k);
+      stewartPlatform.setEndEffectorPose(endEffectorPose);
+      stewartPlatform.waitTillEndEffectorPoseIsReached(std::chrono::seconds(10));
+      
+      for (std::size_t l = 0; l < actualMeasuredAttitudes.n_rows; ++l) {
+        const arma::Col<double>& measuredEndEffectorPose = stewartPlatform.getEndEffectorPose();
+        actualMeasuredAttitudes.subcube(l, k, n, l, k, n) = measuredEndEffectorPose(3 + n);
+      }
+    }
+  }
+  std::cout << " Done." << std::endl;
+  stewartPlatform.setEndEffectorPose(initialEndEffectorPose);
+  stewartPlatform.waitTillEndEffectorPoseIsReached(std::chrono::seconds(10));
+  
+  for (std::size_t n = 0; n < 3; ++n) {
+    static_cast<arma::Mat<double>>(actualMeasuredAttitudes.slice(n)).save("actualMeasuredAttitudes_sensor" + std::to_string(n) + ".mat", arma::raw_ascii);
+  }
+  for (std::size_t n = 0; n < expectedMeasuredAttitudes.n_rows; ++n) {
+    static_cast<arma::Row<double>>(expectedMeasuredAttitudes.row(n)).save("expectedMeasuredAttitudes_sensor" + std::to_string(n) + ".mat", arma::raw_ascii);
+  }
 }
 
 void runReset(
