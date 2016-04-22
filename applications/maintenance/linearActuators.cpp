@@ -38,7 +38,7 @@ int main (const int argc, const char* argv[]) {
   // For an overview on the pin layout, use the `gpio readall` command on a Raspberry Pi.
   ::wiringPiSetupGpio();
 
-  demo::ExtensionSensors extensionSensors(demo::Gpio::allocateSpi(), {0, 1, 2, 3, 4, 5}, 0.0, 1.0);
+  demo::ExtensionSensors extensionSensors(demo::Gpio::allocateSpi(), {0, 1, 2, 3, 4, 5}, 0.168, 0.268);
   extensionSensors.setNumberOfSamplesPerMeasurment(3);
   arma::Mat<double> extensionSensorsCorrection;
   if (extensionSensorsCorrection.load("extensionSensors.correction")) {
@@ -57,7 +57,7 @@ int main (const int argc, const char* argv[]) {
   directionPins.push_back(demo::Gpio::allocatePin(26));
   demo::ServoControllers servoControllers(std::move(directionPins), demo::Gpio::allocateI2c(), {0, 1, 2, 3, 4, 5}, 1.0);
   
-  demo::LinearActuators linearActuators(std::move(servoControllers), std::move(extensionSensors), 0.1, 0.8);
+  demo::LinearActuators linearActuators(std::move(servoControllers), std::move(extensionSensors), 0.178, 0.248);
   linearActuators.setAcceptableExtensionDeviation(0.005);
   
   if (argc > 2 && argv[1][0] != '-' && argv[2][0] != '-') {

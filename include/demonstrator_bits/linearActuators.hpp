@@ -25,14 +25,14 @@ namespace demo {
    public:
     const std::size_t numberOfActuators_;
     
-    const double minimalExtension_;
-    const double maximalExtension_;
+    const double minimalAllowedExtension_;
+    const double maximalAllowedExtension_;
 
     explicit LinearActuators(
         ServoControllers&& servoControllers,
         ExtensionSensors&& extensionSensors,
-        const double minimalExtension,
-        const double maximalExtension);
+        const double minimalAllowedExtension,
+        const double maximalAllowedExtension);
 
     explicit LinearActuators(
         LinearActuators&& linearActuators);
@@ -49,7 +49,7 @@ namespace demo {
      * Let each actuator approach its new position.
      * **Attention:** This method won't block until all actuators have reached their extension!
      *
-     * Both `extensions` and `speeds` need to be between in range [0, 1]. Both values refer to a percentage of their respective intervals: [minimalExtension, maximalExtension] and [minimalSpeeds, maximalSpeeds].
+     * Both `extensions` and `speeds` need to be between in range [0, 1]. Both values refer to a percentage of their respective intervals: [minimalAllowedExtension, maximalAllowedExtension] and [minimalSpeeds, maximalSpeeds].
      */
     void setExtensions(
         const arma::Row<double>& extensions,

@@ -12,13 +12,13 @@ namespace demo {
   LinearActuators::LinearActuators(
       ServoControllers&& servoControllers,
       ExtensionSensors&& extensionSensors,
-      const double minimalExtension,
-      const double maximalExtension)
+      const double minimalAllowedExtension,
+      const double maximalAllowedExtension)
       : numberOfActuators_(servoControllers.numberOfControllers_),
         servoControllers_(std::move(servoControllers)),
         extensionSensors_(std::move(extensionSensors)),
-        minimalExtension_(minimalExtension),
-        maximalExtension_(maximalExtension) {
+        minimalAllowedExtension_(minimalAllowedExtension),
+        maximalAllowedExtension_(maximalAllowedExtension) {
     if (servoControllers_.numberOfControllers_ != extensionSensors_.numberOfSensors_) {
       throw std::logic_error("LinearActuators: The number of controllers must be equal to the number of sensors.");
     }
@@ -28,7 +28,7 @@ namespace demo {
 
   LinearActuators::LinearActuators(
       LinearActuators&& linearActuators)
-      : LinearActuators(std::move(linearActuators.servoControllers_), std::move(linearActuators.extensionSensors_), linearActuators.minimalExtension_, linearActuators.maximalExtension_) {
+      : LinearActuators(std::move(linearActuators.servoControllers_), std::move(linearActuators.extensionSensors_), linearActuators.minimalAllowedExtension_, linearActuators.maximalAllowedExtension_) {
     setAcceptableExtensionDeviation(linearActuators.acceptableExtensionDeviation_);
   }
 
@@ -36,11 +36,11 @@ namespace demo {
       LinearActuators&& linearActuators) {
     if (numberOfActuators_ != linearActuators.numberOfActuators_) {
       throw std::invalid_argument("LinearActuators.operator=: The number of actuators must be equal.");
-    } else if (std::abs(minimalExtension_ -  linearActuators.minimalExtension_) > 0) {
-      throw std::invalid_argument("LinearActuators.operator=: The minimal extensions must be equal.");
-    } else if (std::abs(maximalExtension_ -  linearActuators.maximalExtension_) > 0) {
-      throw std::invalid_argument("LinearActuators.operator=: The minimal extensions must be equal.");
-    } 
+    } else if (std::abs(minimalAllowedExtension_ -  linearActuators.minimalAllowedExtension_) > 0) {
+      throw std::invalid_argument("LinearActuators.operator=: The minimal allowed extensions must be equal.");
+    } else if (std::abs(maximalAllowedExtension_ -  linearActuators.maximalAllowedExtension_) > 0) {
+      throw std::invalid_argument("LinearActuators.operator=: The minimal allowed extensions must be equal.");
+    }
         
     servoControllers_ = std::move(linearActuators.servoControllers_);
     extensionSensors_ = std::move(linearActuators.extensionSensors_);
@@ -76,7 +76,7 @@ namespace demo {
   void LinearActuators::reachExtension(
       const arma::Row<double>& extensions,
       const arma::Row<double>& maximalSpeeds) {
-    arma::Row<double> limitedExtensions = arma::clamp(extensions, minimalExtension_, maximalExtension_);
+    arma::Row<double> limitedExtensions = arma::clamp(extensions, minimalAllowedExtension_, maximalAllowedExtension_);
     arma::Row<double> currentExtension = extensionSensors_.measure();
 
     bool hasReachedPosition = arma::all(arma::abs(limitedExtensions - currentExtension) <= acceptableExtensionDeviation_);

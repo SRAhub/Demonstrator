@@ -36,7 +36,7 @@ int main (const int argc, const char* argv[]) {
   // For an overview on the pin layout, use the `gpio readall` command on a Raspberry Pi.
   ::wiringPiSetupGpio();
   
-  demo::ExtensionSensors extensionSensors(demo::Gpio::allocateSpi(), {0, 1, 2, 3, 4, 5}, 0.0, 1.0);
+  demo::ExtensionSensors extensionSensors(demo::Gpio::allocateSpi(), {0, 1, 2, 3, 4, 5}, 0.168, 0.268);
   extensionSensors.setNumberOfSamplesPerMeasurment(3);
   arma::Mat<double> extensionSensorsCorrection;
   if (extensionSensorsCorrection.load("extensionSensors.correction")) {
@@ -55,7 +55,7 @@ int main (const int argc, const char* argv[]) {
   directionPins.push_back(demo::Gpio::allocatePin(26));
   demo::ServoControllers servoControllers(std::move(directionPins), demo::Gpio::allocateI2c(), {0, 1, 2, 3, 4, 5}, 1.0);
   
-  demo::LinearActuators linearActuators(std::move(servoControllers), std::move(extensionSensors), 0.1, 0.8);
+  demo::LinearActuators linearActuators(std::move(servoControllers), std::move(extensionSensors), 0.178, 0.248);
   linearActuators.setAcceptableExtensionDeviation(0.005);
   
   demo::AttitudeSensors attitudeSensors(demo::Gpio::allocateUart(), -arma::datum::pi, arma::datum::pi);
@@ -64,12 +64,8 @@ int main (const int argc, const char* argv[]) {
   baseJointsPosition.load("baseJointsPosition.config");
   arma::Mat<double>::fixed<3, 6> endEffectorJointsRelativePosition;
   endEffectorJointsRelativePosition.load("endEffectorJointsRelativePosition.config");
-  arma::Row<double>::fixed<6> actuatorsMinimalLength;
-  actuatorsMinimalLength.load("actuatorsMinimalLength.config");
-  arma::Row<double>::fixed<6> actuatorsMaximalLength;
-  actuatorsMaximalLength.load("actuatorsMaximalLength.config");
   
-  demo::StewartPlatform stewartPlatform(std::move(linearActuators), std::move(attitudeSensors), baseJointsPosition, endEffectorJointsRelativePosition, actuatorsMinimalLength, actuatorsMaximalLength);
+  demo::StewartPlatform stewartPlatform(std::move(linearActuators), std::move(attitudeSensors), baseJointsPosition, endEffectorJointsRelativePosition);
   
   if (hasOption(argc, argv, "sensor")) {
     runSensor(stewartPlatform);
@@ -106,16 +102,20 @@ void showHelp() {
 
 void runDefault(
     demo::StewartPlatform& stewartPlatform) {
-  arma::Col<double>::fixed<6> endEffectorPose = stewartPlatform.getEndEffectorPose();
+  arma::Col<double>::fixed<6> endEffectorPose = {0, 0, 0.25, 0, 0, 0};
+
+  std::cout << "Moving the Stewart platform to (0, 0, 0.25, 0, 0, 0)." << std::endl;
+  stewartPlatform.setEndEffectorPose(endEffectorPose);
+  stewartPlatform.waitTillEndEffectorPoseIsReached(std::chrono::seconds(10));
   
   while(1) {
     for (unsigned int n = 0; n < 2; ++n) {
       std::cout << "Moving the Stewart platform along axis " <<  (n + 1) << " down by 3cm." << std::endl;
-      endEffectorPose(n) -= 0.03;
+      endEffectorPose(n) -= 0.04;
       stewartPlatform.setEndEffectorPose(endEffectorPose);
       stewartPlatform.waitTillEndEffectorPoseIsReached(std::chrono::seconds(10));
       std::this_thread::sleep_for(std::chrono::milliseconds(100));
-      std::cout << "Moving the Stewart platform along axis " <<  (n + 1) << " up by 6cm." << std::endl;
+      std::cout << "Moving the Stewart platform along axis " <<  (n + 1) << " up by 3cm." << std::endl;
       endEffectorPose(n) += 0.06;
       stewartPlatform.setEndEffectorPose(endEffectorPose);
       stewartPlatform.waitTillEndEffectorPoseIsReached(std::chrono::seconds(10));

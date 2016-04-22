@@ -13,9 +13,9 @@
 
 void showHelp();
 void runCalibration(
-    demo::LinearActuators&);
+    demo::LinearActuators& linearActuators);
 arma::Mat<double> measure(
-    demo::LinearActuators&);
+    demo::LinearActuators& linearActuators);
 
 int main (const int argc, const char* argv[]) {
   if (hasOption(argc, argv, "-h") || hasOption(argc, argv, "--help")) {
@@ -32,7 +32,7 @@ int main (const int argc, const char* argv[]) {
   // For an overview on the pin layout, use the `gpio readall` command on a Raspberry Pi.
   ::wiringPiSetupGpio();
 
-  demo::ExtensionSensors extensionSensors(demo::Gpio::allocateSpi(), {0, 1, 2, 3, 4, 5}, 0.0, 1.0);
+  demo::ExtensionSensors extensionSensors(demo::Gpio::allocateSpi(), {0, 1, 2, 3, 4, 5}, 0.168, 0.268);
   extensionSensors.setNumberOfSamplesPerMeasurment(1);
 
   std::vector<demo::Pin> directionPins;
@@ -44,7 +44,7 @@ int main (const int argc, const char* argv[]) {
   directionPins.push_back(demo::Gpio::allocatePin(26));
   demo::ServoControllers servoControllers(std::move(directionPins), demo::Gpio::allocateI2c(), {0, 1, 2, 3, 4, 5}, 1.0);
 
-  demo::LinearActuators linearActuators(std::move(servoControllers), std::move(extensionSensors), 0.1, 0.8);
+  demo::LinearActuators linearActuators(std::move(servoControllers), std::move(extensionSensors), 0.178, 0.248);
   linearActuators.setAcceptableExtensionDeviation(0.005);
 
   runCalibration(linearActuators);
@@ -70,7 +70,7 @@ void showHelp() {
  */
 void runCalibration(
     demo::LinearActuators& linearActuators) {
-  const std::array<double, 7> extensions = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7};
+  const std::array<double, 7> extensions = {0.178, 0.188, 0.198, 0.208, 0.218, 0.228, 0.238};
   arma::Cube<double> actualMeasuredExtensions(20, extensions.size(), linearActuators.numberOfActuators_);
   arma::Mat<double> expectedMeasuredExtensions(linearActuators.numberOfActuators_, extensions.size());
   
@@ -94,7 +94,7 @@ void runCalibration(
     }
   }
   std::cout << "Done." << std::endl;
-  linearActuators.setExtensions(arma::zeros<arma::Row<double>>(linearActuators.numberOfActuators_) + 0.1, arma::ones<arma::Row<double>>(linearActuators.numberOfActuators_));
+  linearActuators.setExtensions(arma::zeros<arma::Row<double>>(linearActuators.numberOfActuators_) + extensions.at(0), arma::ones<arma::Row<double>>(linearActuators.numberOfActuators_));
   linearActuators.waitTillExtensionIsReached(std::chrono::seconds(10));
   
   for (std::size_t n = 0; n < linearActuators.numberOfActuators_; ++n) {
