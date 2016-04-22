@@ -59,7 +59,7 @@ namespace demo {
   void Mouse3dSensors::runAsynchronous() {
     std::size_t maximalNumberOfEventDeviceIds = 32;
     for (std::size_t n = 0; n < maximalNumberOfEventDeviceIds; n++) {
-      fileDescriptor_ = ::open(("/dev/input/event" + std::to_string(n)).c_str(), O_RDWR | O_NONBLOCK);
+      fileDescriptor_ = ::open(("/dev/input/event" + std::to_string(n)).c_str(), O_RDWR);// | O_NONBLOCK);
       if (fileDescriptor_ > 0) {
         struct ::input_id inputId;
         ::ioctl(fileDescriptor_, EVIOCGID, &inputId);
@@ -70,6 +70,8 @@ namespace demo {
 
           killContinuousMeasurementThread_ = false;
           continuousMeasurementThread_ = std::thread(&Mouse3dSensors::asynchronousMeasurement, this);
+
+          std::cout << "/dev/input/event" + std::to_string(n) << std::endl;
 
           return;
         }
@@ -96,7 +98,7 @@ namespace demo {
           } break;
           case EV_REL:
           case EV_ABS: {
-            displacements_(inputEvent.code) = inputEvent.value;
+            displacements_(inputEvent.code) = static_cast<float>(inputEvent.value) / 350;
           } break;
           default:
             break;
