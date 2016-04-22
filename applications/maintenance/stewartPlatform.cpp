@@ -102,16 +102,20 @@ void showHelp() {
 
 void runDefault(
     demo::StewartPlatform& stewartPlatform) {
-  arma::Col<double>::fixed<6> endEffectorPose = stewartPlatform.getEndEffectorPose();
+  arma::Col<double>::fixed<6> endEffectorPose = {0, 0, 0.25, 0, 0, 0};
+
+  std::cout << "Moving the Stewart platform to (0, 0, 0.25, 0, 0, 0)." << std::endl;
+  stewartPlatform.setEndEffectorPose(endEffectorPose);
+  stewartPlatform.waitTillEndEffectorPoseIsReached(std::chrono::seconds(10));
   
   while(1) {
     for (unsigned int n = 0; n < 2; ++n) {
       std::cout << "Moving the Stewart platform along axis " <<  (n + 1) << " down by 3cm." << std::endl;
-      endEffectorPose(n) -= 0.03;
+      endEffectorPose(n) -= 0.04;
       stewartPlatform.setEndEffectorPose(endEffectorPose);
       stewartPlatform.waitTillEndEffectorPoseIsReached(std::chrono::seconds(10));
       std::this_thread::sleep_for(std::chrono::milliseconds(100));
-      std::cout << "Moving the Stewart platform along axis " <<  (n + 1) << " up by 6cm." << std::endl;
+      std::cout << "Moving the Stewart platform along axis " <<  (n + 1) << " up by 3cm." << std::endl;
       endEffectorPose(n) += 0.06;
       stewartPlatform.setEndEffectorPose(endEffectorPose);
       stewartPlatform.waitTillEndEffectorPoseIsReached(std::chrono::seconds(10));

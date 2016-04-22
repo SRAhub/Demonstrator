@@ -63,7 +63,7 @@ namespace demo {
     arma::Row<double>::fixed<6> extensions;
     const arma::Mat<double>::fixed<3, 3>& endeEffectorRotation = mant::rotationMatrix3D(endEffectorPose(3), endEffectorPose(4), endEffectorPose(5));
     for (std::size_t n = 0; n < linearActuators_.numberOfActuators_; ++n) {
-      extensions(n) = arma::norm(baseJointsPosition_.col(n) - endeEffectorRotation * endEffectorJointsRelativePosition_.col(n) + endEffectorPose.head(3));
+      extensions(n) = arma::norm(baseJointsPosition_.col(n) - (endeEffectorRotation * endEffectorJointsRelativePosition_.col(n) + endEffectorPose.head(3)));
     }
 
     // TODO intermediate extensions
