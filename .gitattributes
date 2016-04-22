@@ -1,4 +1,6 @@
 # Auto detect text files and perform LF normalization
+.git* text eol=lf
+
 * text=auto
 
 *.mat text eol=lf
