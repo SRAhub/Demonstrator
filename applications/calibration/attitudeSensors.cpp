@@ -99,7 +99,7 @@ void runCalibration(
   stewartPlatform.setEndEffectorPose(initialEndEffectorPose);
   stewartPlatform.waitTillEndEffectorPoseIsReached(std::chrono::seconds(10));
 
-  std::cout << "Starting attitude sensor calibration ...";
+  std::cout << "Starting attitude sensor calibration ..." << std::endl;
   const arma::Mat<double>::fixed<7, 3>& expectedMeasuredAttitudes = {
     -0.261799, -0.174533, -0.0872665, 0.0, 0.0872665, 0.174533, 0.261799,
     -0.261799, -0.174533, -0.0872665, 0.0, 0.0872665, 0.174533, 0.261799,
@@ -108,12 +108,14 @@ void runCalibration(
   arma::Cube<double> actualMeasuredAttitudes(numberOfSamplesPerMeasurement, expectedMeasuredAttitudes.n_rows, expectedMeasuredAttitudes.n_cols);
   
   for (std::size_t n = 0; n < expectedMeasuredAttitudes.n_cols; ++n) {
+    std::cout << "- Calibrating sensor " << n << std::endl;
     arma::Col<double> endEffectorPose = initialEndEffectorPose;
     stewartPlatform.setEndEffectorPose(initialEndEffectorPose);
     stewartPlatform.waitTillEndEffectorPoseIsReached(std::chrono::seconds(10));
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
     
     for (std::size_t k = 0; k < expectedMeasuredAttitudes.n_rows; ++k) {
+      std::cout << "- Approaching " << expectedMeasuredAttitudes(n, k); << "radians" << std::endl;
       endEffectorPose(3 + n) = expectedMeasuredAttitudes(n, k);
       stewartPlatform.setEndEffectorPose(endEffectorPose);
       stewartPlatform.waitTillEndEffectorPoseIsReached(std::chrono::seconds(10));
@@ -125,7 +127,7 @@ void runCalibration(
       }
     }
   }
-  std::cout << " Done." << std::endl;
+  std::cout << "... Done." << std::endl;
   stewartPlatform.setEndEffectorPose(initialEndEffectorPose);
   stewartPlatform.waitTillEndEffectorPoseIsReached(std::chrono::seconds(10));
   
