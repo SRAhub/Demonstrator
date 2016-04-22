@@ -69,7 +69,7 @@ int main (const int argc, const char* argv[]) {
   
   if (hasOption(argc, argv, "sensor")) {
     runSensor(stewartPlatform);
-  } if (argc > 6 && argv[1][0] != '-' && argv[2][0] != '-' && argv[3][0] != '-' && argv[4][0] != '-' && argv[5][0] != '-' && argv[6][0] != '-') {
+  } if (argc > 6 && isNumber(argv[1]) && isNumber(argv[2]) && isNumber(argv[3]) && isNumber(argv[4]) && isNumber(argv[5]) && isNumber(argv[6])) {
     runEndEffectorPose(stewartPlatform, {std::stod(argv[1]), std::stod(argv[2]), std::stod(argv[3]), std::stod(argv[4]), std::stod(argv[5]), std::stod(argv[6])});
   } else {
     runDefault(stewartPlatform);

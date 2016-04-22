@@ -60,9 +60,9 @@ int main (const int argc, const char* argv[]) {
   demo::LinearActuators linearActuators(std::move(servoControllers), std::move(extensionSensors), 0.178, 0.248);
   linearActuators.setAcceptableExtensionDeviation(0.005);
   
-  if (argc > 2 && argv[1][0] != '-' && argv[2][0] != '-') {
+  if (argc > 2 && isNumber(argv[1]) && isNumber(argv[2])) {
     runSingle(linearActuators, std::stoi(argv[1]), std::stod(argv[2]));
-  } else if (argc > 1 && argv[1][0] != '-') {
+  } else if (argc > 1 && isNumber(argv[1])) {
     runAll(linearActuators, std::stod(argv[1]));
   } else {
     runDefault(linearActuators);
