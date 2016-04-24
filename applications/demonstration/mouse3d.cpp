@@ -22,7 +22,7 @@ int main (int argc, char **argv) {
 
   do {
     network.send(motorPis.at(3), 31415, "get");
-    std::string response = network.retrieve();
+    std::string message = network.retrieve();
     for (size_t n = 0; n < 6; n++) {
       data.at(n) = std::stod(message.substr(0, message.find(" ")));
       message = message.substr(message.find(" ") + 1);
