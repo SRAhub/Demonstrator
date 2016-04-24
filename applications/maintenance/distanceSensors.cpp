@@ -46,6 +46,7 @@ int main (const int argc, const char* argv[]) {
   pins.push_back(demo::Gpio::allocatePin(25));
   pins.push_back(demo::Gpio::allocatePin(11));
   demo::DistanceSensors distanceSensors(std::move(pins), 0.03, 0.35);
+  distanceSensors.setNumberOfSamplesPerMeasurment(3);
 
   std::vector<demo::Pin> dataPins;
   dataPins.push_back(demo::Gpio::allocatePin(12));

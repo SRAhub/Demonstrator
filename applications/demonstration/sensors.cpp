@@ -28,6 +28,7 @@ int main(int argc, char **argv) {
   sensorPins.push_back(demo::Gpio::allocatePin(25));
   sensorPins.push_back(demo::Gpio::allocatePin(11));
   demo::DistanceSensors distanceSensors(std::move(sensorPins), 0.03, 0.35);
+  distanceSensors.setNumberOfSamplesPerMeasurment(3);
 
   std::vector<demo::Pin> dataPins;
   dataPins.push_back(demo::Gpio::allocatePin(12));
