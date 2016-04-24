@@ -37,7 +37,6 @@ int main (const int argc, const char* argv[]) {
   // For an overview on the pin layout, use the `gpio readall` command on a Raspberry Pi.
   ::wiringPiSetupGpio();
 
-
   std::vector<demo::Pin> pins;
   pins.push_back(demo::Gpio::allocatePin(17));
   pins.push_back(demo::Gpio::allocatePin(27));
