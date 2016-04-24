@@ -215,30 +215,30 @@ message(STATUS "Configuring demonstation applications.")
 # All paths must start with "demonstration/"
 
 message(STATUS "- Sensors.")
-add_executable(sensorDemonstration
+add_executable(demonstrateSensor
   demonstration/sensors.cpp
 )
 
-target_link_libraries(sensorDemonstration ${WIRINGPI_LIBRARIES})
-target_link_libraries(sensorDemonstration ${ARMADILLO_LIBRARIES})
-target_link_libraries(sensorDemonstration ${MANTELLA_LIBRARIES})
-target_link_libraries(sensorDemonstration ${DEMONSTRATOR_LIBRARIES})
-target_link_libraries(sensorDemonstration pthread)
+target_link_libraries(demonstrateSensor ${WIRINGPI_LIBRARIES})
+target_link_libraries(demonstrateSensor ${ARMADILLO_LIBRARIES})
+target_link_libraries(demonstrateSensor ${MANTELLA_LIBRARIES})
+target_link_libraries(demonstrateSensor ${DEMONSTRATOR_LIBRARIES})
+target_link_libraries(demonstrateSensor pthread)
 
 message(STATUS "- Motors.")
-add_executable(motorDemonstration
+add_executable(demonstrateMotor
   demonstration/motors.cpp
 )
 
-target_link_libraries(motorDemonstration ${WIRINGPI_LIBRARIES})
-target_link_libraries(motorDemonstration ${ARMADILLO_LIBRARIES})
-target_link_libraries(motorDemonstration ${MANTELLA_LIBRARIES})
-target_link_libraries(motorDemonstration ${DEMONSTRATOR_LIBRARIES})
-target_link_libraries(motorDemonstration pthread)
+target_link_libraries(demonstrateMotor ${WIRINGPI_LIBRARIES})
+target_link_libraries(demonstrateMotor ${ARMADILLO_LIBRARIES})
+target_link_libraries(demonstrateMotor ${MANTELLA_LIBRARIES})
+target_link_libraries(demonstrateMotor ${DEMONSTRATOR_LIBRARIES})
+target_link_libraries(demonstrateMotor pthread)
 
-message(STATUS "- Mouse.")
+message(STATUS "- 3D Mouse.")
 add_executable(demonstrateMouse
-  demonstration/motors.cpp
+  demonstration/mouse3d.cpp
 )
 
 target_link_libraries(demonstrateMouse ${WIRINGPI_LIBRARIES})
