@@ -10,6 +10,9 @@
 // Demonstrator
 #include <demonstrator>
 
+// Application
+#include "../commandline.hpp"
+
 void networkControl();
 
 std::atomic<bool> running;
@@ -60,12 +63,8 @@ void networkControl() {
   do {
     message = network.receive();
 
-    if (message == "get") {
-      std::string response = "";
-      for (size_t n = 0; n < distances.size(); n++) {
-        response += std::to_string(distances.at(n)) + (n < distances.size() ? " " : "");
-      }
-      network.send("192.168.0.16", 31415, response);
+    if (message.substr(0, 3) == "get") {
+      network.send("192.168.0.16", 31415, vectorToString(distances));
     }
   } while (message != "exit" && running);
 

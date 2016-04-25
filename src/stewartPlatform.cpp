@@ -68,12 +68,12 @@ namespace demo {
       throw std::domain_error("StewartPlatform.setEndEffectorPose: All end-effector poses must be finite.");
     }
     
-    const arma::Col<double>::fixed<6>& limitedEndEffectorPose = arma::min(arma::max(endEffectorPose, minimalEndEffectorPose_), maximalEndEffectorPose_);
+    limitedEndEffectorPose_ = arma::min(arma::max(endEffectorPose, minimalEndEffectorPose_), maximalEndEffectorPose_);
 
     arma::Row<double>::fixed<6> extensions;
-    const arma::Mat<double>::fixed<3, 3>& endeEffectorRotation = mant::rotationMatrix3D(limitedEndEffectorPose(3), limitedEndEffectorPose(4), limitedEndEffectorPose(5));
+    const arma::Mat<double>::fixed<3, 3>& endeEffectorRotation = mant::rotationMatrix3D(limitedEndEffectorPose_(3), limitedEndEffectorPose_(4), limitedEndEffectorPose_(5));
     for (std::size_t n = 0; n < linearActuators_.numberOfActuators_; ++n) {
-      extensions(n) = arma::norm(baseJointsPosition_.col(n) - (endeEffectorRotation * endEffectorJointsRelativePosition_.col(n) + limitedEndEffectorPose.head(3)));
+      extensions(n) = arma::norm(baseJointsPosition_.col(n) - (endeEffectorRotation * endEffectorJointsRelativePosition_.col(n) + limitedEndEffectorPose_.head(3)));
     }
 
     if (arma::all(extensions >= linearActuators_.minimalAllowedExtension_) && arma::all(extensions <= linearActuators_.maximalAllowedExtension_)) {
@@ -82,6 +82,8 @@ namespace demo {
   }
 
   arma::Col<double>::fixed<6> StewartPlatform::getEndEffectorPose() {
+    return limitedEndEffectorPose_;
+    /*
     const arma::Row<double>::fixed<3>& attitudes = attitudeSensors_.measure();
     const arma::Row<double>::fixed<6>& extensions = linearActuators_.getExtensions();
 
@@ -112,6 +114,7 @@ namespace demo {
     } else {
       return arma::join_cols(intersections.at(1), attitudes.t());
     }
+    */
   }
 
   bool StewartPlatform::waitTillEndEffectorPoseIsReached(

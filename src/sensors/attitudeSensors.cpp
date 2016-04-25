@@ -45,14 +45,14 @@ namespace demo {
 
   AttitudeSensors::~AttitudeSensors() {
     if (continuousMeasurementThread_.joinable()) {
+      // reset port to previous state
+      if (fileDescriptor_ != -1) {
+        ::tcsetattr(fileDescriptor_, TCSANOW, &oldSerial_);
+        ::close(fileDescriptor_);
+      }
+    
       killContinuousMeasurementThread_ = true;
       continuousMeasurementThread_.join();
-    }
-    
-    // reset port to previous state
-    if (fileDescriptor_ != -1) {
-      ::tcsetattr(fileDescriptor_, TCSANOW, &oldSerial_);
-      ::close(fileDescriptor_);
     }
   }
 

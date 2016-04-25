@@ -58,7 +58,7 @@ int main(int argc, char **argv) {
     message = network.receive();
 
     if (message.substr(0, 3) == "get") {
-      network.send("192.168.0.16", 31415, vectorToString(stewartPlatform.getEndEffectorPose()));
+      network.send("192.168.0.16", 31415, vectorToString(endEffectorPose));
     } else if (message.substr(0, 3) == "set") {
       message = message.substr(message.find(" ") + 1);
       stewartPlatform.setEndEffectorPose(stringToVector(message.substr(message.find(" ") + 1)));

@@ -43,5 +43,7 @@ namespace demo {
    protected:
     LinearActuators linearActuators_;
     AttitudeSensors attitudeSensors_;
+    
+    arma::Col<double>::fixed<6> limitedEndEffectorPose_;
   };
 }

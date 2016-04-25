@@ -216,6 +216,7 @@ message(STATUS "Configuring demonstation applications.")
 
 message(STATUS "- Sensors.")
 add_executable(demonstrateSensor
+  commandline.cpp
   demonstration/sensors.cpp
 )
 
@@ -227,6 +228,7 @@ target_link_libraries(demonstrateSensor pthread)
 
 message(STATUS "- Motors.")
 add_executable(demonstrateMotor
+  commandline.cpp
   demonstration/motors.cpp
 )
 
@@ -236,16 +238,29 @@ target_link_libraries(demonstrateMotor ${MANTELLA_LIBRARIES})
 target_link_libraries(demonstrateMotor ${DEMONSTRATOR_LIBRARIES})
 target_link_libraries(demonstrateMotor pthread)
 
+message(STATUS "- End-effector.")
+add_executable(demonstrateEndEffector
+  commandline.cpp
+  demonstration/endEffector.cpp
+)
+
+target_link_libraries(demonstrateEndEffector ${WIRINGPI_LIBRARIES})
+target_link_libraries(demonstrateEndEffector ${ARMADILLO_LIBRARIES})
+target_link_libraries(demonstrateEndEffector ${MANTELLA_LIBRARIES})
+target_link_libraries(demonstrateEndEffector ${DEMONSTRATOR_LIBRARIES})
+target_link_libraries(demonstrateEndEffector pthread)
+
 message(STATUS "- 3D Mouse.")
-add_executable(demonstrateMouse
+add_executable(demonstrateMouse3d
+  commandline.cpp
   demonstration/mouse3d.cpp
 )
 
-target_link_libraries(demonstrateMouse ${WIRINGPI_LIBRARIES})
-target_link_libraries(demonstrateMouse ${ARMADILLO_LIBRARIES})
-target_link_libraries(demonstrateMouse ${MANTELLA_LIBRARIES})
-target_link_libraries(demonstrateMouse ${DEMONSTRATOR_LIBRARIES})
-target_link_libraries(demonstrateMouse pthread)
+target_link_libraries(demonstrateMouse3d ${WIRINGPI_LIBRARIES})
+target_link_libraries(demonstrateMouse3d ${ARMADILLO_LIBRARIES})
+target_link_libraries(demonstrateMouse3d ${MANTELLA_LIBRARIES})
+target_link_libraries(demonstrateMouse3d ${DEMONSTRATOR_LIBRARIES})
+target_link_libraries(demonstrateMouse3d pthread)
 
 message(STATUS "")
 message(STATUS "Noticable CMAKE variables:")
