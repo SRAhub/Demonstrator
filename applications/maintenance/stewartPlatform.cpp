@@ -56,7 +56,7 @@ int main (const int argc, const char* argv[]) {
   demo::ServoControllers servoControllers(std::move(directionPins), demo::Gpio::allocateI2c(), {0, 1, 2, 3, 4, 5}, 1.0);
   
   demo::LinearActuators linearActuators(std::move(servoControllers), std::move(extensionSensors), 0.178, 0.248);
-  linearActuators.setAcceptableExtensionDeviation(0.001);
+  linearActuators.setAcceptableExtensionDeviation(0.005);
   
   demo::AttitudeSensors attitudeSensors(demo::Gpio::allocateUart(), -arma::datum::pi, arma::datum::pi);
   
@@ -111,12 +111,12 @@ void runDefault(
   while(1) {
     for (unsigned int n = 0; n < 2; ++n) {
       std::cout << "Moving the Stewart platform along axis " <<  (n + 1) << " down by 3cm." << std::endl;
-      endEffectorPose(n) -= 0.04;
+      endEffectorPose(n) -= 0.02;
       stewartPlatform.setEndEffectorPose(endEffectorPose);
       stewartPlatform.waitTillEndEffectorPoseIsReached(std::chrono::seconds(10));
       std::this_thread::sleep_for(std::chrono::milliseconds(100));
       std::cout << "Moving the Stewart platform along axis " <<  (n + 1) << " up by 3cm." << std::endl;
-      endEffectorPose(n) += 0.06;
+      endEffectorPose(n) += 0.04;
       stewartPlatform.setEndEffectorPose(endEffectorPose);
       stewartPlatform.waitTillEndEffectorPoseIsReached(std::chrono::seconds(10));
       std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -129,12 +129,12 @@ void runDefault(
     
     for (unsigned int n = 3; n < 5; ++n) {
       std::cout << "Moving the Stewart platform along axis " <<  (n + 1) << " up by 15 degree." << std::endl;
-      endEffectorPose(n) -= 0.26;
+      endEffectorPose(n) -= 0.14;
       stewartPlatform.setEndEffectorPose(endEffectorPose);
       stewartPlatform.waitTillEndEffectorPoseIsReached(std::chrono::seconds(10));
       std::this_thread::sleep_for(std::chrono::milliseconds(100));
       std::cout << "Moving the Stewart platform along axis " <<  (n + 1) << " down by 30 degree." << std::endl;
-      endEffectorPose(n) += 0.52;
+      endEffectorPose(n) += 0.28;
       stewartPlatform.setEndEffectorPose(endEffectorPose);
       stewartPlatform.waitTillEndEffectorPoseIsReached(std::chrono::seconds(10));
       std::this_thread::sleep_for(std::chrono::milliseconds(100));

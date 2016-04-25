@@ -54,8 +54,6 @@ int main(int argc, char **argv) {
   return EXIT_SUCCESS;
 }
 
-
-
 void networkControl() {
   std::string message = "";
   demo::Network network(31415);

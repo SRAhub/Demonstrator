@@ -40,7 +40,7 @@ int main(int argc, char **argv) {
   demo::ServoControllers servoControllers(std::move(directionPins), demo::Gpio::allocateI2c(), {0, 1, 2, 3, 4, 5}, 1.0);
 
   demo::LinearActuators linearActuators(std::move(servoControllers), std::move(extensionSensors), 0.178, 0.248);
-  linearActuators.setAcceptableExtensionDeviation(0.001);
+  linearActuators.setAcceptableExtensionDeviation(0.005);
 
   demo::AttitudeSensors attitudeSensors(demo::Gpio::allocateUart(), -arma::datum::pi, arma::datum::pi);
 
@@ -49,7 +49,7 @@ int main(int argc, char **argv) {
   arma::Mat<double>::fixed<3, 6> endEffectorJointsRelativePosition;
   endEffectorJointsRelativePosition.load("endEffectorJointsRelativePosition.config");
 
-  demo::StewartPlatform stewartPlatform(std::move(linearActuators), std::move(attitudeSensors), baseJointsPosition, endEffectorJointsRelativePosition, {-0.1, -0.1, 0.21, -0.261799, -0.261799, -0.610865}, {0.1, 0.1, 0.28, 0.261799, 0.261799, 0.610865});
+  demo::StewartPlatform stewartPlatform(std::move(linearActuators), std::move(attitudeSensors), baseJointsPosition, endEffectorJointsRelativePosition, {-0.1, -0.1, 0.21, -0.2, -0.2, -0.6}, {0.1, 0.1, 0.27, 0.2, 0.2, 0.6});
 
   demo::Network network(31415);
 
