@@ -33,7 +33,7 @@ int main (int argc, char **argv) {
   fixedMovement.push({0.0, 0.0, 1.04, 0.4, 0.0, 0.0});
 
   while(1) {
-    const arma::Row<double>::fixed<3>endEffectorPose = fixedMovement.front();
+    const arma::Row<double>::fixed<6> endEffectorPose = fixedMovement.front();
     fixedMovement.pop();
     fixedMovement.push(endEffectorPose);
 
