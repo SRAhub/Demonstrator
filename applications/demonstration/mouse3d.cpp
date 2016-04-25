@@ -4,6 +4,7 @@
 #include <array>
 #include <thread>
 #include <chrono>
+#include <queue>
 
 // Demonstrator
 #include <demonstrator>
@@ -22,24 +23,24 @@ int main (int argc, char **argv) {
     network.receive(); // ACK
   }
   
-  std::queue<arma::Col<double>::fixed<6>> fixedMovement;
+  std::queue<arma::Row<double>::fixed<6>> fixedMovement;
   for (unsigned int n = 0; n < 7; ++n) {
-    fixedMovement.push_back({0.0, 0.0, 0.2 + 0.01 * n, 0.0, 0.0, 0.0});
+    fixedMovement.push({0.0, 0.0, 0.2 + 0.01 * n, 0.0, 0.0, 0.0});
   }
   for (unsigned int n = 0; n < 2; ++n) {
-    fixedMovement.push_back({0.0, 0.0, 0.27 - 0.01 * n, 0.0, 0.0, 0.0});
+    fixedMovement.push({0.0, 0.0, 0.27 - 0.01 * n, 0.0, 0.0, 0.0});
   }
   for (unsigned int n = 0; n < 5; ++n) {
-    fixedMovement.push_back({0.0, 0.0 + 0.02 * n, 0.25, 0.0, 0.0, 0.0});
+    fixedMovement.push({0.0, 0.0 + 0.02 * n, 0.25, 0.0, 0.0, 0.0});
   }
   for (unsigned int n = 0; n < 5; ++n) {
-    fixedMovement.push_back({0.0 + 0.02 * n, 0.1, 0.25, 0.0, 0.0, 0.0});
+    fixedMovement.push({0.0 + 0.02 * n, 0.1, 0.25, 0.0, 0.0, 0.0});
   }
   for (unsigned int n = 0; n < 5; ++n) {
-    fixedMovement.push_back({0.1, 0.1 - 0.02 * n, 0.25, 0.0, 0.0, 0.0});
+    fixedMovement.push({0.1, 0.1 - 0.02 * n, 0.25, 0.0, 0.0, 0.0});
   }
   for (unsigned int n = 0; n < 5; ++n) {
-    fixedMovement.push_back({0.1 - 0.02 * n, 0.0, 0.25, 0.0, 0.0, 0.0});
+    fixedMovement.push({0.1 - 0.02 * n, 0.0, 0.25, 0.0, 0.0, 0.0});
   }
 
   bool useMouse = false;
@@ -63,8 +64,9 @@ int main (int argc, char **argv) {
         }
       }
     } else {
-      endEffectorPose = fixedMovement.pop_front();
-      fixedMovement.push_back(endEffectorPose);
+      endEffectorPose = fixedMovement.front();
+      fixedMovement.pop();
+      fixedMovement.push(endEffectorPose);
       endEffectorPose *= 4.0;
     }
 
