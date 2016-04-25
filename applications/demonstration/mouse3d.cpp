@@ -22,15 +22,25 @@ int main (int argc, char **argv) {
     network.receive(); // ACK
   }
   
-  std::vector<arma::Col<double>::fixed<6>> fixedMovement = {
-    {0, 0, 1.0, 0 ,0, 0},
-    {0, 0, 0.84, 0 ,0, 0},
-    {0, 0, 0.25, 0 ,0, 0},
-    {0, 0, 0.25, 0 ,0, 0},
-    {0, 0, 0.25, 0 ,0, 0},
-    {0, 0, 0.25, 0 ,0, 0},
-    {0, 0, 0.25, 0 ,0, 0},
-  };
+  std::queue<arma::Col<double>::fixed<6>> fixedMovement;
+  for (unsigned int n = 0; n < 7; ++n) {
+    fixedMovement.push_back({0.0, 0.0, 0.2 + 0.01 * n, 0.0, 0.0, 0.0});
+  }
+  for (unsigned int n = 0; n < 2; ++n) {
+    fixedMovement.push_back({0.0, 0.0, 0.27 - 0.01 * n, 0.0, 0.0, 0.0});
+  }
+  for (unsigned int n = 0; n < 5; ++n) {
+    fixedMovement.push_back({0.0, 0.0 + 0.02 * n, 0.25, 0.0, 0.0, 0.0});
+  }
+  for (unsigned int n = 0; n < 5; ++n) {
+    fixedMovement.push_back({0.0 + 0.02 * n, 0.1, 0.25, 0.0, 0.0, 0.0});
+  }
+  for (unsigned int n = 0; n < 5; ++n) {
+    fixedMovement.push_back({0.1, 0.1 - 0.02 * n, 0.25, 0.0, 0.0, 0.0});
+  }
+  for (unsigned int n = 0; n < 5; ++n) {
+    fixedMovement.push_back({0.1 - 0.02 * n, 0.0, 0.25, 0.0, 0.0, 0.0});
+  }
 
   bool useMouse = false;
   while(1) {
@@ -53,7 +63,9 @@ int main (int argc, char **argv) {
         }
       }
     } else {
-      
+      endEffectorPose = fixedMovement.pop_front();
+      fixedMovement.push_back(endEffectorPose);
+      endEffectorPose *= 4.0;
     }
 
     for (size_t n = 0; n < motorPis.size(); n++) {
