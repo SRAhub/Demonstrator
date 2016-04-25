@@ -33,13 +33,9 @@ int main (int argc, char **argv) {
   fixedMovement.push({0.0, 0.0, 1.04, 0.4, 0.0, 0.0});
 
   while(1) {
-    for (size_t n = 0; n < 3; n++) {
-      if (std::abs(mouse3d(n)) > 0.5) {
-        endEffectorPose = fixedMovement.front();
-        fixedMovement.pop();
-        fixedMovement.push(endEffectorPose);
-      }
-    }
+    endEffectorPose = fixedMovement.front();
+    fixedMovement.pop();
+    fixedMovement.push(endEffectorPose);
 
     for (size_t n = 0; n < motorPis.size(); n++) {
       network.send(motorPis.at(n), 31415, vectorToString(endEffectorPose / motorPis.size()));
