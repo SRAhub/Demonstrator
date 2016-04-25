@@ -34,7 +34,7 @@ int main (int argc, char **argv) {
     }
 
     for (size_t n = 0; n < motorPis.size(); n++) {
-      network.send(motorPis.at(n), 31415, vectorToString(endEffectorPose / motorPis.size()));
+      network.send(motorPis.at(n), 31415, "set " + vectorToString(endEffectorPose / motorPis.size()));
       network.receive(); // ACK
     }
 

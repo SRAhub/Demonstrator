@@ -24,13 +24,13 @@ int main (int argc, char **argv) {
   }
   
   std::queue<arma::Row<double>::fixed<6>> fixedMovement;
-  fixedMovement.push({0.0, 0.0, 0.8, 0.4, 0.0, 0.0});
-  fixedMovement.push({0.0, 0.0, 0.84, 0.0, 0.0, -0.12});
-  fixedMovement.push({0.0, 0.0, 0.88, 0.4, 0.0, 0.0});
-  fixedMovement.push({0.0, 0.0, 0.92, 0.0, 0.0, 0.12});
-  fixedMovement.push({0.0, 0.0, 0.96, 0.4, 0.0, 0.0});
-  fixedMovement.push({0.0, 0.0, 1.0, 0.0, 0.4, 0.0});
-  fixedMovement.push({0.0, 0.0, 1.04, 0.4, 0.0, 0.0});
+  fixedMovement.push({0.0, 0.0, 4 * 0.21, 0.4, 0.0, 0.0});
+  fixedMovement.push({0.0, 0.0, 4 * 0.22, 0.0, 0.0, -0.12});
+  fixedMovement.push({0.0, 0.0, 4 * 0.23, 0.4, 0.0, 0.0});
+  fixedMovement.push({0.0, 0.0, 4 * 0.24, 0.0, 0.0, 0.12});
+  fixedMovement.push({0.0, 0.0, 4 * 0.25, 0.4, 0.0, 0.0});
+  fixedMovement.push({0.0, 0.0, 4 * 0.26, 0.0, 0.4, 0.0});
+  fixedMovement.push({0.0, 0.0, 4 * 0.27, 0.4, 0.0, 0.0});
 
   while(1) {
     const arma::Row<double>::fixed<6> endEffectorPose = fixedMovement.front();
@@ -38,7 +38,7 @@ int main (int argc, char **argv) {
     fixedMovement.push(endEffectorPose);
 
     for (size_t n = 0; n < motorPis.size(); n++) {
-      network.send(motorPis.at(n), 31415, vectorToString(endEffectorPose / motorPis.size()));
+      network.send(motorPis.at(n), 31415, "set " + vectorToString(endEffectorPose / motorPis.size()));
       network.receive(); // ACK
     }
 
