@@ -56,14 +56,21 @@ int main(int argc, char **argv) {
   std::string message = "";
   do {
     message = network.receive();
-
+    std::cout << "Received: '" << message << "'" << std:.endl;
+    
     if (message.substr(0, 3) == "get") {
+      std::cout << "Send: " << vectorToString(stewartPlatform.getEndEffectorPose() << std::endl;
       network.send("192.168.0.16", 31415, vectorToString(stewartPlatform.getEndEffectorPose()));
+      std::cout << "Done." << std::endl;
     } else if (message.substr(0, 3) == "set") {
       message = message.substr(message.find(" ") + 1);
+      std::cout << "Set: " << stringToVector(message).t()) << std::endl;
       stewartPlatform.setEndEffectorPose(stringToVector(message).t());
+      std::cout << "Waiting till end-effector reached pose" << std::endl;
       stewartPlatform.waitTillEndEffectorPoseIsReached(std::chrono::seconds(10));
+      std::cout << "Sending ACK" << std::endl;
       network.send("192.168.0.16", 31415, "ACK");
+      std::cout << "Done." << std::endl;
     }
   } while (message != "exit");
 
