@@ -34,11 +34,10 @@ std::string vectorToString(
     
 arma::Row<double> stringToVector(
     std::string string) {
-  arma::Row<double> vector;
+  arma::Row<double>::fixed<6> vector;
   
-  std::size_t n = 0;
-  while (string.size() > 0) {
-    vector(n++) = std::stod(string.substr(0, string.find(" ")));
+  for (unsigned int n = 0; n < vector.n_elem; ++n) {
+    vector(n) = std::stod(string.substr(0, string.find(" ")));
     string = string.substr(string.find(" ") + 1);
   }
   
