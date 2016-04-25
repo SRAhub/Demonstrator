@@ -61,7 +61,7 @@ int main(int argc, char **argv) {
       network.send("192.168.0.16", 31415, vectorToString(stewartPlatform.getEndEffectorPose()));
     } else if (message.substr(0, 3) == "set") {
       message = message.substr(message.find(" ") + 1);
-      stewartPlatform.setEndEffectorPose(stringToVector(message.substr(message.find(" ") + 1)));
+      stewartPlatform.setEndEffectorPose(stringToVector(message.substr(message.find(" ") + 1)).t());
       stewartPlatform.waitTillEndEffectorPoseIsReached(std::chrono::seconds(10));
       network.send("192.168.0.16", 31415, "ACK");
     }
