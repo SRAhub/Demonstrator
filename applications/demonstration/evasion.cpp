@@ -4,6 +4,7 @@
 #include <array>
 #include <thread>
 #include <chrono>
+#include <queue>
 
 // Demonstrator
 #include <demonstrator>
@@ -21,15 +22,22 @@ int main (int argc, char **argv) {
     network.send(motorPis.at(n), 31415, "set 0 0 0.25 0 0 0");
     network.receive(); // ACK
   }
+  
+  std::queue<arma::Row<double>::fixed<6>> fixedMovement;
+  fixedMovement.push({0.0, 0.0, 0.8, 0.4, 0.0, 0.0});
+  fixedMovement.push({0.0, 0.0, 0.84, 0.0, 0.0, -0.12});
+  fixedMovement.push({0.0, 0.0, 0.88, 0.4, 0.0, 0.0});
+  fixedMovement.push({0.0, 0.0, 0.92, 0.0, 0.0, 0.12});
+  fixedMovement.push({0.0, 0.0, 0.96, 0.4, 0.0, 0.0});
+  fixedMovement.push({0.0, 0.0, 1.0, 0.0, 0.4, 0.0});
+  fixedMovement.push({0.0, 0.0, 1.04, 0.4, 0.0, 0.0});
 
   while(1) {
-    network.send(motorPis.at(3), 31415, "get");
-    arma::Row<double>::fixed<6> endEffectorPose = stringToVector(network.receive());
-
-    arma::Row<double>::fixed<8> mouse3d = mouse3dSensors.measure();    
     for (size_t n = 0; n < 3; n++) {
       if (std::abs(mouse3d(n)) > 0.5) {
-        endEffectorPose += std::copysign(0.005, mouse3d(n));
+        endEffectorPose = fixedMovement.front();
+        fixedMovement.pop();
+        fixedMovement.push(endEffectorPose);
       }
     }
 

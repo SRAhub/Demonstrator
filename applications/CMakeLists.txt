@@ -262,6 +262,18 @@ target_link_libraries(demonstrateMouse3d ${MANTELLA_LIBRARIES})
 target_link_libraries(demonstrateMouse3d ${DEMONSTRATOR_LIBRARIES})
 target_link_libraries(demonstrateMouse3d pthread)
 
+message(STATUS "- Evasion.")
+add_executable(demonstrateEvasion
+  commandline.cpp
+  demonstration/evasion.cpp
+)
+
+target_link_libraries(demonstrateEvasion ${WIRINGPI_LIBRARIES})
+target_link_libraries(demonstrateEvasion ${ARMADILLO_LIBRARIES})
+target_link_libraries(demonstrateEvasion ${MANTELLA_LIBRARIES})
+target_link_libraries(demonstrateEvasion ${DEMONSTRATOR_LIBRARIES})
+target_link_libraries(demonstrateEvasion pthread)
+
 message(STATUS "")
 message(STATUS "Noticable CMAKE variables:")
 message(STATUS "- CMAKE_PREFIX_PATH = ${CMAKE_PREFIX_PATH}")
