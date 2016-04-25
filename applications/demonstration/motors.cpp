@@ -64,7 +64,7 @@ int main(int argc, char **argv) {
       std::cout << "Done." << std::endl;
     } else if (message.substr(0, 3) == "set") {
       message = message.substr(message.find(" ") + 1);
-      std::cout << "Set: " << stringToVector(message).t()) << std::endl;
+      std::cout << "Set: " << stringToVector(message).t() << std::endl;
       stewartPlatform.setEndEffectorPose(stringToVector(message).t());
       std::cout << "Waiting till end-effector reached pose" << std::endl;
       stewartPlatform.waitTillEndEffectorPoseIsReached(std::chrono::seconds(10));
