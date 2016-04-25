@@ -56,7 +56,7 @@ int main(int argc, char **argv) {
   std::string message = "";
   do {
     message = network.receive();
-    std::cout << "Received: '" << message << "'" << std:.endl;
+    std::cout << "Received: '" << message << "'" << std::endl;
     
     if (message.substr(0, 3) == "get") {
       std::cout << "Send: " << vectorToString(stewartPlatform.getEndEffectorPose() << std::endl;
