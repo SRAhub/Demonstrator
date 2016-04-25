@@ -59,7 +59,7 @@ int main(int argc, char **argv) {
     std::cout << "Received: '" << message << "'" << std::endl;
     
     if (message.substr(0, 3) == "get") {
-      std::cout << "Send: " << vectorToString(stewartPlatform.getEndEffectorPose() << std::endl;
+      std::cout << "Send: " << vectorToString(stewartPlatform.getEndEffectorPose()) << std::endl;
       network.send("192.168.0.16", 31415, vectorToString(stewartPlatform.getEndEffectorPose()));
       std::cout << "Done." << std::endl;
     } else if (message.substr(0, 3) == "set") {
