@@ -19,8 +19,8 @@ int main (int argc, char **argv) {
   std::array<std::string, 4> motorPis = {{"192.168.0.1", "192.168.0.3", "192.168.0.5", "192.168.0.7"}};
   for (size_t n = 0; n < motorPis.size(); n++) {
     network.send(motorPis.at(n), 31415, "set 0 0 0.25 0 0 0");
-    network.receive(); // ACK
   }
+  std::this_thread::sleep_for(std::chrono::seconds(10));
 
   while(1) {
     network.send(motorPis.at(3), 31415, "get");
@@ -35,9 +35,7 @@ int main (int argc, char **argv) {
 
     for (size_t n = 0; n < motorPis.size(); n++) {
       network.send(motorPis.at(n), 31415, "set " + vectorToString(endEffectorPose / motorPis.size()));
-      network.receive(); // ACK
     }
-
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
   };
 
