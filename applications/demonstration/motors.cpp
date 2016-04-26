@@ -66,10 +66,6 @@ int main(int argc, char **argv) {
       message = message.substr(message.find(" ") + 1);
       std::cout << "Set: " << stringToVector(message).t() << std::endl;
       stewartPlatform.setEndEffectorPose(stringToVector(message).t());
-      std::cout << "Waiting till end-effector reached pose" << std::endl;
-      stewartPlatform.waitTillEndEffectorPoseIsReached(std::chrono::seconds(10));
-      std::cout << "Sending ACK" << std::endl;
-      network.send("192.168.0.16", 31415, "ACK");
       std::cout << "Done." << std::endl;
     }
   } while (message != "exit");
