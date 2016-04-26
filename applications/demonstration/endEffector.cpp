@@ -49,7 +49,7 @@ int main(int argc, char **argv) {
   arma::Mat<double>::fixed<3, 6> endEffectorJointsRelativePosition;
   endEffectorJointsRelativePosition.load("endEffectorJointsRelativePosition.config");
 
-  demo::StewartPlatform stewartPlatform(std::move(linearActuators), std::move(attitudeSensors), baseJointsPosition, endEffectorJointsRelativePosition, {-0.1, -0.1, 0.21, -0.261799, -0.261799, -0.610865}, {0.1, 0.1, 0.28, 0.261799, 0.261799, 0.610865});
+  demo::StewartPlatform stewartPlatform(std::move(linearActuators), std::move(attitudeSensors), baseJointsPosition, endEffectorJointsRelativePosition, {-0.02, -0.02, 0.21, -0.2, -0.2, -0.6}, {0.02, 0.02, 0.27, 0.2, 0.2, 0.6});
 
   demo::Network network(31415);
 
