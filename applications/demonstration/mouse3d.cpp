@@ -18,7 +18,7 @@ int main (int argc, char **argv) {
 
   std::array<std::string, 4> motorPis = {{"192.168.0.1", "192.168.0.3", "192.168.0.5", "192.168.0.7"}};
   for (size_t n = 0; n < motorPis.size(); n++) {
-    network.send(motorPis.at(n), 31415, "set 0 0 0.25 0 0 0");
+    network.send(motorPis.at(n), 31415, "set 0 0 0.23 0 0 0");
   }
   std::this_thread::sleep_for(std::chrono::seconds(10));
 
