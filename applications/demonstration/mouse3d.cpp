@@ -29,14 +29,14 @@ int main (int argc, char **argv) {
     arma::Row<double>::fixed<8> mouse3d = mouse3dSensors.measure();    
     for (size_t n = 0; n < 3; n++) {
       if (std::abs(mouse3d(n)) > 0.9) {
-        endEffectorPose(n) += std::copysign(0.005, -mouse3d(n));
+        endEffectorPose(n) += std::copysign(0.002, -mouse3d(n));
       }
     }
 
     for (size_t n = 0; n < motorPis.size(); n++) {
       network.send(motorPis.at(n), 31415, "set " + vectorToString(endEffectorPose));
     }
-    std::this_thread::sleep_for(std::chrono::seconds(1));
+    std::this_thread::sleep_for(std::chrono::milliseconds(600));
   };
 
   return EXIT_SUCCESS;
