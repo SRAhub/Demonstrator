@@ -83,6 +83,8 @@ namespace demo {
     if (status < 0) {
       throw std::runtime_error("Network.send: " + static_cast<std::string>(std::strerror(errno)));
     }
+    
+    ::close(outgoingSocketDescriptor);
   }
 
   std::string Network::receive() {
