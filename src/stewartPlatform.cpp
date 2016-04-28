@@ -82,39 +82,23 @@ namespace demo {
   }
 
   arma::Col<double>::fixed<6> StewartPlatform::getEndEffectorPose() {
-    return limitedEndEffectorPose_;
-    /*
-    const arma::Row<double>::fixed<3>& attitudes = attitudeSensors_.measure();
-    const arma::Row<double>::fixed<6>& extensions = linearActuators_.getExtensions();
-
-    const arma::Mat<double>::fixed<3, 3>& endEffectorRotation = mant::rotationMatrix3D(attitudes(0), attitudes(1), attitudes(2));
-
-    // Given the end-effector's attitudes, the remaining end-effector pose (its x,y,z-translation) is already fully described by the intersection of three actuators.
-    arma::Mat<double>::fixed<3, 3> baseJointsShiftedPosition;
-    for (std::size_t n = 0; n < 3; ++n) {
-      baseJointsShiftedPosition.col(n) = baseJointsPosition_.col(n) - endEffectorRotation * endEffectorJointsRelativePosition_.col(n);
-    }
-
-    const double distanceBetweenSpheres = arma::norm(baseJointsShiftedPosition.col(0) - baseJointsShiftedPosition.col(1));
-    const double relativeDistanceToIntersection = 0.5 + (std::pow(extensions(0), 2.0) - std::pow(extensions(1), 2.0)) / std::pow(distanceBetweenSpheres, 2.0);
-
-    const arma::Col<double>::fixed<3>& circleCenter = baseJointsShiftedPosition.col(0) + relativeDistanceToIntersection * (baseJointsShiftedPosition.col(1) - baseJointsShiftedPosition.col(0));
-    const double circleRadius = std::sqrt(std::pow(extensions(0), 2.0) - std::pow(distanceBetweenSpheres * relativeDistanceToIntersection, 2.0));
-    const arma::Col<double>::fixed<3>& circleNormal = (baseJointsShiftedPosition.col(0) - baseJointsShiftedPosition.col(1)) / distanceBetweenSpheres;
-
-    ::demo::pre_mant::machinePrecision = 1e-6;
-    const std::vector<arma::Col<double>::fixed<3>>& intersections = demo::pre_mant::circleSphereIntersections(circleCenter, circleRadius, circleNormal, baseJointsShiftedPosition.col(2), extensions(2));
-
-    if (intersections.size() < 1) {
-      throw std::runtime_error("StewartPlatform.getEndEffectorPose: ");
-    }
-
-    if (intersections.at(0)(2) > 0) {
-      return arma::join_cols(intersections.at(0), attitudes.t());
-    } else {
-      return arma::join_cols(intersections.at(1), attitudes.t());
-    }
-    */
+    mant::OptimisationProblem endEffectorPose;
+    endEffectorPose.setObjectiveFunction([](
+        const arma::Col<double>& parameter) {
+      arma::Row<double>::fixed<6> extensions;
+      for (std::size_t n = 0; n < linearActuators_.numberOfActuators_; ++n) {
+        extensions(n) = arma::norm(baseJointsPosition_.col(n) - (endEffectorJointsRelativePosition_.col(n) + parameter.head(3)));
+      }
+      
+      return arma::accu(arma::abs(extensions - linearActuators_.getExtensions());
+    });
+    
+    mant::RandomSearch randomSearch;
+    randomSearch.setAcceptableObjectiveValue(linearActuators_.getMaximalExtensionDeviation());
+    randomSearch.setMaximalDuration(std::chrono::milliseconds(200));
+    randomSearch.optimise(endEffectorPose);
+    
+    return randomSearch.getBestParameter();
   }
 
   bool StewartPlatform::waitTillEndEffectorPoseIsReached(

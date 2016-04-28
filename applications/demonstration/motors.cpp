@@ -15,11 +15,29 @@
 
 arma::Col<double>::fixed<6> endEffectorPose = {0.0, 0.0, 0.24, 0.0, 0.0, 0.0};
 
-int main(int argc, char **argv) {
+int main(const int argc, const char **argv) {
   // Initializes WiringPi and uses the BCM pin layout.
   // For an overview on the pin layout, use the `gpio readall` command on a Raspberry Pi.
   ::wiringPiSetupGpio();
 
+  double maximalSpeed;
+  double acceptableExtensionDeviation;
+  switch(argv[1]) {
+    case 1: {
+        maximalSpeed = 1.0;
+        acceptableExtensionDeviation = 0.001;
+      } break;
+    case 2: {
+        maximalSpeed = 0.4;
+        acceptableExtensionDeviation = 0.001;
+      } break;
+    case 3:
+    case 4: {
+        maximalSpeed = 0.25;
+        acceptableExtensionDeviation = 0.001;
+      } break;
+  }
+  
   demo::ExtensionSensors extensionSensors(demo::Gpio::allocateSpi(), {0, 1, 2, 3, 4, 5}, 0.168, 0.268);
   extensionSensors.setNumberOfSamplesPerMeasurment(3);
   arma::Mat<double> extensionSensorsCorrection;
@@ -37,10 +55,10 @@ int main(int argc, char **argv) {
   directionPins.push_back(demo::Gpio::allocatePin(13));
   directionPins.push_back(demo::Gpio::allocatePin(19));
   directionPins.push_back(demo::Gpio::allocatePin(26));
-  demo::ServoControllers servoControllers(std::move(directionPins), demo::Gpio::allocateI2c(), {0, 1, 2, 3, 4, 5}, 1.0);
+  demo::ServoControllers servoControllers(std::move(directionPins), demo::Gpio::allocateI2c(), {0, 1, 2, 3, 4, 5}, maximalSpeed);
 
   demo::LinearActuators linearActuators(std::move(servoControllers), std::move(extensionSensors), 0.178, 0.248);
-  linearActuators.setAcceptableExtensionDeviation(0.002);
+  linearActuators.setAcceptableExtensionDeviation(acceptableExtensionDeviation);
 
   demo::AttitudeSensors attitudeSensors(demo::Gpio::allocateUart(), -arma::datum::pi, arma::datum::pi);
 
